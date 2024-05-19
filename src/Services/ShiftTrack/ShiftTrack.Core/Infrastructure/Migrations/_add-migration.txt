@@ -1,0 +1,7 @@
+NOTE: execute in Tools -> NuGet Package Manager -> Pakage Manager Console
+
+add-migration Database_Initialization -p ShiftTrack.Core -c ApplicationDbContext -o Infrastructure/Migrations
+
+remove-migration -p ShiftTrack.Core
+
+update-database -p ShiftTrack.Core
