@@ -10,16 +10,51 @@ services:
     environment:
       POSTGRES_PASSWORD: 123258
 
- shifttrack.api:
-    image: ${DOCKER_REGISTRY-}shifttrack-api
+ user.authentication.api:
+    image: ${DOCKER_REGISTRY-}user-authentication-api
     build:
       context: .
-      dockerfile: src\Services\ShiftTrack\ShiftTrack.API\Dockerfile
-    container_name: shifttrack-api
+      dockerfile: src/Services/User/Authentication/User.Authentication.Api/Dockerfile
+    container_name: user-authentication-api
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
       - TZ=Europe/Khmelnytskyi
     ports:
-      - "20001:80"
+      - "10101:80"
+    links:
+      - postgres-db
+      - user.authentication.server
+ 
+ user.authentication.server:
+    image: ${DOCKER_REGISTRY-}userauthenticationserver
+    build:
+      context: .
+      dockerfile: src/Services/User/Authentication/User.Authentication.Server/Dockerfile
+    container_name: user-authentication-server
+    restart: always
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - TZ=Europe/Khmelnytskyi
+    ports:
+      - "10102:80"
+    links:
+      - postgres-db
+
+ # shifttrack.api:
+ #    image: ${DOCKER_REGISTRY-}shifttrack-api
+ #    build:
+ #      context: .
+ #      dockerfile: src\Services\ShiftTrack\ShiftTrack.API\Dockerfile
+ #    container_name: shifttrack-api
+ #    restart: always
+ #    environment:
+ #      - ASPNETCORE_ENVIRONMENT=Development
+ #      - ASPNETCORE_URLS=http://+:80
+ #      - TZ=Europe/Khmelnytskyi
+ #    ports:
+ #      - "20001:80"
+
+

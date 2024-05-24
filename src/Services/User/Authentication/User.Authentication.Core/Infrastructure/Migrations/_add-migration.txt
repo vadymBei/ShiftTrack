@@ -1,0 +1,7 @@
+NOTE: execute in Tools -> NuGet Package Manager -> Pakage Manager Console
+
+add-migration Database_Initialization -p User.Authentication.Core -c ApplicationDbContext -o Infrastructure/Migrations
+
+remove-migration -p User.Authentication.Core
+
+update-database -p User.Authentication.Core
