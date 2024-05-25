@@ -12,7 +12,6 @@ namespace User.Authentication.Api.Controllers
     public class Tokens : ApiController
     {
         [HttpPost("generate")]
-        [AllowAnonymous]
         public async Task<TokenVM> GenerateToken(GenerateTokenCommand command)
             => await Mediator.Send(command);
 

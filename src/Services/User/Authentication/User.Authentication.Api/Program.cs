@@ -1,6 +1,6 @@
 using Kernel.Extensions;
-using ShiftTrack.Authentication.Bearer;
-using ShiftTrack.Authentication.Bearer.Extensions;
+using ShiftTrack.Authentication.Basic;
+using ShiftTrack.Authentication.Basic.Extensions;
 using ShiftTrack.Authentication.Identity;
 using System.Reflection;
 using User.Authentication.Core;
@@ -12,12 +12,12 @@ builder.Services.AddCoreServices(builder.Configuration);
 
 builder.Services.AddIdentityStorage<ApplicationDbContext>(builder.Configuration);
 
-builder.Services.AddJWTAuthentication(builder.Configuration);
+builder.Services.AddBasicAuthentication(builder.Configuration);
 
 builder.Services.AddControllers();
 
-builder.Services.AddJWTAuthenticationSwagger(
-    Assembly.GetEntryAssembly().GetName().ToString(),
+builder.Services.AddBasicAuthenticationSwagger(
+    builder.Environment.ApplicationName,
     Assembly.GetEntryAssembly().GetName().Version.ToString());
 
 var app = builder.Build();

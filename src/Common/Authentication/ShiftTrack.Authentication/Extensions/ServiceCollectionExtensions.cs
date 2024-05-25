@@ -1,12 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.DependencyInjection;
+using ShiftTrack.Authentication.Interfaces;
+using ShiftTrack.Authentication.Services;
 
 namespace ShiftTrack.Authentication.Extensions
 {
     public static class ServiceCollectionExtensions
     {
+        public static IServiceCollection AddCurrentUserService(this IServiceCollection services)
+        {
+            services.AddHttpContextAccessor();
+
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
+
+            return services;
+        }
     }
 }
