@@ -7,7 +7,7 @@ using User.Authentication.Core.Application.Users.Commands.CreateUser;
 namespace User.Authentication.Api.Controllers
 {
     [Authorize]
-    [Route("api/users")]
+    [Route("api/user/authentication/users")]
     public class UsersController : ApiController
     {
         [HttpPost("register")]

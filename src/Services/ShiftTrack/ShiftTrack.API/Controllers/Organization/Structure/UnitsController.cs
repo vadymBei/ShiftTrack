@@ -9,7 +9,7 @@ using ShiftTrack.Core.Application.Organization.Structure.Units.Commands.UpdateUn
 
 namespace ShiftTrack.API.Controllers.Organization.Structure
 {
-    [Route("api/organization/structure/units")]
+    [Route("api/shift-track/organization/structure/units")]
     public class UnitsController : ApiController
     {
         [HttpPost]

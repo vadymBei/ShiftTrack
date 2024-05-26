@@ -9,7 +9,7 @@ using ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Commands.UpdateS
 
 namespace ShiftTrack.API.Controllers.Timesheet
 {
-    [Route("api/timesheet/shifts")]
+    [Route("api/shift-track/timesheet/shifts")]
     public class ShiftsController : ApiController
     {
         [HttpPost]
