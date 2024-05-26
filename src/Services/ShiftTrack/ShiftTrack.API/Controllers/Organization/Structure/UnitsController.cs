@@ -1,14 +1,16 @@
 ﻿using Kernel.Controllers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ShiftTrack.Core.Application.Organization.Structure.Units.Commands.DeleteUnit;
-using ShiftTrack.Core.Application.Organization.Structure.Units.Queries.GetUnitById;
-using ShiftTrack.Core.Application.Organization.Structure.Units.Queries.GetUnits;
 using ShiftTrack.Core.Application.Organization.Structure.Common.ViewModels;
 using ShiftTrack.Core.Application.Organization.Structure.Units.Commands.CreateUnit;
+using ShiftTrack.Core.Application.Organization.Structure.Units.Commands.DeleteUnit;
 using ShiftTrack.Core.Application.Organization.Structure.Units.Commands.UpdateUnit;
+using ShiftTrack.Core.Application.Organization.Structure.Units.Queries.GetUnitById;
+using ShiftTrack.Core.Application.Organization.Structure.Units.Queries.GetUnits;
 
 namespace ShiftTrack.API.Controllers.Organization.Structure
 {
+    [Authorize]
     [Route("api/shift-track/organization/structure/units")]
     public class UnitsController : ApiController
     {
