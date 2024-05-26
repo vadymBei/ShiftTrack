@@ -1,15 +1,17 @@
 ﻿using Kernel.Controllers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Commands.DeleteShift;
-using ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Queries.GetShiftById;
-using ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Queries.GetShifts;
 using ShiftTrack.Core.Application.Organization.Timesheet.Common.ViewModels.Shifts;
 using ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Commands.CreateShift;
+using ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Commands.DeleteShift;
 using ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Commands.UpdateShift;
+using ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Queries.GetShiftById;
+using ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Queries.GetShifts;
 
 namespace ShiftTrack.API.Controllers.Timesheet
 {
-    [Route("api/timesheet/shifts")]
+    [Authorize]
+    [Route("api/shift-track/timesheet/shifts")]
     public class ShiftsController : ApiController
     {
         [HttpPost]

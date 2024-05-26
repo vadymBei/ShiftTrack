@@ -1,15 +1,17 @@
 ﻿using Kernel.Controllers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ShiftTrack.Core.Application.Organization.Structure.Positions.Commands.DeletePosition;
-using ShiftTrack.Core.Application.Organization.Structure.Positions.Queries.GetPositionById;
-using ShiftTrack.Core.Application.Organization.Structure.Positions.Queries.GetPositions;
 using ShiftTrack.Core.Application.Organization.Structure.Common.ViewModels;
 using ShiftTrack.Core.Application.Organization.Structure.Positions.Commands.CreatePosition;
+using ShiftTrack.Core.Application.Organization.Structure.Positions.Commands.DeletePosition;
 using ShiftTrack.Core.Application.Organization.Structure.Positions.Commands.UpdatePosition;
+using ShiftTrack.Core.Application.Organization.Structure.Positions.Queries.GetPositionById;
+using ShiftTrack.Core.Application.Organization.Structure.Positions.Queries.GetPositions;
 
 namespace ShiftTrack.API.Controllers.Organization.Structure
 {
-    [Route("api/organization/structure/positions")]
+    [Authorize]
+    [Route("api/shift-track/organization/structure/positions")]
     public class PositionsController : ApiController
     {
         [HttpPost]

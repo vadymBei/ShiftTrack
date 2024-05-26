@@ -1,15 +1,17 @@
 ﻿using Kernel.Controllers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ShiftTrack.Core.Application.Organization.Structure.Departments.Commands.DeleteDepartment;
-using ShiftTrack.Core.Application.Organization.Structure.Departments.Queries.GetDepartmentById;
-using ShiftTrack.Core.Application.Organization.Structure.Departments.Queries.GetDepartmentsByUnitId;
 using ShiftTrack.Core.Application.Organization.Structure.Common.ViewModels;
 using ShiftTrack.Core.Application.Organization.Structure.Departments.Commands.CreateDepartment;
+using ShiftTrack.Core.Application.Organization.Structure.Departments.Commands.DeleteDepartment;
 using ShiftTrack.Core.Application.Organization.Structure.Departments.Commands.UpdateDepartment;
+using ShiftTrack.Core.Application.Organization.Structure.Departments.Queries.GetDepartmentById;
+using ShiftTrack.Core.Application.Organization.Structure.Departments.Queries.GetDepartmentsByUnitId;
 
 namespace ShiftTrack.API.Controllers.Organization.Structure
 {
-    [Route("api/organization/structure/departments")]
+    [Authorize]
+    [Route("api/shift-track/organization/structure/departments")]
     public class DepartmentsController : ApiController
     {
         [HttpPost]

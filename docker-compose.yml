@@ -1,6 +1,20 @@
 version: '3.4'
 
 services:
+ gateway.web.api:
+    image: ${DOCKER_REGISTRY-}gateway-web-api
+    build:
+      context: .
+      dockerfile: src/Gateways/Gateway.Web.Api/Dockerfile
+    container_name: gateway-web-api
+    restart: always
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - TZ=Europe/Khmelnytskyi
+    ports:
+      - "11000:80"
+
  postgres-db:
     image: postgres:14
     container_name: postgres-db
@@ -9,6 +23,39 @@ services:
       - "10100:5432"
     environment:
       POSTGRES_PASSWORD: 123258
+
+ user.authentication.api:
+    image: ${DOCKER_REGISTRY-}user-authentication-api
+    build:
+      context: .
+      dockerfile: src/Services/User/Authentication/User.Authentication.Api/Dockerfile
+    container_name: user-authentication-api
+    restart: always
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - TZ=Europe/Khmelnytskyi
+    ports:
+      - "10101:80"
+    links:
+      - postgres-db
+      - user.authentication.server
+ 
+ user.authentication.server:
+    image: ${DOCKER_REGISTRY-}user-authentication-server
+    build:
+      context: .
+      dockerfile: src/Services/User/Authentication/User.Authentication.Server/Dockerfile
+    container_name: user-authentication-server
+    restart: always
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - TZ=Europe/Khmelnytskyi
+    ports:
+      - "10102:80"
+    links:
+      - postgres-db
 
  shifttrack.api:
     image: ${DOCKER_REGISTRY-}shifttrack-api
