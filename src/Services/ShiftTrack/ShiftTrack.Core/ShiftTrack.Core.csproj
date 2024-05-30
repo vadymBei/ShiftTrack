@@ -20,6 +20,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\..\Common\Authentication\ShiftTrack.Authentication\ShiftTrack.Authentication.csproj" />
+	  <ProjectReference Include="..\..\..\Common\Data\Data.WebClient\Data.WebClient.csproj" />
 	  <ProjectReference Include="..\..\..\Common\Data\Data\Data.csproj" />
 	  <ProjectReference Include="..\..\..\Common\Kernel\Kernel\Kernel.csproj" />
 	</ItemGroup>

@@ -1,14 +1,19 @@
-﻿using Kernel;
+﻿using Data.WebClient;
+using Kernel;
 using Kernel.Attributes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ShiftTrack.Authentication.Extensions;
 using ShiftTrack.Core.Application.Data.Common.Interfaces;
 using ShiftTrack.Core.Application.Organization.Structure.Common.Interfaces;
 using ShiftTrack.Core.Application.Organization.Structure.Common.Services;
 using ShiftTrack.Core.Application.Organization.Timesheet.Common.Interfaces;
 using ShiftTrack.Core.Application.Organization.Timesheet.Common.Services;
+using ShiftTrack.Core.Application.System.User.Common.Interfaces;
+using ShiftTrack.Core.Application.System.User.Common.Services;
 using ShiftTrack.Core.Infrastructure;
+using ShiftTrack.Core.Infrastructure.Repositories.System.User.Employees;
 
 namespace ShiftTrack.Core
 {
@@ -18,6 +23,10 @@ namespace ShiftTrack.Core
         public static IServiceCollection AddCoreServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddKernel();
+
+            services.AddWebClient(configuration);
+
+            services.AddCurrentUserService();
 
             services.AddDbContext<ApplicationDbContext>(options =>
                    options.UseNpgsql(
@@ -33,6 +42,11 @@ namespace ShiftTrack.Core
 
             //Organization timesheet
             services.AddTransient<IShiftService, ShiftService>();
+
+            //System user employees
+            services.AddTransient<IEmployeeService, EmployeeService>();
+
+            services.AddTransient<IAuthenticationRepository, AuthenticationRepository>();
 
             return services;
         }

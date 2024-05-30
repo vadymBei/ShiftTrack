@@ -3,7 +3,6 @@ using ShiftTrack.Core.Application.Organization.Timesheet.Common.ViewModels.Shift
 
 namespace ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Queries.GetShifts
 {
-    public class GetShiftsQuery : IRequest<IEnumerable<ShiftVM>>
-    {
-    }
+    public record GetShiftsQuery() 
+        : IRequest<IEnumerable<ShiftVM>>;
 }

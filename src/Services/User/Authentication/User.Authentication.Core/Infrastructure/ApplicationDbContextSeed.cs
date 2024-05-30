@@ -7,7 +7,7 @@ namespace User.Authentication.Core.Infrastructure
     {
         public static async Task SeedDefaultUserAsync(IUserService usersService)
         {
-            var adminExist = await usersService.CheckUserExist("admin@shifttrack.api");
+            var adminExist = await usersService.CheckUserExist("+380971234567");
 
             if (!adminExist)
             {
@@ -15,9 +15,8 @@ namespace User.Authentication.Core.Infrastructure
                     new UserToCreateDto
                     (
                         "admin@shifttrack.api",
-                        "Admin",
-                        "VZI2N]V[sn$NvFf",
-                        1
+                        "+380971234567",
+                        "VZI2N]V[sn$NvFf"
                     ));
             }
         }

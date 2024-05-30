@@ -18,13 +18,15 @@ namespace ShiftTrack.Core.Application.Organization.Timesheet.Common.Services
 
         public async Task<Shift> GetById(object id, CancellationToken cancellationToken)
         {
+            var shiftId = (long)id;
+
             var shift = await _applicationDbContext.Shifts
                 .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == (long)id, cancellationToken);
+                .FirstOrDefaultAsync(x => x.Id == shiftId, cancellationToken);
 
             if (shift == null)
             {
-                throw new EntityNotFoundException(typeof(Shift), (long)id);
+                throw new EntityNotFoundException(typeof(Shift), shiftId);
             }
 
             return shift;

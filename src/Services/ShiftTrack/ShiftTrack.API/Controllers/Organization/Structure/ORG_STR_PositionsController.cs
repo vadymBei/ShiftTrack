@@ -12,7 +12,7 @@ namespace ShiftTrack.API.Controllers.Organization.Structure
 {
     [Authorize]
     [Route("api/shift-track/organization/structure/positions")]
-    public class PositionsController : ApiController
+    public class ORG_STR_PositionsController : ApiController
     {
         [HttpPost]
         public async Task<PositionVM> CreatePosition(CreatePositionCommand command)
@@ -25,10 +25,7 @@ namespace ShiftTrack.API.Controllers.Organization.Structure
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePosition(long id)
         {
-            await Mediator.Send(new DeletePositionCommand()
-            {
-                Id = id
-            });
+            await Mediator.Send(new DeletePositionCommand(id));
 
             return Ok();
         }
@@ -39,9 +36,6 @@ namespace ShiftTrack.API.Controllers.Organization.Structure
 
         [HttpGet("{id}")]
         public async Task<PositionVM> GetPositionById(long id)
-            => await Mediator.Send(new GetPositionByIdQuery()
-            {
-                Id = id
-            });
+            => await Mediator.Send(new GetPositionByIdQuery(id));
     }
 }

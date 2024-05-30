@@ -18,18 +18,20 @@ namespace User.Authentication.Core.Application.Common.Services
             _userManager = userManager;
         }
 
-        public Task<bool> CheckUserExist(string email)
+        public Task<bool> CheckUserExist(string phoneNumber)
         {
-            return _userManager.Users.AnyAsync(x => x.Email == email);
+            return _userManager.Users.AnyAsync(x => x.PhoneNumber == phoneNumber);
         }
 
         public async Task<IdentityUser> CreateUser(UserToCreateDto dto)
         {
             var user = new IdentityUser()
             {
-                UserName = dto.Email,
+                UserName = dto.PhoneNumber,
+                PhoneNumber = dto.PhoneNumber,
                 Email = dto.Email
             };
+
             var result = await _userManager.CreateAsync(user, dto.Password);
 
             if (!result.Succeeded)

@@ -6,9 +6,13 @@ namespace User.Authentication.Core.Application.Users.Commands.CreateUser
     {
         public CreateUserCommandValidator()
         {
+            RuleFor(x => x.PhoneNumber)
+               .NotEmpty()
+                   .WithMessage("PhoneNumber is required.")
+               .Matches(@"^\+\d{1,3}\s?\d{1,14}(\s?\d{1,13})?$")
+                   .WithMessage("PhoneNumber must be a valid international phone number.");
+
             RuleFor(m => m.Email)
-                .NotEmpty()
-                    .WithMessage("Email is required")
                 .MaximumLength(64)
                     .WithMessage("Maximum length must be 64 symbols")
                 .EmailAddress()

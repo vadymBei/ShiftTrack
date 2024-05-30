@@ -4,8 +4,7 @@ using User.Authentication.Core.Application.Common.ViewModels;
 namespace User.Authentication.Core.Application.Users.Commands.CreateUser
 {
     public record CreateUserCommand(
-        long ProfileId, 
-        string Email, 
-        string FullName, 
+        string Email,
+        string PhoneNumber,
         string Password) : IRequest<UserVM>;
 }

@@ -2,7 +2,6 @@
 {
     public record UserToCreateDto(
         string Email,
-        string FullName,
-        string Password,
-        long ProfileId);
+        string PhoneNumber,
+        string Password);
 }

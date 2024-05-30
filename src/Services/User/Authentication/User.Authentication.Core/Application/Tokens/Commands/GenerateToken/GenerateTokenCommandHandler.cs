@@ -21,7 +21,7 @@ namespace User.Authentication.Core.Application.Tokens.Commands.GenerateToken
         public async Task<TokenVM> Handle(GenerateTokenCommand request, CancellationToken cancellationToken)
         {
             var token = await _tokenService
-                .GenerateToken(request.Login, request.Password, cancellationToken);
+                .GenerateToken(request.PhoneNumber, request.Password, cancellationToken);
 
             return _mapper.Map<TokenVM>(token);
         }
