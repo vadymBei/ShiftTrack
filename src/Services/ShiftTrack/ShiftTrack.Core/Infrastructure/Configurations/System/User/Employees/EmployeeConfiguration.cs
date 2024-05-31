@@ -13,6 +13,9 @@ namespace ShiftTrack.Core.Infrastructure.Configurations.System.User.Employees
             builder.HasIndex(c => c.Email)
                 .IsUnique();
 
+            builder.HasIndex(x => x.PhoneNumber)
+                .IsUnique();
+
             builder.HasIndex(x => x.IsDeleted);
 
             builder.HasQueryFilter(x => !x.IsDeleted);

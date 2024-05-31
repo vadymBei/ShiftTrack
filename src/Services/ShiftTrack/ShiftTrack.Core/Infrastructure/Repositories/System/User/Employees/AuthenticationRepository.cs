@@ -18,7 +18,7 @@ namespace ShiftTrack.Core.Infrastructure.Repositories.System.User.Employees
             _webClient.Configure(c =>
             {
                 c.WebResourcePath = "user-authentication-api/request-users";
-                c.ErrorHandlingMode = ErrorHandlingMode.Ignore;
+                c.ErrorHandlingMode = ErrorHandlingMode.Auto;
                 c.IgnoreSslErrors = false;
                 c.AuthenticationType = AuthenticationType.Basic;
             });
@@ -29,6 +29,15 @@ namespace ShiftTrack.Core.Infrastructure.Repositories.System.User.Employees
             var user = await _webClient
                 .WithStringContent(dto)
                 .Post<Authentication.Models.User>("register", cancellationToken);
+
+            return user;
+        }
+
+        public async Task<Authentication.Models.User> UpdateUser(UserToUpdateDto dto, CancellationToken cancellationToken)
+        {
+            var user = await _webClient
+                .WithStringContent(dto)
+                .Put<Authentication.Models.User>(null, cancellationToken);
 
             return user;
         }

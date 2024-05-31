@@ -35,7 +35,7 @@ builder.Services
         options.IdentityResources.AddEmail();
 
         options.IdentityResources.AddPhone();
-        
+
         options.IdentityResources.Add(new IdentityResource("role", new[] { "role" }));
 
         options.IdentityResources.Add(new IdentityResource("id", new[] { "id" }));

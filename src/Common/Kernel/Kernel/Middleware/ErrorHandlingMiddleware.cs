@@ -50,6 +50,20 @@ namespace Kernel.Middleware
                         break;
                     }
 
+                case KernelException userAlreadyExistException when (userAlreadyExistException is UserAlreadyExistException):
+                    {
+                        result = JsonConvert.SerializeObject(new KernelExceptionModel
+                        {
+                            Code = userAlreadyExistException.Code,
+                            ErrorMessage = userAlreadyExistException.ErrorMessage,
+                            ErrorType = userAlreadyExistException.ErrorType
+                        });
+
+                        statusCode = userAlreadyExistException.Code;
+
+                        break;
+                    }
+
                 // handle validation exceptions
                 case ValidationException validationException:
                     {

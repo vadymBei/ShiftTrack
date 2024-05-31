@@ -37,9 +37,14 @@ namespace ShiftTrack.Core.Application.System.User.Common.Services
             return employee;
         }
 
-        public Task<Authentication.Models.User> RegisterUser(UserToRegisterDto dto, CancellationToken cancellationToken)
+        public Task<Authentication.Models.User> RegisterAuthUser(UserToRegisterDto dto, CancellationToken cancellationToken)
         {
             return _authenticationRepository.RegisterUser(dto, cancellationToken);
+        }
+
+        public Task<Authentication.Models.User> UpdateAuthUser(UserToUpdateDto dto, CancellationToken cancellationToken)
+        {
+            return _authenticationRepository.UpdateUser(dto, cancellationToken);
         }
     }
 }

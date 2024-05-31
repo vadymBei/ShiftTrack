@@ -1,4 +1,5 @@
 ﻿using Kernel.Controllers;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShiftTrack.Core.Application.Organization.Structure.Common.ViewModels;
@@ -25,6 +26,8 @@ namespace ShiftTrack.API.Controllers.Organization.Structure
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePosition(long id)
         {
+            var idToken = await HttpContext.GetTokenAsync("Bearer");
+
             await Mediator.Send(new DeletePositionCommand(id));
 
             return Ok();

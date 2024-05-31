@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShiftTrack.Core.Application.System.User.Common.ViewModels;
 using ShiftTrack.Core.Application.System.User.Employees.Commands.CreateEmployee;
+using ShiftTrack.Core.Application.System.User.Employees.Commands.UpdateEmployee;
 using ShiftTrack.Core.Application.System.User.Employees.Queries.GetEmployeeById;
 using ShiftTrack.Core.Application.System.User.Employees.Queries.GetEmployees;
 
@@ -15,6 +16,10 @@ namespace ShiftTrack.API.Controllers.System.User.Employees
         [HttpPost]
         [AllowAnonymous]
         public async Task<EmployeeVM> CreateEmployee(CreateEmployeeCommand command)
+            => await Mediator.Send(command);
+
+        [HttpPut]
+        public async Task<EmployeeVM> UpdateEmployee(UpdateEmployeeCommand command)
             => await Mediator.Send(command);
 
         [HttpGet]

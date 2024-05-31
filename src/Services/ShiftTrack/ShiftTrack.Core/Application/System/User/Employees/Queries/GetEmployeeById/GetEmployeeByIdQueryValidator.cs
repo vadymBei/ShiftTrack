@@ -7,8 +7,10 @@ namespace ShiftTrack.Core.Application.System.User.Employees.Queries.GetEmployeeB
         public GetEmployeeByIdQueryValidator()
         {
             RuleFor(x => x.Id)
-              .NotNull()
-                  .WithMessage("Id is required");
+                .NotNull()
+                    .WithMessage("Id is required")
+                .GreaterThan(0)
+                    .WithMessage("Id must be greater than zero.");
         }
     }
 }

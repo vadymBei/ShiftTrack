@@ -8,8 +8,11 @@
 
 	<ItemGroup>
 		<PackageReference Include="IdentityModel" Version="7.0.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Http" Version="2.1.34" />
 		<PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="8.0.5" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\Kernel\Kernel\Kernel.csproj" />
 	</ItemGroup>
 
 </Project>

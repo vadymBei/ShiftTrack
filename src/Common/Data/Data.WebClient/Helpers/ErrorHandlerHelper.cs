@@ -14,9 +14,15 @@ namespace Data.WebClient.Helpers
             return handlingMode switch
             {
                 ErrorHandlingMode.Ignore => null,
-                ErrorHandlingMode.Manual => throw new WebClientException(responseMessage.StatusCode, string.IsNullOrEmpty(responseData) ? string.Empty : responseData),
-                ErrorHandlingMode.Auto => GetAutoException(responseMessage.StatusCode, responseData),
-                ErrorHandlingMode.Debug => throw new WebClientException(responseMessage.StatusCode, $"{JsonConvert.SerializeObject(responseMessage)}"),
+
+                ErrorHandlingMode.Manual => 
+                    throw new WebClientException(responseMessage.StatusCode, string.IsNullOrEmpty(responseData) ? string.Empty : responseData),
+
+                ErrorHandlingMode.Auto => 
+                    GetAutoException(responseMessage.StatusCode, responseData),
+
+                ErrorHandlingMode.Debug => 
+                    throw new WebClientException(responseMessage.StatusCode, $"{JsonConvert.SerializeObject(responseMessage)}"),
 
                 _ => throw new WebClientException(responseMessage.StatusCode, responseData),
             };

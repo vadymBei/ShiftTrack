@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Kernel.Exceptions;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Core.Application.Data.Common.Interfaces;
 using ShiftTrack.Core.Application.Organization.Structure.Common.Interfaces;
 using ShiftTrack.Core.Application.System.User.Common.Dtos;
@@ -30,6 +32,14 @@ namespace ShiftTrack.Core.Application.System.User.Employees.Commands.CreateEmplo
 
         public async Task<EmployeeVM> Handle(CreateEmployeeCommand request, CancellationToken cancellationToken)
         {
+            var employeeAlreadyExist = await _applicationDbContext.Employees
+                .AnyAsync(x => x.PhoneNumber == request.PhoneNumber, cancellationToken);
+
+            if (employeeAlreadyExist)
+            {
+                throw new UserAlreadyExistException(request.PhoneNumber);
+            }
+
             var employee = new Employee()
             {
                 Name = request.Name,
@@ -49,7 +59,7 @@ namespace ShiftTrack.Core.Application.System.User.Employees.Commands.CreateEmplo
                 employee.DepartmentId = request.DepartmentId;
             }
 
-            var user = await _userService.RegisterUser(
+            var user = await _userService.RegisterAuthUser(
                 new UserToRegisterDto(
                     employee.PhoneNumber,
                     employee.Email,
