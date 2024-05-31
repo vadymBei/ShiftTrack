@@ -12,7 +12,7 @@ namespace ShiftTrack.API.Controllers.Organization.Structure
 {
     [Authorize]
     [Route("api/shift-track/organization/structure/units")]
-    public class UnitsController : ApiController
+    public class ORG_STR_UnitsController : ApiController
     {
         [HttpPost]
         public async Task<UnitVM> CreateUnit(CreateUnitCommand command)

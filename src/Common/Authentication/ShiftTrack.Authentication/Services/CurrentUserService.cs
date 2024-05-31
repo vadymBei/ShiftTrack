@@ -15,11 +15,11 @@ namespace ShiftTrack.Authentication.Services
         {
             User = new User
             {
-                Id = httpContextAccessor.HttpContext?.User?.FindFirstValue(JwtClaimTypes.Id),
+                Id = httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier),
                 Login = httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier),
                 UserName = httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.Name),
                 Email = httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.Email),
-                PhoneNumber = httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.MobilePhone),
+                PhoneNumber = httpContextAccessor.HttpContext?.User?.FindFirstValue(JwtClaimTypes.PhoneNumber),
                 Roles = new List<string>()
             };
 

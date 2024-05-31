@@ -18,13 +18,15 @@ namespace ShiftTrack.Core.Application.Organization.Structure.Common.Services
 
         public async Task<Unit> GetById(object id, CancellationToken cancellationToken)
         {
+            var unitId = (long)id;
+
             var unit = await _dbContext.Units
                 .AsNoTracking()
                 .Include(x => x.Departments)
-                .FirstOrDefaultAsync(x => x.Id == (long)id, cancellationToken);
+                .FirstOrDefaultAsync(x => x.Id == unitId, cancellationToken);
 
             if (unit == null)
-                throw new EntityNotFoundException(typeof(Unit), (long)id);
+                throw new EntityNotFoundException(typeof(Unit), unitId);
 
             return unit;
         }

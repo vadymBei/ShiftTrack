@@ -1,4 +1,5 @@
 ﻿using Data.Interfaces;
+using ShiftTrack.Core.Domain.System.User.Employees.Entities;
 
 namespace ShiftTrack.Core.Domain.Organization.Structure.Entities
 {
@@ -14,5 +15,7 @@ namespace ShiftTrack.Core.Domain.Organization.Structure.Entities
 
         public long? UnitId { get; set; }
         public Unit Unit { get; set; }
+
+        public List<Employee> Employees { get; set; }
     }
 }

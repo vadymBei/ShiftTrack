@@ -8,11 +8,11 @@ using ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Commands.UpdateS
 using ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Queries.GetShiftById;
 using ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Queries.GetShifts;
 
-namespace ShiftTrack.API.Controllers.Timesheet
+namespace ShiftTrack.API.Controllers.Organization.Timesheet
 {
     [Authorize]
     [Route("api/shift-track/timesheet/shifts")]
-    public class ShiftsController : ApiController
+    public class ORG_TSH_ShiftsController : ApiController
     {
         [HttpPost]
         public async Task<ShiftVM> CreateShift(CreateShiftCommand command)
@@ -21,10 +21,7 @@ namespace ShiftTrack.API.Controllers.Timesheet
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteShift(long id)
         {
-            await Mediator.Send(new DeleteShiftCommand()
-            {
-                Id = id
-            });
+            await Mediator.Send(new DeleteShiftCommand(id));
 
             return Ok();
         }
@@ -39,9 +36,6 @@ namespace ShiftTrack.API.Controllers.Timesheet
 
         [HttpGet("{id}")]
         public async Task<ShiftVM> GetShiftById(long id)
-            => await Mediator.Send(new GetShiftByIdQuery()
-            {
-                Id = id
-            });
+            => await Mediator.Send(new GetShiftByIdQuery(id));
     }
 }

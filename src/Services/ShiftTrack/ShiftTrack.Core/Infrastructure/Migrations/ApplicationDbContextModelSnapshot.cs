@@ -22,7 +22,7 @@ namespace ShiftTrack.Core.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("ShiftTrack.Core.Domain.Modules.Organization.Structure.Entities.Department", b =>
+            modelBuilder.Entity("ShiftTrack.Core.Domain.Organization.Structure.Entities.Department", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -51,7 +51,7 @@ namespace ShiftTrack.Core.Infrastructure.Migrations
                     b.ToTable("Departments", (string)null);
                 });
 
-            modelBuilder.Entity("ShiftTrack.Core.Domain.Modules.Organization.Structure.Entities.Position", b =>
+            modelBuilder.Entity("ShiftTrack.Core.Domain.Organization.Structure.Entities.Position", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -78,7 +78,7 @@ namespace ShiftTrack.Core.Infrastructure.Migrations
                     b.ToTable("Positions", (string)null);
                 });
 
-            modelBuilder.Entity("ShiftTrack.Core.Domain.Modules.Organization.Structure.Entities.Unit", b =>
+            modelBuilder.Entity("ShiftTrack.Core.Domain.Organization.Structure.Entities.Unit", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -108,7 +108,7 @@ namespace ShiftTrack.Core.Infrastructure.Migrations
                     b.ToTable("Units", (string)null);
                 });
 
-            modelBuilder.Entity("ShiftTrack.Core.Domain.Modules.Organization.Timesheet.Shifts.Entities.Shift", b =>
+            modelBuilder.Entity("ShiftTrack.Core.Domain.Organization.Timesheet.Shifts.Entities.Shift", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -141,16 +141,89 @@ namespace ShiftTrack.Core.Infrastructure.Migrations
                     b.ToTable("Shifts", (string)null);
                 });
 
-            modelBuilder.Entity("ShiftTrack.Core.Domain.Modules.Organization.Structure.Entities.Department", b =>
+            modelBuilder.Entity("ShiftTrack.Core.Domain.System.User.Employees.Entities.Employee", b =>
                 {
-                    b.HasOne("ShiftTrack.Core.Domain.Modules.Organization.Structure.Entities.Unit", "Unit")
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime?>("DateOfBirth")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("DepartmentId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<int>("Gender")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<string>("Patronymic")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasMaxLength(13)
+                        .HasColumnType("character varying(13)");
+
+                    b.Property<string>("Surname")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("IsDeleted");
+
+                    b.HasIndex("PhoneNumber")
+                        .IsUnique();
+
+                    b.ToTable("Profiles", (string)null);
+                });
+
+            modelBuilder.Entity("ShiftTrack.Core.Domain.Organization.Structure.Entities.Department", b =>
+                {
+                    b.HasOne("ShiftTrack.Core.Domain.Organization.Structure.Entities.Unit", "Unit")
                         .WithMany("Departments")
                         .HasForeignKey("UnitId");
 
                     b.Navigation("Unit");
                 });
 
-            modelBuilder.Entity("ShiftTrack.Core.Domain.Modules.Organization.Structure.Entities.Unit", b =>
+            modelBuilder.Entity("ShiftTrack.Core.Domain.System.User.Employees.Entities.Employee", b =>
+                {
+                    b.HasOne("ShiftTrack.Core.Domain.Organization.Structure.Entities.Department", "Department")
+                        .WithMany("Employees")
+                        .HasForeignKey("DepartmentId");
+
+                    b.Navigation("Department");
+                });
+
+            modelBuilder.Entity("ShiftTrack.Core.Domain.Organization.Structure.Entities.Department", b =>
+                {
+                    b.Navigation("Employees");
+                });
+
+            modelBuilder.Entity("ShiftTrack.Core.Domain.Organization.Structure.Entities.Unit", b =>
                 {
                     b.Navigation("Departments");
                 });

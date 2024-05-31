@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using User.Authentication.Core;
+using User.Authentication.Core.Application.Common.Interfaces;
 using User.Authentication.Core.Infrastructure;
 using User.Authentication.Core.Infrastructure.OAuth.ApiResources;
 using User.Authentication.Core.Infrastructure.OAuth.Clients;
@@ -33,6 +34,8 @@ builder.Services
 
         options.IdentityResources.AddEmail();
 
+        options.IdentityResources.AddPhone();
+
         options.IdentityResources.Add(new IdentityResource("role", new[] { "role" }));
 
         options.IdentityResources.Add(new IdentityResource("id", new[] { "id" }));
@@ -48,6 +51,10 @@ using (var scope = app.Services.CreateScope())
 {
     var dataContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     dataContext.Database.Migrate();
+
+    var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
+
+    await ApplicationDbContextSeed.SeedDefaultUserAsync(userService);
 }
 
 app.UseAuthentication();

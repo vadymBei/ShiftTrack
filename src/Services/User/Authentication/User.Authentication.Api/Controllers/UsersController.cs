@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using User.Authentication.Core.Application.Common.ViewModels;
 using User.Authentication.Core.Application.Users.Commands.CreateUser;
+using User.Authentication.Core.Application.Users.Commands.UpdateUser;
 
 namespace User.Authentication.Api.Controllers
 {
@@ -12,6 +13,10 @@ namespace User.Authentication.Api.Controllers
     {
         [HttpPost("register")]
         public async Task<UserVM> CreateUser(CreateUserCommand command)
+            => await Mediator.Send(command);
+
+        [HttpPut]
+        public async Task<UserVM> UpdateUser(UpdateUserCommand command)
             => await Mediator.Send(command);
     }
 }

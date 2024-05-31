@@ -21,15 +21,13 @@ namespace User.Authentication.Core.Application.Users.Commands.CreateUser
 
         public async Task<UserVM> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
-            var result = await _userService
-                .CreateUser(
-                    new UserToCreateDto
-                    (
-                        request.Email,
-                        request.FullName,
-                        request.Password,
-                        request.ProfileId
-                    ));
+            var result = await _userService.CreateUser(
+                new UserToCreateDto
+                (
+                    request.Email,
+                    request.PhoneNumber,
+                    request.Password
+                ));
 
             return _mapper.Map<UserVM>(result);
         }
