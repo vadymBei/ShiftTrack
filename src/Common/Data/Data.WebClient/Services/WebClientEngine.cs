@@ -74,76 +74,93 @@ namespace Data.WebClient.Services
 
         public async Task<T> Get<T>(string endpoint, CancellationToken cancellationToken) where T : class
         {
-            // get response
             var url = Configuration.RequestUri + endpoint + Configuration.QueryString;
 
             var response = await HttpClient.GetAsync(url, cancellationToken);
 
-            var responseData = await response.Content.ReadAsStringAsync(cancellationToken);
-
-            // process response
             if (!response.IsSuccessStatusCode)
             {
-                return ErrorHandlerHelper.HandleError(response, responseData, Configuration.ErrorHandlingMode) as T;
+                return ErrorHandlerHelper.HandleError(
+                    response, 
+                    await response.Content.ReadAsStringAsync(cancellationToken), 
+                    Configuration.ErrorHandlingMode) as T;
             }
 
-            return JsonConvert.DeserializeObject<T>(responseData);
+            return typeof(T) switch
+            {
+                _ when typeof(T) == typeof(EmptyResponse) => null,
+                _ when typeof(T) == typeof(string) => await response.Content.ReadAsStringAsync(cancellationToken) as T,
+                _ when typeof(T) == typeof(Stream) => await response.Content.ReadAsStreamAsync(cancellationToken) as T,
+                _ when typeof(T) == typeof(byte[]) => await response.Content.ReadAsByteArrayAsync(cancellationToken) as T,
+                _ => JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync(cancellationToken))
+            };
         }
 
         public async Task Get(string endpoint, CancellationToken cancellationToken)
         {
-            await Get<object>(endpoint, cancellationToken);
+            await Get<EmptyResponse>(endpoint, cancellationToken);
         }
 
         public async Task<T> Post<T>(string endpoint, CancellationToken cancellationToken) where T : class
         {
-            // post response
             var url = Configuration.RequestUri + endpoint + Configuration.QueryString;
 
             var response = await HttpClient.PostAsync(url, Configuration.HttpContent, cancellationToken);
 
-            var responseData = await response.Content.ReadAsStringAsync(cancellationToken);
-
-            // process response
             if (!response.IsSuccessStatusCode)
             {
-                return ErrorHandlerHelper.HandleError(response, responseData, Configuration.ErrorHandlingMode) as T;
+                return ErrorHandlerHelper.HandleError(
+                    response, 
+                    await response.Content.ReadAsStringAsync(cancellationToken),
+                    Configuration.ErrorHandlingMode) as T;
             }
 
-            return JsonConvert.DeserializeObject<T>(responseData);
+            return typeof(T) switch
+            {
+                _ when typeof(T) == typeof(EmptyResponse)=> null,
+                _ when typeof(T) == typeof(string) => await response.Content.ReadAsStringAsync(cancellationToken) as T,
+                _ when typeof(T) == typeof(Stream) => await response.Content.ReadAsStreamAsync(cancellationToken) as T,
+                _ when typeof(T) == typeof(byte[]) => await response.Content.ReadAsByteArrayAsync(cancellationToken) as T,
+                _ => JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync(cancellationToken))
+            };
         }
 
         public async Task Post(string endpoint, CancellationToken cancellationToken)
         {
-            await Post<object>(endpoint, cancellationToken);
+            await Post<EmptyResponse>(endpoint, cancellationToken);
         }
 
         public async Task<T> Put<T>(string endpoint, CancellationToken cancellationToken) where T : class
         {
-            // put response
             var url = Configuration.RequestUri + endpoint + Configuration.QueryString;
 
             var response = await HttpClient.PutAsync(url, Configuration.HttpContent, cancellationToken);
 
-            var responseData = await response.Content.ReadAsStringAsync(cancellationToken);
-
-            // process response
             if (!response.IsSuccessStatusCode)
             {
-                return ErrorHandlerHelper.HandleError(response, responseData, Configuration.ErrorHandlingMode) as T;
+                return ErrorHandlerHelper.HandleError(
+                    response,
+                    await response.Content.ReadAsStringAsync(cancellationToken), 
+                    Configuration.ErrorHandlingMode) as T;
             }
 
-            return JsonConvert.DeserializeObject<T>(responseData);
+            return typeof(T) switch
+            {
+                _ when typeof(T) == typeof(EmptyResponse) => null,
+                _ when typeof(T) == typeof(string) => await response.Content.ReadAsStringAsync(cancellationToken) as T,
+                _ when typeof(T) == typeof(Stream) => await response.Content.ReadAsStreamAsync(cancellationToken) as T,
+                _ when typeof(T) == typeof(byte[]) => await response.Content.ReadAsByteArrayAsync(cancellationToken) as T,
+                _ => JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync(cancellationToken))
+            };
         }
 
         public async Task Put(string endpoint, CancellationToken cancellationToken)
         {
-            await Put<object>(endpoint, cancellationToken);
+            await Put<EmptyResponse>(endpoint, cancellationToken);
         }
 
         public async Task<T> Delete<T>(string endpoint, CancellationToken cancellationToken) where T : class
         {
-            // delete response
             var url = Configuration.RequestUri + endpoint + Configuration.QueryString;
 
             HttpResponseMessage response;
@@ -162,20 +179,27 @@ namespace Data.WebClient.Services
                 cancellationToken);
             }
 
-            var responseData = await response.Content.ReadAsStringAsync(cancellationToken);
-
-            // process response
             if (!response.IsSuccessStatusCode)
             {
-                return ErrorHandlerHelper.HandleError(response, responseData, Configuration.ErrorHandlingMode) as T;
+                return ErrorHandlerHelper.HandleError(
+                    response, 
+                    await response.Content.ReadAsStringAsync(cancellationToken), 
+                    Configuration.ErrorHandlingMode) as T;
             }
 
-            return JsonConvert.DeserializeObject<T>(responseData);
+            return typeof(T) switch
+            {
+                _ when typeof(T) == typeof(EmptyResponse) => null,
+                _ when typeof(T) == typeof(string) => await response.Content.ReadAsStringAsync(cancellationToken) as T,
+                _ when typeof(T) == typeof(Stream) => await response.Content.ReadAsStreamAsync(cancellationToken) as T,
+                _ when typeof(T) == typeof(byte[]) => await response.Content.ReadAsByteArrayAsync(cancellationToken) as T,
+                _ => JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync(cancellationToken))
+            };
         }
 
         public async Task Delete(string endpoint, CancellationToken cancellationToken)
         {
-            await Delete<object>(endpoint, cancellationToken);
+            await Delete<EmptyResponse>(endpoint, cancellationToken);
         }
     }
 }
