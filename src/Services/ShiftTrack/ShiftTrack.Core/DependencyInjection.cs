@@ -1,6 +1,4 @@
 ﻿using Data.WebClient;
-using Kernel;
-using Kernel.Attributes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +12,8 @@ using ShiftTrack.Core.Application.System.User.Common.Interfaces;
 using ShiftTrack.Core.Application.System.User.Common.Services;
 using ShiftTrack.Core.Infrastructure;
 using ShiftTrack.Core.Infrastructure.Repositories.System.User.Employees;
+using ShiftTrack.Kernel;
+using ShiftTrack.Kernel.Attributes;
 
 namespace ShiftTrack.Core
 {

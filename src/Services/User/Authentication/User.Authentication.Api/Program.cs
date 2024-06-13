@@ -1,7 +1,7 @@
-using Kernel.Extensions;
 using ShiftTrack.Authentication.Basic;
 using ShiftTrack.Authentication.Basic.Extensions;
 using ShiftTrack.Authentication.Identity;
+using ShiftTrack.Kernel.Extensions;
 using System.Reflection;
 using User.Authentication.Core;
 using User.Authentication.Core.Infrastructure;

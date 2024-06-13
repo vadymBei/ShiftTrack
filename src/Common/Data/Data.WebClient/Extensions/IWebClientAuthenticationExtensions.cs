@@ -1,6 +1,6 @@
 ﻿using Data.WebClient.Helpers;
 using Data.WebClient.Interfaces;
-using Kernel.Exceptions;
+using ShiftTrack.Kernel.Exceptions;
 using System.Net.Http.Headers;
 
 namespace Data.WebClient.Extensions

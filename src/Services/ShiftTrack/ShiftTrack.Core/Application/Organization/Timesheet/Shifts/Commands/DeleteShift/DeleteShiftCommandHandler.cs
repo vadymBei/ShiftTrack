@@ -1,8 +1,8 @@
-﻿using Kernel.Exceptions;
-using MediatR;
+﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Core.Application.Data.Common.Interfaces;
 using ShiftTrack.Core.Domain.Organization.Timesheet.Shifts.Entities;
+using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Commands.DeleteShift
 {

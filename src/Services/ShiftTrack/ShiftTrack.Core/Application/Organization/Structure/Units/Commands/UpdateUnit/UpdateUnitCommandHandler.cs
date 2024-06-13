@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using Kernel.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Core.Application.Data.Common.Interfaces;
 using ShiftTrack.Core.Application.Organization.Structure.Common.Interfaces;
 using ShiftTrack.Core.Application.Organization.Structure.Common.ViewModels;
+using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Core.Application.Organization.Structure.Units.Commands.UpdateUnit
 {

@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Kernel.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Authentication.Interfaces;
@@ -9,6 +8,7 @@ using ShiftTrack.Core.Application.System.User.Common.Dtos;
 using ShiftTrack.Core.Application.System.User.Common.Interfaces;
 using ShiftTrack.Core.Application.System.User.Common.ViewModels;
 using ShiftTrack.Core.Domain.System.User.Employees.Entities;
+using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Core.Application.System.User.Employees.Commands.UpdateEmployee
 {

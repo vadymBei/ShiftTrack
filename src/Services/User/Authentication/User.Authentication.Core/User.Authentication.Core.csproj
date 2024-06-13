@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Common\Authentication\ShiftTrack.Authentication.Identity\ShiftTrack.Authentication.Identity.csproj" />
-    <ProjectReference Include="..\..\..\..\Common\Kernel\Kernel\Kernel.csproj" />
+    <ProjectReference Include="..\..\..\..\Common\Kernel\ShiftTrack.Kernel\ShiftTrack.Kernel.csproj" />
   </ItemGroup>
 
   <ItemGroup>

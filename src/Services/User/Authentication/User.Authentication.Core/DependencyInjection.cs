@@ -1,8 +1,8 @@
-﻿using Kernel;
-using Kernel.Attributes;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ShiftTrack.Kernel;
+using ShiftTrack.Kernel.Attributes;
 using User.Authentication.Core.Application.Common.Interfaces;
 using User.Authentication.Core.Application.Common.Services;
 using User.Authentication.Core.Domain.Options;

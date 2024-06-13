@@ -1,11 +1,11 @@
-﻿using Kernel.Controllers;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShiftTrack.Core.Application.System.User.Common.ViewModels;
 using ShiftTrack.Core.Application.System.User.Employees.Commands.CreateEmployee;
 using ShiftTrack.Core.Application.System.User.Employees.Commands.UpdateEmployee;
 using ShiftTrack.Core.Application.System.User.Employees.Queries.GetEmployeeById;
 using ShiftTrack.Core.Application.System.User.Employees.Queries.GetEmployees;
+using ShiftTrack.Kernel.Controllers;
 
 namespace ShiftTrack.API.Controllers.System.User.Employees
 {

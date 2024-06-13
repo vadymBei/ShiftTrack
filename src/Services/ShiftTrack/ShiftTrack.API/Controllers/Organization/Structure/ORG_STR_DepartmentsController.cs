@@ -1,5 +1,4 @@
-﻿using Kernel.Controllers;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShiftTrack.Core.Application.Organization.Structure.Common.ViewModels;
 using ShiftTrack.Core.Application.Organization.Structure.Departments.Commands.CreateDepartment;
@@ -7,6 +6,7 @@ using ShiftTrack.Core.Application.Organization.Structure.Departments.Commands.De
 using ShiftTrack.Core.Application.Organization.Structure.Departments.Commands.UpdateDepartment;
 using ShiftTrack.Core.Application.Organization.Structure.Departments.Queries.GetDepartmentById;
 using ShiftTrack.Core.Application.Organization.Structure.Departments.Queries.GetDepartmentsByUnitId;
+using ShiftTrack.Kernel.Controllers;
 
 namespace ShiftTrack.API.Controllers.Organization.Structure
 {

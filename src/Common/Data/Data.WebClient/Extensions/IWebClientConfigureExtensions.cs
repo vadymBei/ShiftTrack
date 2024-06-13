@@ -2,7 +2,7 @@
 using Data.WebClient.Interfaces;
 using Data.WebClient.Models;
 using Data.WebClient.Options;
-using Kernel.Exceptions;
+using ShiftTrack.Kernel.Exceptions;
 
 namespace Data.WebClient.Extensions
 {

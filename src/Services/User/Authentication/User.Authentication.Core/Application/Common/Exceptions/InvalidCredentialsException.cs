@@ -1,4 +1,4 @@
-﻿using Kernel.Exceptions;
+﻿using ShiftTrack.Kernel.Exceptions;
 using System.Net;
 
 namespace User.Authentication.Core.Application.Common.Exceptions

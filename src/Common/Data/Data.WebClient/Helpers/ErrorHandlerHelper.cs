@@ -1,8 +1,8 @@
 ﻿using Data.WebClient.Enums;
 using Data.WebClient.Exceptions;
-using Kernel.Constants;
-using Kernel.Exceptions;
 using Newtonsoft.Json;
+using ShiftTrack.Kernel.Constants;
+using ShiftTrack.Kernel.Exceptions;
 using System.Net;
 
 namespace Data.WebClient.Helpers

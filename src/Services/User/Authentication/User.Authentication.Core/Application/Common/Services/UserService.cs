@@ -1,6 +1,6 @@
-﻿using Kernel.Exceptions;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using ShiftTrack.Kernel.Exceptions;
 using User.Authentication.Core.Application.Common.Dto;
 using User.Authentication.Core.Application.Common.Exceptions;
 using User.Authentication.Core.Application.Common.Interfaces;

@@ -1,5 +1,5 @@
-﻿using Kernel.Constants;
-using Kernel.Exceptions;
+﻿using ShiftTrack.Kernel.Constants;
+using ShiftTrack.Kernel.Exceptions;
 using System.Net;
 
 namespace Data.WebClient.Exceptions

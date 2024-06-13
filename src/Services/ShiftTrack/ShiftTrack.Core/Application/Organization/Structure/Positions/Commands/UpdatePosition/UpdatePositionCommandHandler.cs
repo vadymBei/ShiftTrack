@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using Kernel.Exceptions;
 using MediatR;
 using ShiftTrack.Core.Application.Data.Common.Interfaces;
 using ShiftTrack.Core.Application.Organization.Structure.Common.ViewModels;
 using ShiftTrack.Core.Domain.Organization.Structure.Entities;
+using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Core.Application.Organization.Structure.Positions.Commands.UpdatePosition
 {
