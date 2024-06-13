@@ -1,4 +1,4 @@
-﻿namespace Data.Interfaces
+﻿namespace ShiftTrack.Data.Interfaces
 {
     public interface ISoftDeletable
     {

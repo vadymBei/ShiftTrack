@@ -22,7 +22,7 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\..\..\Common\Authentication\ShiftTrack.Authentication\ShiftTrack.Authentication.csproj" />
 	  <ProjectReference Include="..\..\..\Common\Data\Data.WebClient\Data.WebClient.csproj" />
-	  <ProjectReference Include="..\..\..\Common\Data\Data\Data.csproj" />
+	  <ProjectReference Include="..\..\..\Common\Data\ShiftTrack.Data\ShiftTrack.Data.csproj" />
 	  <ProjectReference Include="..\..\..\Common\Kernel\ShiftTrack.Kernel\ShiftTrack.Kernel.csproj" />
 	</ItemGroup>
 

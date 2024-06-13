@@ -1,4 +1,4 @@
-﻿using Data.Interfaces;
+﻿using ShiftTrack.Data.Interfaces;
 
 namespace ShiftTrack.Core.Domain.Organization.Structure.Entities
 {

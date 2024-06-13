@@ -1,6 +1,6 @@
-﻿using Data.Interfaces;
-using ShiftTrack.Core.Domain.Organization.Structure.Entities;
+﻿using ShiftTrack.Core.Domain.Organization.Structure.Entities;
 using ShiftTrack.Core.Domain.System.User.Employees.Enums;
+using ShiftTrack.Data.Interfaces;
 
 namespace ShiftTrack.Core.Domain.System.User.Employees.Entities
 {

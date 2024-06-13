@@ -1,7 +1,7 @@
-﻿using Data.Interfaces;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using ShiftTrack.Data.Interfaces;
 
 namespace ShiftTrack.Core.Infrastructure.Interceptors
 {

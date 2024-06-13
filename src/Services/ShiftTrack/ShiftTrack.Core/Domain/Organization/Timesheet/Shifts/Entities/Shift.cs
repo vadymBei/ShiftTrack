@@ -1,5 +1,5 @@
-﻿using Data.Interfaces;
-using ShiftTrack.Core.Domain.Organization.Timesheet.Shifts.Enums;
+﻿using ShiftTrack.Core.Domain.Organization.Timesheet.Shifts.Enums;
+using ShiftTrack.Data.Interfaces;
 
 namespace ShiftTrack.Core.Domain.Organization.Timesheet.Shifts.Entities
 {
