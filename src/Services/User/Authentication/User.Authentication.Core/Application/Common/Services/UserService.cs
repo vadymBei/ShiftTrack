@@ -21,7 +21,8 @@ namespace User.Authentication.Core.Application.Common.Services
 
         public async Task<bool> CheckUserExist(string phoneNumber)
         {
-            return await _userManager.Users.AnyAsync(x => x.PhoneNumber == phoneNumber);
+            return await _userManager.Users
+                .AnyAsync(x => x.PhoneNumber == phoneNumber);
         }
 
         public async Task<EntityUser> CreateUser(UserToCreateDto dto)
@@ -51,9 +52,23 @@ namespace User.Authentication.Core.Application.Common.Services
             return user;
         }
 
+        public async Task<EntityUser> GetById(object id, CancellationToken cancellationToken)
+        {
+            var user = await _userManager
+                .FindByIdAsync((string)id);
+
+            if (user == null)
+            {
+                throw new EntityNotFoundException(typeof(EntityUser), (string)id);
+            }
+
+            return user;
+        }
+
         public async Task<EntityUser> UpdateUser(UserToUpdateDto dto)
         {
-            var user = await _userManager.FindByIdAsync(dto.Id);
+            var user = await _userManager
+                .FindByIdAsync(dto.Id);
 
             if (user == null)
             {
@@ -64,14 +79,16 @@ namespace User.Authentication.Core.Application.Common.Services
             user.PhoneNumber = dto.PhoneNumber;
             user.Email = dto.Email;
 
-            var result = await _userManager.UpdateAsync(user);
+            var result = await _userManager
+                .UpdateAsync(user);
 
             if (!result.Succeeded)
             {
                 throw new UpdateUserException(result.Errors?.FirstOrDefault()?.Description);
             }
 
-            return await _userManager.FindByIdAsync(dto.Id);
+            return await _userManager
+                .FindByIdAsync(dto.Id);
         }
     }
 }

@@ -27,9 +27,13 @@ namespace User.Authentication.Core
 
             services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
 
+            //Services
             services.AddTransient<ITokenService, TokenService>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IUserRoleService, UserRoleService>();
+            services.AddTransient<IRoleService, RoleService>();
 
+            //Repositories
             services.AddTransient<ITokenRepository, TokenRepository>();
 
             return services;

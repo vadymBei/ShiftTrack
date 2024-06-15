@@ -38,8 +38,7 @@ namespace ShiftTrack.Core.Application.System.User.Employees.Commands.UpdateEmplo
 
             RuleFor(x => x.DepartmentId)
                 .GreaterThan(0)
-                    .When(x => x.DepartmentId.HasValue)
-                        .WithMessage("DepartmentId must be greater than zero.");
+                    .WithMessage("DepartmentId must be greater than zero.");
 
             RuleFor(x => x.DateOfBirth)
                 .LessThan(DateTime.Now)
