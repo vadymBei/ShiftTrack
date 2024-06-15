@@ -1,5 +1,4 @@
-﻿using Kernel.Controllers;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShiftTrack.Core.Application.Organization.Structure.Common.ViewModels;
 using ShiftTrack.Core.Application.Organization.Structure.Units.Commands.CreateUnit;
@@ -7,6 +6,7 @@ using ShiftTrack.Core.Application.Organization.Structure.Units.Commands.DeleteUn
 using ShiftTrack.Core.Application.Organization.Structure.Units.Commands.UpdateUnit;
 using ShiftTrack.Core.Application.Organization.Structure.Units.Queries.GetUnitById;
 using ShiftTrack.Core.Application.Organization.Structure.Units.Queries.GetUnits;
+using ShiftTrack.Kernel.Controllers;
 
 namespace ShiftTrack.API.Controllers.Organization.Structure
 {

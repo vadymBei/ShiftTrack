@@ -181,6 +181,9 @@ namespace ShiftTrack.Core.Infrastructure.Migrations
                         .HasMaxLength(13)
                         .HasColumnType("character varying(13)");
 
+                    b.Property<long?>("PositionId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Surname")
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)");
@@ -196,6 +199,8 @@ namespace ShiftTrack.Core.Infrastructure.Migrations
 
                     b.HasIndex("PhoneNumber")
                         .IsUnique();
+
+                    b.HasIndex("PositionId");
 
                     b.ToTable("Profiles", (string)null);
                 });
@@ -215,7 +220,13 @@ namespace ShiftTrack.Core.Infrastructure.Migrations
                         .WithMany("Employees")
                         .HasForeignKey("DepartmentId");
 
+                    b.HasOne("ShiftTrack.Core.Domain.Organization.Structure.Entities.Position", "Position")
+                        .WithMany()
+                        .HasForeignKey("PositionId");
+
                     b.Navigation("Department");
+
+                    b.Navigation("Position");
                 });
 
             modelBuilder.Entity("ShiftTrack.Core.Domain.Organization.Structure.Entities.Department", b =>

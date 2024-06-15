@@ -20,7 +20,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\Common\Authentication\ShiftTrack.Authentication.Bearer\ShiftTrack.Authentication.Bearer.csproj" />
-		<ProjectReference Include="..\..\..\Common\Kernel\Kernel\Kernel.csproj" />
 		<ProjectReference Include="..\ShiftTrack.Core\ShiftTrack.Core.csproj" />
 	</ItemGroup>
 

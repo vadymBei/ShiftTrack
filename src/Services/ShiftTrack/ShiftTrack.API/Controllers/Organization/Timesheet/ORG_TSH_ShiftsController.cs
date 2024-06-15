@@ -1,5 +1,4 @@
-﻿using Kernel.Controllers;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShiftTrack.Core.Application.Organization.Timesheet.Common.ViewModels.Shifts;
 using ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Commands.CreateShift;
@@ -7,6 +6,7 @@ using ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Commands.DeleteS
 using ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Commands.UpdateShift;
 using ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Queries.GetShiftById;
 using ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Queries.GetShifts;
+using ShiftTrack.Kernel.Controllers;
 
 namespace ShiftTrack.API.Controllers.Organization.Timesheet
 {

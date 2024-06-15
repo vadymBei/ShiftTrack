@@ -54,7 +54,14 @@ using (var scope = app.Services.CreateScope())
 
     var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
 
-    await ApplicationDbContextSeed.SeedDefaultUserAsync(userService);
+    var roleService = scope.ServiceProvider.GetRequiredService<IRoleService>();
+
+    var userRoleService = scope.ServiceProvider.GetRequiredService<IUserRoleService>();
+
+    await ApplicationDbContextSeed.SeedDefaultUserAsync(
+        userService,
+        roleService,
+        userRoleService);
 }
 
 app.UseAuthentication();

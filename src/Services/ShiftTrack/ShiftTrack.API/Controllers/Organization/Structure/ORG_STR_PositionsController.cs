@@ -1,6 +1,4 @@
-﻿using Kernel.Controllers;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShiftTrack.Core.Application.Organization.Structure.Common.ViewModels;
 using ShiftTrack.Core.Application.Organization.Structure.Positions.Commands.CreatePosition;
@@ -8,6 +6,7 @@ using ShiftTrack.Core.Application.Organization.Structure.Positions.Commands.Dele
 using ShiftTrack.Core.Application.Organization.Structure.Positions.Commands.UpdatePosition;
 using ShiftTrack.Core.Application.Organization.Structure.Positions.Queries.GetPositionById;
 using ShiftTrack.Core.Application.Organization.Structure.Positions.Queries.GetPositions;
+using ShiftTrack.Kernel.Controllers;
 
 namespace ShiftTrack.API.Controllers.Organization.Structure
 {
@@ -26,8 +25,6 @@ namespace ShiftTrack.API.Controllers.Organization.Structure
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePosition(long id)
         {
-            var idToken = await HttpContext.GetTokenAsync("Bearer");
-
             await Mediator.Send(new DeletePositionCommand(id));
 
             return Ok();

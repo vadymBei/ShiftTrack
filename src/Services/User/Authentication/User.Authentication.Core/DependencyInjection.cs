@@ -1,8 +1,8 @@
-﻿using Kernel;
-using Kernel.Attributes;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ShiftTrack.Kernel;
+using ShiftTrack.Kernel.Attributes;
 using User.Authentication.Core.Application.Common.Interfaces;
 using User.Authentication.Core.Application.Common.Services;
 using User.Authentication.Core.Domain.Options;
@@ -27,9 +27,13 @@ namespace User.Authentication.Core
 
             services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
 
+            //Services
             services.AddTransient<ITokenService, TokenService>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IUserRoleService, UserRoleService>();
+            services.AddTransient<IRoleService, RoleService>();
 
+            //Repositories
             services.AddTransient<ITokenRepository, TokenRepository>();
 
             return services;

@@ -1,5 +1,5 @@
-﻿using Data.Interfaces;
-using ShiftTrack.Core.Domain.System.User.Employees.Entities;
+﻿using ShiftTrack.Core.Domain.System.User.Employees.Entities;
+using ShiftTrack.Data.Interfaces;
 
 namespace ShiftTrack.Core.Domain.Organization.Structure.Entities
 {

@@ -1,6 +1,6 @@
-﻿using Kernel.Controllers;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ShiftTrack.Kernel.Controllers;
 using User.Authentication.Core.Application.Common.ViewModels;
 using User.Authentication.Core.Application.Tokens.Commands.GenerateToken;
 using User.Authentication.Core.Application.Tokens.Commands.RefreshToken;

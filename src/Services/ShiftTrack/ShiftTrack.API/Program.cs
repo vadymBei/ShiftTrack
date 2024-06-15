@@ -1,4 +1,3 @@
-using Kernel.Extensions;
 using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Authentication.Bearer;
 using ShiftTrack.Authentication.Bearer.Extensions;
@@ -6,6 +5,7 @@ using ShiftTrack.Core;
 using ShiftTrack.Core.Infrastructure;
 using System.Reflection;
 using System.Text.Json.Serialization;
+using ShiftTrack.Kernel.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
