@@ -1,4 +1,5 @@
 ﻿using ShiftTrack.WebClient.Http.Interfaces;
+using System.Text;
 
 namespace ShiftTrack.WebClient.Http.Extensions
 {
@@ -53,16 +54,23 @@ namespace ShiftTrack.WebClient.Http.Extensions
             return webClient;
         }
 
-        public static IWebClient Auth(this IWebClient webClient, string token)
+        public static IWebClient Authentication(this IWebClient webClient, string token)
         {
             webClient.Configuration.Auth.SetToken(token);
 
             return webClient;
         }
 
-        public static IWebClient Auth(this IWebClient webClient)
+        public static IWebClient Authentication(this IWebClient webClient)
         {
             webClient.Configuration.Auth.SetToken();
+
+            return webClient;
+        }
+
+        public static IWebClient BasicAuthentication(this IWebClient webClient, string pattern)
+        {
+            webClient.Configuration.Auth.SetBasicToken(pattern);
 
             return webClient;
         }

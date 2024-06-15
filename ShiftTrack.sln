@@ -41,8 +41,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gateways", "Gateways", "{08
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShiftTrack.Authentication.Bearer", "src\Common\Authentication\ShiftTrack.Authentication.Bearer\ShiftTrack.Authentication.Bearer.csproj", "{171D433D-8869-4165-8D09-DB3AABF45FC9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data.WebClient", "src\Common\Data\Data.WebClient\Data.WebClient.csproj", "{9ACD70F7-CA7B-46E4-83FF-9CB544137BA3}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShiftTrack.Authentication.Basic", "src\Common\Authentication\ShiftTrack.Authentication.Basic\ShiftTrack.Authentication.Basic.csproj", "{269EFF57-6897-40C8-919F-26D31EB4A1E6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gateway.Web.Api", "src\Gateways\Gateway.Web.Api\Gateway.Web.Api.csproj", "{292018AE-44DC-4155-85FF-9E737BF09ACA}"
@@ -55,7 +53,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShiftTrack.WebClient.Http",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShiftTrack.Kernel", "src\Common\Kernel\ShiftTrack.Kernel\ShiftTrack.Kernel.csproj", "{4E6F6580-503D-40FF-AF82-9AD158FFE07C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShiftTrack.Data", "src\Common\Data\ShiftTrack.Data\ShiftTrack.Data.csproj", "{F7E8F836-A408-46E7-A4BA-72B87F550D69}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShiftTrack.Data", "src\Common\Data\ShiftTrack.Data\ShiftTrack.Data.csproj", "{F7E8F836-A408-46E7-A4BA-72B87F550D69}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -99,10 +97,6 @@ Global
 		{171D433D-8869-4165-8D09-DB3AABF45FC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{171D433D-8869-4165-8D09-DB3AABF45FC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{171D433D-8869-4165-8D09-DB3AABF45FC9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9ACD70F7-CA7B-46E4-83FF-9CB544137BA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9ACD70F7-CA7B-46E4-83FF-9CB544137BA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9ACD70F7-CA7B-46E4-83FF-9CB544137BA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9ACD70F7-CA7B-46E4-83FF-9CB544137BA3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{269EFF57-6897-40C8-919F-26D31EB4A1E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{269EFF57-6897-40C8-919F-26D31EB4A1E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{269EFF57-6897-40C8-919F-26D31EB4A1E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -149,7 +143,6 @@ Global
 		{1DDF1A75-61EB-4F28-8433-8563CDE79A2E} = {F56EFA47-6474-4904-AB0A-FF60EC9FA3EB}
 		{0885B2FF-6242-42FE-8555-4D1A52B3CC62} = {5B9B56C2-0C91-4AF0-B254-01F2649279B3}
 		{171D433D-8869-4165-8D09-DB3AABF45FC9} = {F56EFA47-6474-4904-AB0A-FF60EC9FA3EB}
-		{9ACD70F7-CA7B-46E4-83FF-9CB544137BA3} = {634F85BC-25D7-4731-B44A-6D65B74EDC19}
 		{269EFF57-6897-40C8-919F-26D31EB4A1E6} = {F56EFA47-6474-4904-AB0A-FF60EC9FA3EB}
 		{292018AE-44DC-4155-85FF-9E737BF09ACA} = {0885B2FF-6242-42FE-8555-4D1A52B3CC62}
 		{F7E5F881-CCE1-4E15-AF93-8CA9109D2410} = {44AEAC92-2380-4C56-B953-E7653BFFF9E4}

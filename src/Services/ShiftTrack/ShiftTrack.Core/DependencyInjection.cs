@@ -1,5 +1,4 @@
-﻿using Data.WebClient;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ShiftTrack.Authentication.Extensions;
@@ -14,6 +13,7 @@ using ShiftTrack.Core.Infrastructure;
 using ShiftTrack.Core.Infrastructure.Repositories.System.User.Employees;
 using ShiftTrack.Kernel;
 using ShiftTrack.Kernel.Attributes;
+using ShiftTrack.WebClient.Http;
 
 namespace ShiftTrack.Core
 {
@@ -24,7 +24,7 @@ namespace ShiftTrack.Core
         {
             services.AddKernel();
 
-            services.AddWebClient(configuration);
+            services.AddWebClientHttp(configuration);
 
             services.AddCurrentUserService();
 

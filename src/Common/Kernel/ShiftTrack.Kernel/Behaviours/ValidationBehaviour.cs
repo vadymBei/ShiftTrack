@@ -34,7 +34,6 @@ namespace ShiftTrack.Kernel.Behaviours
                 {
                     throw new ValidationException(failures);
                 }
-
             }
 
             return await next();

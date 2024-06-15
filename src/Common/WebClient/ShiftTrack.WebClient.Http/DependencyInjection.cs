@@ -8,7 +8,7 @@ namespace ShiftTrack.WebClient.Http
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddClientHttp(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddWebClientHttp(this IServiceCollection services, IConfiguration configuration)
         {
             // register options
             services.Configure<HttpClientOptions>(configuration.GetSection("HttpClient"));

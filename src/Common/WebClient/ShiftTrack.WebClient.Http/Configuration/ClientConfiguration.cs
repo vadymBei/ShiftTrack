@@ -26,7 +26,9 @@ namespace ShiftTrack.WebClient.Http.Configuration
         {
             HttpContext = httpContextAccessor.HttpContext;
 
-            Auth = new Auth(HttpContext?.Request.Headers["Authorization"].ToString());
+            Auth = new Auth(
+                httpClientOptions.Value.Resources,
+                HttpContext?.Request.Headers["Authorization"].ToString());
 
             Body = new Body();
 
@@ -41,7 +43,9 @@ namespace ShiftTrack.WebClient.Http.Configuration
 
         public string GetUri(string path)
         {
-            return Path.Uri + path + Query.QueryString;
+            var fullPath = Path.Uri + path + Query.QueryString;
+
+            return fullPath;
         }
     }
 }
