@@ -18,10 +18,10 @@ namespace ShiftTrack.Core.Infrastructure.Repositories.System.User.Employees
         public async Task<Authentication.Models.User> RegisterUser(UserToRegisterDto dto, CancellationToken cancellationToken)
         {
             var user = await _webClient
-                .BasicAuthentication("user-authentication-api/request-users")
-                .Path("user-authentication-api/request-users")
+                .BasicAuthentication("user-authentication-api/request-authentication-service")
+                .Path("user-authentication-api/request-authentication-service")
                 .Body(dto)
-                .Post<Authentication.Models.User>("register", cancellationToken);
+                .Post<Authentication.Models.User>("users/register", cancellationToken);
 
             return user;
         }
@@ -29,10 +29,10 @@ namespace ShiftTrack.Core.Infrastructure.Repositories.System.User.Employees
         public async Task<Authentication.Models.User> UpdateUser(UserToUpdateDto dto, CancellationToken cancellationToken)
         {
             var user = await _webClient
-                .BasicAuthentication("user-authentication-api/request-users")
-                .Path("user-authentication-api/request-users")
+                .BasicAuthentication("user-authentication-api/request-authentication-service")
+                .Path("user-authentication-api/request-authentication-service")
                 .Body(dto)
-                .Put<Authentication.Models.User>(null, cancellationToken);
+                .Put<Authentication.Models.User>("users", cancellationToken);
 
             return user;
         }

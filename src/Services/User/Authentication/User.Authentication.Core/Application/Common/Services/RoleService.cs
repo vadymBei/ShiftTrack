@@ -49,12 +49,20 @@ namespace User.Authentication.Core.Application.Common.Services
         public async Task<IdentityRole> GetById(object id, CancellationToken cancellationToken)
         {
             var role = await _roleManager.Roles
-                .FirstOrDefaultAsync(x => x.Id == (string)id);
+                .FirstOrDefaultAsync(x => x.Id == (string)id, cancellationToken);
 
             if (role == null)
             {
                 throw new EntityNotFoundException(typeof(IdentityRole), (string)id);
             }
+
+            return role;
+        }
+
+        public async Task<IdentityRole> GetRoleByName(string roleName, CancellationToken cancellationToken)
+        {
+            var role = await _roleManager.Roles
+                .FirstOrDefaultAsync(x => x.Name == roleName, cancellationToken);
 
             return role;
         }

@@ -10,7 +10,9 @@ using ShiftTrack.Core.Application.Organization.Timesheet.Common.Services;
 using ShiftTrack.Core.Application.System.User.Common.Interfaces;
 using ShiftTrack.Core.Application.System.User.Common.Services;
 using ShiftTrack.Core.Infrastructure;
+using ShiftTrack.Core.Infrastructure.Repositories.System.User.EmployeeRoles;
 using ShiftTrack.Core.Infrastructure.Repositories.System.User.Employees;
+using ShiftTrack.Core.Infrastructure.Repositories.System.User.Roles;
 using ShiftTrack.Kernel;
 using ShiftTrack.Kernel.Attributes;
 using ShiftTrack.WebClient.Http;
@@ -35,18 +37,23 @@ namespace ShiftTrack.Core
 
             services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
 
-            //Organization structure
+            //Organization structure services
             services.AddTransient<IUnitService, UnitService>();
             services.AddTransient<IDepartmentService, DepartmentService>();
             services.AddTransient<IPositionService, PositionService>();
 
-            //Organization timesheet
+            //Organization timesheet services
             services.AddTransient<IShiftService, ShiftService>();
 
-            //System user employees
+            //System user services
             services.AddTransient<IEmployeeService, EmployeeService>();
+            services.AddTransient<IRoleService, RoleService>();
+            services.AddTransient<IEmployeeRoleService, EmployeeRoleService>();
 
+            //System user repositories
             services.AddTransient<IAuthenticationRepository, AuthenticationRepository>();
+            services.AddTransient<IRoleRepository, RoleRepository>();
+            services.AddTransient<IUserRoleRepository, UserRoleRepository>();
 
             return services;
         }

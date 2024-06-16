@@ -42,11 +42,6 @@ namespace ShiftTrack.Core.Application.System.User.Employees.Commands.CreateEmplo
                 .Matches(@"^\+\d{1,3}\s?\d{1,14}(\s?\d{1,13})?$")
                     .WithMessage("PhoneNumber must be a valid international phone number.");
 
-            RuleFor(x => x.DepartmentId)
-                .GreaterThan(0)
-                    .When(x => x.DepartmentId.HasValue)
-                        .WithMessage("DepartmentId must be greater than zero.");
-
             RuleFor(x => x.DateOfBirth)
                 .LessThan(DateTime.Now)
                     .When(x => x.DateOfBirth.HasValue)
