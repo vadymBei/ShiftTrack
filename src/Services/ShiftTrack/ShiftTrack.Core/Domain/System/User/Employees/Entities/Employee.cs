@@ -28,6 +28,8 @@ namespace ShiftTrack.Core.Domain.System.User.Employees.Entities
 
         public DateTime? DateOfBirth { get; set; }
 
+        public string IntegrationId { get; set; }
+
         public bool IsDeleted { get; set; }
 
         public DateTime? DeletedAt { get; set; }
