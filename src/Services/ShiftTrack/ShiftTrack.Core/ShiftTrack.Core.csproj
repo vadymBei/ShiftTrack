@@ -7,7 +7,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Folder Include="Application\Data\Common\Exceptions\" />
 		<Folder Include="Infrastructure\Migrations\" />
 	</ItemGroup>
 
