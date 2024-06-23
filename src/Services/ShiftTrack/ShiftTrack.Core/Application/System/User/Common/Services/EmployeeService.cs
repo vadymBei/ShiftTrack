@@ -2,6 +2,7 @@
 using ShiftTrack.Core.Application.Data.Common.Interfaces;
 using ShiftTrack.Core.Application.System.User.Common.Dtos;
 using ShiftTrack.Core.Application.System.User.Common.Interfaces;
+using ShiftTrack.Core.Domain.System.Tokens.Models;
 using ShiftTrack.Core.Domain.System.User.Employees.Entities;
 using ShiftTrack.Kernel.Exceptions;
 
@@ -9,15 +10,30 @@ namespace ShiftTrack.Core.Application.System.User.Common.Services
 {
     public class EmployeeService : IEmployeeService
     {
+        private readonly IUserRepository _userRepository;
         private readonly IApplicationDbContext _applicationDbContext;
-        private readonly IAuthenticationRepository _authenticationRepository;
 
         public EmployeeService(
-            IApplicationDbContext applicationDbContext,
-            IAuthenticationRepository authenticationRepository)
+            IUserRepository userRepository,
+            IApplicationDbContext applicationDbContext)
         {
+            _userRepository = userRepository;
             _applicationDbContext = applicationDbContext;
-            _authenticationRepository = authenticationRepository;
+        }
+
+        public async Task<Token> ChangePassword(ChangeEmployeePasswordDto dto, CancellationToken cancellationToken)
+        {
+            var employee = await GetById(dto.EmployeeId, cancellationToken);
+
+            var token = await _userRepository.ChangePassword(
+                new ChangeUserPasswordDto(
+                    employee.IntegrationId,
+                    dto.OldPassword,
+                    dto.NewPassword,
+                    dto.ConfirmPassword),
+                cancellationToken);
+
+            return token;
         }
 
         public async Task<Employee> GetById(object id, CancellationToken cancellationToken)
@@ -27,6 +43,8 @@ namespace ShiftTrack.Core.Application.System.User.Common.Services
             var employee = await _applicationDbContext.Employees
                 .AsNoTracking()
                 .Include(x => x.Department)
+                    .ThenInclude(x => x.Unit)
+                .Include(x => x.Position)
                 .FirstOrDefaultAsync(x => x.Id == employeeId, cancellationToken);
 
             if (employee == null)
@@ -39,12 +57,12 @@ namespace ShiftTrack.Core.Application.System.User.Common.Services
 
         public Task<Authentication.Models.User> RegisterAuthUser(UserToRegisterDto dto, CancellationToken cancellationToken)
         {
-            return _authenticationRepository.RegisterUser(dto, cancellationToken);
+            return _userRepository.RegisterUser(dto, cancellationToken);
         }
 
         public Task<Authentication.Models.User> UpdateAuthUser(UserToUpdateDto dto, CancellationToken cancellationToken)
         {
-            return _authenticationRepository.UpdateUser(dto, cancellationToken);
+            return _userRepository.UpdateUser(dto, cancellationToken);
         }
     }
 }

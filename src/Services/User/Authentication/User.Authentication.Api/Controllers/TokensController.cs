@@ -15,7 +15,7 @@ namespace User.Authentication.Api.Controllers
         public async Task<TokenVM> GenerateToken(GenerateTokenCommand command)
             => await Mediator.Send(command);
 
-        [HttpPut("refresh")]
+        [HttpPost("refresh")]
         public async Task<TokenVM> RefreshToken(RefreshTokenCommand command)
             => await Mediator.Send(command);
     }

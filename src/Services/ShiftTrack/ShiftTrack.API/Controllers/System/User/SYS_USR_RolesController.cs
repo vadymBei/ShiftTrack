@@ -4,7 +4,7 @@ using ShiftTrack.Core.Application.System.User.Common.ViewModels;
 using ShiftTrack.Core.Application.System.User.Roles.Queries.GetRoles;
 using ShiftTrack.Kernel.Controllers;
 
-namespace ShiftTrack.API.Controllers.System.User.Roles
+namespace ShiftTrack.API.Controllers.System.User
 {
     [Authorize]
     [Route("api/shift-track/system/user/roles")]

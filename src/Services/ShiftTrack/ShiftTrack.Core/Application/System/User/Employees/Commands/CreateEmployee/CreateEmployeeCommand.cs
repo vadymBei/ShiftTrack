@@ -10,6 +10,7 @@ namespace ShiftTrack.Core.Application.System.User.Employees.Commands.CreateEmplo
         string Patronymic,
         string Email,
         string Password,
+        string ConfirmPassword,
         string PhoneNumber,
         DateTime? DateOfBirth,
         EmployeeGender Gender) : IRequest<EmployeeVM>;

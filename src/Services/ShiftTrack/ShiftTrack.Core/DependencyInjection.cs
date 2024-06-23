@@ -7,9 +7,12 @@ using ShiftTrack.Core.Application.Organization.Structure.Common.Interfaces;
 using ShiftTrack.Core.Application.Organization.Structure.Common.Services;
 using ShiftTrack.Core.Application.Organization.Timesheet.Common.Interfaces;
 using ShiftTrack.Core.Application.Organization.Timesheet.Common.Services;
+using ShiftTrack.Core.Application.System.Auth.Common.Interfaces;
+using ShiftTrack.Core.Application.System.Auth.Common.Services;
 using ShiftTrack.Core.Application.System.User.Common.Interfaces;
 using ShiftTrack.Core.Application.System.User.Common.Services;
 using ShiftTrack.Core.Infrastructure;
+using ShiftTrack.Core.Infrastructure.Repositories.System.Tokens;
 using ShiftTrack.Core.Infrastructure.Repositories.System.User.EmployeeRoles;
 using ShiftTrack.Core.Infrastructure.Repositories.System.User.Employees;
 using ShiftTrack.Core.Infrastructure.Repositories.System.User.Roles;
@@ -51,9 +54,16 @@ namespace ShiftTrack.Core
             services.AddTransient<IEmployeeRoleService, EmployeeRoleService>();
 
             //System user repositories
-            services.AddTransient<IAuthenticationRepository, AuthenticationRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IRoleRepository, RoleRepository>();
             services.AddTransient<IUserRoleRepository, UserRoleRepository>();
+
+            //Tokens services
+            services.AddTransient<ITokenService, TokenService>();
+
+            //Tokens repositories
+            services.AddTransient<ITokenRepository, TokenRepository>();
+
 
             return services;
         }

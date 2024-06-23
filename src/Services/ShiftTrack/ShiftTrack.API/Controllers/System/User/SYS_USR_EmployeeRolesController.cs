@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ShiftTrack.Core.Application.System.User.EmployeeRoles.Commands.CreateEmployeeRole;
 using ShiftTrack.Kernel.Controllers;
 
-namespace ShiftTrack.API.Controllers.System.User.EmployeeRoles
+namespace ShiftTrack.API.Controllers.System.User
 {
     [Authorize]
     [Route("api/shift-track/system/user/employee-roles")]
