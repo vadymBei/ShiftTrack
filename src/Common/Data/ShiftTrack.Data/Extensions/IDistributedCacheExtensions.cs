@@ -1,20 +1,20 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 
-namespace ShiftTrack.Core.Application.Data.Common.Exceptions
+namespace ShiftTrack.Data.Extensions
 {
-    public static class DistributedCacheExtensions
+    public static class IDistributedCacheExtensions
     {
         public static DistributedCacheEntryOptions DefaultExpiration => new()
         {
             AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(2)
         };
 
-        public static async Task<T> GetOrCreateAsync<T>(
+        public static async Task<T> GetOrCreate<T>(
             this IDistributedCache cache,
             string key,
             Func<Task<T>> factory,
-            DistributedCacheEntryOptions? cacheOptions = null)
+            DistributedCacheEntryOptions cacheOptions = null)
         {
             var cachedData = await cache.GetStringAsync(key);
 
