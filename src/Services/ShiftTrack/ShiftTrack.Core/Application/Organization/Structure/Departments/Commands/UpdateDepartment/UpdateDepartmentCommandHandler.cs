@@ -24,7 +24,7 @@ namespace ShiftTrack.Core.Application.Organization.Structure.Departments.Command
         public async Task<DepartmentVM> Handle(UpdateDepartmentCommand request, CancellationToken cancellationToken)
         {
             var department = await _dbContext.Departments
-               .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
+                .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
             if (department == null)
                 throw new EntityNotFoundException(typeof(Department), request.Id);

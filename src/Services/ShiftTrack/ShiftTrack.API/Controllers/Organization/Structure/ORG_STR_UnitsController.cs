@@ -25,10 +25,7 @@ namespace ShiftTrack.API.Controllers.Organization.Structure
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUnit(long id)
         {
-            await Mediator.Send(new DeleteUnitCommand()
-            {
-                Id = id
-            });
+            await Mediator.Send(new DeleteUnitCommand(id));
 
             return Ok();
         }
@@ -39,9 +36,6 @@ namespace ShiftTrack.API.Controllers.Organization.Structure
 
         [HttpGet("{id}")]
         public async Task<UnitVM> GetUnitById(long id)
-            => await Mediator.Send(new GetUnitByIdQuery()
-            {
-                Id = id
-            });
+            => await Mediator.Send(new GetUnitByIdQuery(id));
     }
 }

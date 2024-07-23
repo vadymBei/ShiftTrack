@@ -4,7 +4,7 @@ using ShiftTrack.Core.Domain.System.Tokens.Models;
 using ShiftTrack.WebClient.Http.Extensions;
 using ShiftTrack.WebClient.Http.Interfaces;
 
-namespace ShiftTrack.Core.Infrastructure.Repositories.System.User.Employees
+namespace ShiftTrack.Core.Infrastructure.Repositories.System.User
 {
     public class UserRepository : IUserRepository
     {

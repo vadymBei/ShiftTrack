@@ -30,7 +30,7 @@ namespace ShiftTrack.Core.Application.Organization.Structure.Units.Commands.Upda
                 .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
             if (unit == null)
-                throw new EntityNotFoundException(typeof(Unit), request.Id);
+                throw new EntityNotFoundException(typeof(Domain.Organization.Structure.Entities.Unit), request.Id);
 
             unit.Name = request.Name;
             unit.Description = request.Description;

@@ -3,7 +3,7 @@ using ShiftTrack.Core.Domain.System.User.Roles.Models;
 using ShiftTrack.WebClient.Http.Extensions;
 using ShiftTrack.WebClient.Http.Interfaces;
 
-namespace ShiftTrack.Core.Infrastructure.Repositories.System.User.Roles
+namespace ShiftTrack.Core.Infrastructure.Repositories.System.User
 {
     public class RoleRepository : IRoleRepository
     {
