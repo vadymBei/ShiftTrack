@@ -4,6 +4,7 @@ using ShiftTrack.Kernel.Exceptions;
 using User.Authentication.Core.Application.Common.Dto;
 using User.Authentication.Core.Application.Common.Exceptions;
 using User.Authentication.Core.Application.Common.Interfaces;
+using User.Authentication.Core.Domain.Models.OAuth;
 
 using EntityUser = ShiftTrack.Authentication.Models.User;
 
@@ -11,12 +12,33 @@ namespace User.Authentication.Core.Application.Common.Services
 {
     public class UserService : IUserService
     {
+        private readonly ITokenService _tokenService;
         private readonly UserManager<EntityUser> _userManager;
 
         public UserService(
+            ITokenService tokenService,
             UserManager<EntityUser> userManager)
         {
+            _tokenService = tokenService;
             _userManager = userManager;
+        }
+
+        public async Task<Token> ChangePassword(ChangePasswordDto dto, CancellationToken cancellationToken)
+        {
+            var user = await GetById(dto.UserId, cancellationToken);
+
+            var result = await _userManager
+                .ChangePasswordAsync(user, dto.OldPassword, dto.NewPassword);
+
+            if (!result.Succeeded)
+            {
+                throw new ChangePasswordException(result.Errors?.FirstOrDefault()?.Description);
+            }
+
+            var token = await _tokenService
+                .GenerateToken(user.PhoneNumber, dto.NewPassword, cancellationToken);
+
+            return token;
         }
 
         public async Task<bool> CheckUserExist(string phoneNumber)

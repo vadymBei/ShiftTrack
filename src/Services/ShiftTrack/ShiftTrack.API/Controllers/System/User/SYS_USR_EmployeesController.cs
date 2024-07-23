@@ -1,13 +1,16 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ShiftTrack.Core.Application.System.Auth.Common.ViewModels;
+using ShiftTrack.Core.Application.System.User.Common.Dtos;
 using ShiftTrack.Core.Application.System.User.Common.ViewModels;
+using ShiftTrack.Core.Application.System.User.Employees.Commands.ChangePassword;
 using ShiftTrack.Core.Application.System.User.Employees.Commands.CreateEmployee;
 using ShiftTrack.Core.Application.System.User.Employees.Commands.UpdateEmployee;
 using ShiftTrack.Core.Application.System.User.Employees.Queries.GetEmployeeById;
 using ShiftTrack.Core.Application.System.User.Employees.Queries.GetEmployees;
 using ShiftTrack.Kernel.Controllers;
 
-namespace ShiftTrack.API.Controllers.System.User.Employees
+namespace ShiftTrack.API.Controllers.System.User
 {
     [Authorize]
     [Route("api/shift-track/system/user/employees")]
@@ -30,6 +33,8 @@ namespace ShiftTrack.API.Controllers.System.User.Employees
         public async Task<EmployeeVM> GetEmployeeById(long id)
             => await Mediator.Send(new GetEmployeeByIdQuery(id));
 
-
+        [HttpPost("change-password")]
+        public async Task<TokenVM> ChangePassword(ChangeEmployeePasswordDto commandData)
+            => await Mediator.Send(new ChangePasswordCommand(commandData));
     }
 }

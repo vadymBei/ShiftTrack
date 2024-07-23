@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Core.Application.Data.Common.Interfaces;
 using ShiftTrack.Kernel.Exceptions;
+
 using UnitEntity = ShiftTrack.Core.Domain.Organization.Structure.Entities.Unit;
 
 namespace ShiftTrack.Core.Application.Organization.Structure.Units.Commands.DeleteUnit

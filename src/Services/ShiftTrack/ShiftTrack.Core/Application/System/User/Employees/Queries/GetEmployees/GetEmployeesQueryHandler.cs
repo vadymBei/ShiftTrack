@@ -23,6 +23,9 @@ namespace ShiftTrack.Core.Application.System.User.Employees.Queries.GetEmployees
         {
 
             var employeeQuery = _applicationDbContext.Employees
+                .Include(x => x.Department)
+                    .ThenInclude(x => x.Unit)
+                .Include(x => x.Position)
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(request.SearchPattern))

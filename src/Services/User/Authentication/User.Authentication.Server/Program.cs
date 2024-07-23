@@ -58,6 +58,9 @@ using (var scope = app.Services.CreateScope())
 
     var userRoleService = scope.ServiceProvider.GetRequiredService<IUserRoleService>();
 
+    await ApplicationDbContextSeed.SeedDefaultRolesAsync(
+        roleService);
+
     await ApplicationDbContextSeed.SeedDefaultUserAsync(
         userService,
         roleService,

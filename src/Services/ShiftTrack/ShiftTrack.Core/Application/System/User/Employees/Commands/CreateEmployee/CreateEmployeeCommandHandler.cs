@@ -2,7 +2,6 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Core.Application.Data.Common.Interfaces;
-using ShiftTrack.Core.Application.Organization.Structure.Common.Interfaces;
 using ShiftTrack.Core.Application.System.User.Common.Dtos;
 using ShiftTrack.Core.Application.System.User.Common.Interfaces;
 using ShiftTrack.Core.Application.System.User.Common.ViewModels;
@@ -15,18 +14,15 @@ namespace ShiftTrack.Core.Application.System.User.Employees.Commands.CreateEmplo
     {
         private readonly IMapper _mapper;
         private readonly IEmployeeService _userService;
-        private readonly IDepartmentService _departmentService;
         private readonly IApplicationDbContext _applicationDbContext;
 
         public CreateEmployeeCommandHandler(
             IMapper mapper,
             IEmployeeService userService,
-            IDepartmentService departmentService,
             IApplicationDbContext applicationDbContext)
         {
             _mapper = mapper;
             _userService = userService;
-            _departmentService = departmentService;
             _applicationDbContext = applicationDbContext;
         }
 
@@ -51,20 +47,14 @@ namespace ShiftTrack.Core.Application.System.User.Employees.Commands.CreateEmplo
                 Gender = request.Gender
             };
 
-            if (request.DepartmentId is not null)
-            {
-                await _departmentService
-                    .GetById(request.DepartmentId, cancellationToken);
-
-                employee.DepartmentId = request.DepartmentId;
-            }
-
             var user = await _userService.RegisterAuthUser(
                 new UserToRegisterDto(
                     employee.PhoneNumber,
                     employee.Email,
                     request.Password),
                 cancellationToken);
+
+            employee.IntegrationId = user.Id;
 
             _applicationDbContext.Employees.Add(employee);
             await _applicationDbContext.SaveChangesAsync(cancellationToken);

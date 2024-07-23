@@ -13,6 +13,10 @@ builder.Services.AddCoreServices(builder.Configuration);
 
 builder.Services.AddJWTAuthentication(builder.Configuration);
 
+builder.Services.AddMemoryCache();
+
+builder.Services.AddDistributedMemoryCache();
+
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
@@ -46,4 +50,8 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program
+{
+}
 

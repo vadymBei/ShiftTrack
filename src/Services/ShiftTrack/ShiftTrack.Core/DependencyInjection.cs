@@ -7,10 +7,13 @@ using ShiftTrack.Core.Application.Organization.Structure.Common.Interfaces;
 using ShiftTrack.Core.Application.Organization.Structure.Common.Services;
 using ShiftTrack.Core.Application.Organization.Timesheet.Common.Interfaces;
 using ShiftTrack.Core.Application.Organization.Timesheet.Common.Services;
+using ShiftTrack.Core.Application.System.Auth.Common.Interfaces;
+using ShiftTrack.Core.Application.System.Auth.Common.Services;
 using ShiftTrack.Core.Application.System.User.Common.Interfaces;
 using ShiftTrack.Core.Application.System.User.Common.Services;
 using ShiftTrack.Core.Infrastructure;
-using ShiftTrack.Core.Infrastructure.Repositories.System.User.Employees;
+using ShiftTrack.Core.Infrastructure.Repositories.System.Tokens;
+using ShiftTrack.Core.Infrastructure.Repositories.System.User;
 using ShiftTrack.Kernel;
 using ShiftTrack.Kernel.Attributes;
 using ShiftTrack.WebClient.Http;
@@ -35,18 +38,30 @@ namespace ShiftTrack.Core
 
             services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
 
-            //Organization structure
+            //Organization structure services
             services.AddTransient<IUnitService, UnitService>();
             services.AddTransient<IDepartmentService, DepartmentService>();
             services.AddTransient<IPositionService, PositionService>();
 
-            //Organization timesheet
+            //Organization timesheet services
             services.AddTransient<IShiftService, ShiftService>();
 
-            //System user employees
+            //System user services
             services.AddTransient<IEmployeeService, EmployeeService>();
+            services.AddTransient<IRoleService, RoleService>();
+            services.AddTransient<IEmployeeRoleService, EmployeeRoleService>();
 
-            services.AddTransient<IAuthenticationRepository, AuthenticationRepository>();
+            //System user repositories
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IRoleRepository, RoleRepository>();
+            services.AddTransient<IUserRoleRepository, UserRoleRepository>();
+
+            //Tokens services
+            services.AddTransient<ITokenService, TokenService>();
+
+            //Tokens repositories
+            services.AddTransient<ITokenRepository, TokenRepository>();
+
 
             return services;
         }

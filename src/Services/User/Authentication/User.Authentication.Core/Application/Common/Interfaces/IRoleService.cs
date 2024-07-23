@@ -10,6 +10,8 @@ namespace User.Authentication.Core.Application.Common.Interfaces
 
         Task<IList<IdentityRole>> GetRoles(CancellationToken cancellationToken);
 
+        Task<IdentityRole> GetRoleByName(string roleName, CancellationToken cancellationToken);
+
         Task<bool> CheckRoleExist(string name);
     }
 }

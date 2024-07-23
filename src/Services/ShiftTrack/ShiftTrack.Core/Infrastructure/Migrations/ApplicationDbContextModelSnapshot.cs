@@ -166,6 +166,9 @@ namespace ShiftTrack.Core.Infrastructure.Migrations
                     b.Property<int>("Gender")
                         .HasColumnType("integer");
 
+                    b.Property<string>("IntegrationId")
+                        .HasColumnType("text");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 

@@ -36,16 +36,17 @@ namespace ShiftTrack.Core.Application.System.User.Employees.Commands.CreateEmplo
                 .MaximumLength(64)
                     .WithMessage("Maximum length must be 64 symbols");
 
+            RuleFor(x => x.ConfirmPassword)
+                .NotEmpty()
+                    .WithMessage("Confirm password is required.")
+                .Equal(x => x.Password)
+                    .WithMessage("Confirm password must match the password.");
+
             RuleFor(x => x.PhoneNumber)
                 .NotEmpty()
                     .WithMessage("PhoneNumber is required.")
                 .Matches(@"^\+\d{1,3}\s?\d{1,14}(\s?\d{1,13})?$")
                     .WithMessage("PhoneNumber must be a valid international phone number.");
-
-            RuleFor(x => x.DepartmentId)
-                .GreaterThan(0)
-                    .When(x => x.DepartmentId.HasValue)
-                        .WithMessage("DepartmentId must be greater than zero.");
 
             RuleFor(x => x.DateOfBirth)
                 .LessThan(DateTime.Now)
