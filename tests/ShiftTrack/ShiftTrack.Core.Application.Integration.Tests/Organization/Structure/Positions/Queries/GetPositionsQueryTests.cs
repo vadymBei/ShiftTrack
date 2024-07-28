@@ -13,7 +13,7 @@ namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.P
         }
 
         [Fact]
-        public async Task GetPositions_ShouldReturnOnePosition_WhenPositionExists()
+        public async Task GetPositions_ShouldReturnOnePosition_WhenPositionsExists()
         {
             // Arrange
             var positionsToRemove = DbContext.Positions.ToList();
