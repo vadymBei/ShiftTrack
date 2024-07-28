@@ -5,6 +5,7 @@
         None,
         Workday,
         Holiday,
-        Vacation
+        Vacation,
+        DayOff
     }
 }
