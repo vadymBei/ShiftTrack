@@ -23,7 +23,6 @@ namespace ShiftTrack.Core.Application.System.User.Employees.Queries.GetEmployees
         {
             var employeeQuery = _applicationDbContext.Employees
                 .Include(x => x.Department)
-                    .ThenInclude(x => x.Unit)
                 .Include(x => x.Position)
                 .AsQueryable();
 
@@ -37,7 +36,7 @@ namespace ShiftTrack.Core.Application.System.User.Employees.Queries.GetEmployees
             {
                 employeeQuery = employeeQuery
                     .Where(x => EF.Functions.Like(
-                        x.Name.ToLower() + " " + x.Surname.ToLower() + " " + x.Patronymic.ToLower(),
+                        x.Surname.ToLower() + " " + x.Name.ToLower() + " " + x.Patronymic.ToLower(),
                         $"%{request.SearchPattern.ToLower()}%"));
             }
 
