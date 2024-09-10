@@ -54,8 +54,7 @@ namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.U
                     Code = newUnit.Code,
                     Name = newUnit.Name,
                     Description = newUnit.Description,
-                    FullName = newUnit.Code + " " + newUnit.Name,
-                    Departments = new List<DepartmentVM>()
+                    FullName = newUnit.Code + " " + newUnit.Name
                 });
         }
     }

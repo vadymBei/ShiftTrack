@@ -48,7 +48,7 @@ namespace ShiftTrack.Core.Application.System.User.Common.Services
             var employee = await _applicationDbContext.Employees
                 .AsNoTracking()
                 .Include(x => x.Department)
-                    .ThenInclude(x => x.Unit)
+                    //.ThenInclude(x => x.Unit)
                 .Include(x => x.Position)
                 .FirstOrDefaultAsync(x => x.Id == employeeId, cancellationToken);
 

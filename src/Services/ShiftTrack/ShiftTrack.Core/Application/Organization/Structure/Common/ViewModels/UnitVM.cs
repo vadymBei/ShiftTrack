@@ -15,7 +15,5 @@ namespace ShiftTrack.Core.Application.Organization.Structure.Common.ViewModels
         public string Code { get; set; }
 
         public string FullName { get; set; }
-
-        public List<DepartmentVM> Departments { get; set; }
     }
 }

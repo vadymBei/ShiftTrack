@@ -22,7 +22,6 @@ namespace ShiftTrack.Core.Application.Organization.Structure.Common.Services
 
             var unit = await _dbContext.Units
                 .AsNoTracking()
-                .Include(x => x.Departments)
                 .FirstOrDefaultAsync(x => x.Id == unitId, cancellationToken);
 
             if (unit == null)

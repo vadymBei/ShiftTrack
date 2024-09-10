@@ -11,12 +11,6 @@ namespace ShiftTrack.Core.Application.Organization.Structure.Departments.Command
                     .WithMessage("Name is required")
                 .MaximumLength(100)
                     .WithMessage("Maximum field length is 100 characters");
-
-            RuleFor(x => x.UnitId)
-                .NotEmpty()
-                    .WithMessage("UnitId is required")
-                .GreaterThan(0)
-                    .WithMessage("UnitId must be bigger than 0");
         }
     }
 }

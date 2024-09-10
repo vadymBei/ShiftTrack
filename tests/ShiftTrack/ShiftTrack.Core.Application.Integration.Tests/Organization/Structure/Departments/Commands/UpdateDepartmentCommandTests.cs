@@ -3,7 +3,6 @@ using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
 using ShiftTrack.Core.Application.Organization.Structure.Common.ViewModels;
 using ShiftTrack.Core.Application.Organization.Structure.Departments.Commands.CreateDepartment;
 using ShiftTrack.Core.Application.Organization.Structure.Departments.Commands.UpdateDepartment;
-using ShiftTrack.Core.Application.Organization.Structure.Units.Commands.CreateUnit;
 using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.Departments.Commands
@@ -35,16 +34,8 @@ namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.D
         public async Task Update_ShouldReturnUpdatedDepartment_WhenDepartmentExists()
         {
             // Arrange
-            var createUnitCommand = new CreateUnitCommand(
-                "Хмельницький",
-                "Хмельницький регіон",
-                "Хм");
-
-            var unit = await Sender.Send(createUnitCommand);
-
             var createDepartmentCommand = new CreateDepartmentCommand(
-                "ТЦ Либіль Плаза",
-                unit.Id);
+                "ТЦ Либіль Плаза");
 
             var newDepartment = await Sender.Send(createDepartmentCommand);
 

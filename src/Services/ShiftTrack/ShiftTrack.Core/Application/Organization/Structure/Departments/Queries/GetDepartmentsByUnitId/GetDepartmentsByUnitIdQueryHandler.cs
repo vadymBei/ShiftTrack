@@ -29,7 +29,7 @@ namespace ShiftTrack.Core.Application.Organization.Structure.Departments.Queries
                 .GetById(request.UnitId, cancellationToken);
 
             var departments = await _dbContext.Departments
-                .Where(x => x.UnitId == request.UnitId)
+                //.Where(x => x.UnitId == request.UnitId)
                 .ToArrayAsync(cancellationToken);
 
             return _mapper.Map<IEnumerable<DepartmentVM>>(departments);
