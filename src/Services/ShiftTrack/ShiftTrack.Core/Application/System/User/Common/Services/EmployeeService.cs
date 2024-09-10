@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ShiftTrack.Authentication.Interfaces;
 using ShiftTrack.Core.Application.Data.Common.Interfaces;
 using ShiftTrack.Core.Application.System.User.Common.Dtos;
 using ShiftTrack.Core.Application.System.User.Common.Interfaces;
 using ShiftTrack.Core.Domain.System.Tokens.Models;
 using ShiftTrack.Core.Domain.System.User.Employees.Entities;
+using ShiftTrack.Core.Domain.System.User.Employees.Models;
 using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Core.Application.System.User.Common.Services
@@ -11,13 +13,16 @@ namespace ShiftTrack.Core.Application.System.User.Common.Services
     public class EmployeeService : IEmployeeService
     {
         private readonly IUserRepository _userRepository;
+        private readonly ICurrentUserService _currentUserService;
         private readonly IApplicationDbContext _applicationDbContext;
 
         public EmployeeService(
             IUserRepository userRepository,
+            ICurrentUserService currentUserService,
             IApplicationDbContext applicationDbContext)
         {
             _userRepository = userRepository;
+            _currentUserService = currentUserService;
             _applicationDbContext = applicationDbContext;
         }
 
@@ -53,6 +58,28 @@ namespace ShiftTrack.Core.Application.System.User.Common.Services
             }
 
             return employee;
+        }
+
+        public async Task<CurrentUser> GetCurrentUser(CancellationToken cancellationToken)
+        {
+            var currentUser = _currentUserService.User;
+
+            var employee = await _applicationDbContext.Employees
+                .AsNoTracking()
+                .Include(x => x.Department)
+                .Include(x => x.Position)
+                .FirstOrDefaultAsync(x => x.IntegrationId == currentUser.Id, cancellationToken);
+
+            if (employee == null)
+            {
+                return new CurrentUser();
+            }
+
+            return new CurrentUser
+            {
+                Employee = employee,
+                Roles = currentUser.Roles
+            };
         }
 
         public Task<Authentication.Models.User> RegisterAuthUser(UserToRegisterDto dto, CancellationToken cancellationToken)

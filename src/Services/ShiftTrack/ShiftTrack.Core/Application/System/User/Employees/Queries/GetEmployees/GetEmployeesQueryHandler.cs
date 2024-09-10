@@ -21,19 +21,24 @@ namespace ShiftTrack.Core.Application.System.User.Employees.Queries.GetEmployees
 
         public async Task<IEnumerable<EmployeeVM>> Handle(GetEmployeesQuery request, CancellationToken cancellationToken)
         {
-
             var employeeQuery = _applicationDbContext.Employees
                 .Include(x => x.Department)
                     .ThenInclude(x => x.Unit)
                 .Include(x => x.Position)
                 .AsQueryable();
 
+            if (request.UnitId is not null)
+            {
+                employeeQuery = employeeQuery
+                    .Where(x => x.Department.UnitId == request.UnitId);
+            }
+
             if (!string.IsNullOrWhiteSpace(request.SearchPattern))
             {
                 employeeQuery = employeeQuery
                     .Where(x => EF.Functions.Like(
-                                    x.Surname.ToLower() + " " + x.Surname.ToLower() + " " + x.Patronymic.ToLower(),
-                                    $"%{request.SearchPattern.ToLower()}%"));
+                        x.Name.ToLower() + " " + x.Surname.ToLower() + " " + x.Patronymic.ToLower(),
+                        $"%{request.SearchPattern.ToLower()}%"));
             }
 
             var employees = await employeeQuery
