@@ -11,8 +11,5 @@ namespace ShiftTrack.Core.Domain.Organization.Structure.Entities
         public bool IsDeleted { get; set; }
 
         public DateTime? DeletedAt { get; set; }
-
-        public long? UnitId { get; set; }
-        public Unit Unit { get; set; }
     }
 }
