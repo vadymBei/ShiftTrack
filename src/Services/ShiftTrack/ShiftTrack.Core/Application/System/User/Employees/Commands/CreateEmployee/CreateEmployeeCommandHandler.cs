@@ -43,7 +43,6 @@ namespace ShiftTrack.Core.Application.System.User.Employees.Commands.CreateEmplo
                 Patronymic = request.Patronymic,
                 Email = request.Email,
                 PhoneNumber = request.PhoneNumber,
-                DateOfBirth = request.DateOfBirth,
                 Gender = request.Gender
             };
 

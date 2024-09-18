@@ -23,14 +23,15 @@ namespace ShiftTrack.Core.Application.System.User.Employees.Queries.GetEmployees
         {
             var employeeQuery = _applicationDbContext.Employees
                 .Include(x => x.Department)
+                .Include(x => x.Unit)
                 .Include(x => x.Position)
                 .AsQueryable();
 
-            //if (request.UnitId is not null)
-            //{
-            //    employeeQuery = employeeQuery
-            //        .Where(x => x.Department.UnitId == request.UnitId);
-            //}
+            if (request.UnitId is not null)
+            {
+                employeeQuery = employeeQuery
+                    .Where(x => x.UnitId == request.UnitId);
+            }
 
             if (!string.IsNullOrWhiteSpace(request.SearchPattern))
             {

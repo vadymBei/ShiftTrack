@@ -12,6 +12,5 @@ namespace ShiftTrack.Core.Application.System.User.Employees.Commands.CreateEmplo
         string Password,
         string ConfirmPassword,
         string PhoneNumber,
-        DateTime? DateOfBirth,
         EmployeeGender Gender) : IRequest<EmployeeVM>;
 }
