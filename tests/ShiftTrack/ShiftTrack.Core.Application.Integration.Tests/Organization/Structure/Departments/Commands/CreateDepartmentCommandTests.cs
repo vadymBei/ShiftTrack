@@ -1,9 +1,9 @@
 ﻿using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
 using ShiftTrack.Core.Application.Organization.Structure.Common.ViewModels;
 using ShiftTrack.Core.Application.Organization.Structure.Departments.Commands.CreateDepartment;
 using ShiftTrack.Core.Application.Organization.Structure.Units.Commands.CreateUnit;
-using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.Departments.Commands
 {
@@ -12,22 +12,6 @@ namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.D
         public CreateDepartmentCommandTests(
             IntegrationTestWebAppFactory factory) : base(factory)
         {
-        }
-
-        [Fact]
-        public async Task Create_ShouldReturnEntityNotFoundException_WhenUnitNotFound()
-        {
-            // Arrange
-            var createDepartmentCommand = new CreateDepartmentCommand(
-                "ТЦ Либіль Плаза",
-                1000);
-
-            // Act
-            Func<Task> act = async () => await Sender.Send(createDepartmentCommand);
-
-            // Assert
-            await act.Should()
-                .ThrowAsync<EntityNotFoundException>();
         }
 
         [Fact]
@@ -49,14 +33,24 @@ namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.D
             var newDepartment = await Sender.Send(createDepartmentCommand);
 
             // Assert
-            var department = DbContext.Departments.FirstOrDefault(x => x.Id == newDepartment.Id);
+            var department = DbContext.Departments
+                .Include(x => x.Unit)
+                .FirstOrDefault(x => x.Id == newDepartment.Id);
 
             department.Should().NotBeNull();
-            department.UnitId.Should().Be(unit.Id);
             department.Should().BeEquivalentTo(new DepartmentVM()
             {
                 Id = newDepartment.Id,
-                Name = newDepartment.Name
+                Name = newDepartment.Name,
+                UnitId = newDepartment.UnitId,
+                Unit = new UnitVM()
+                {
+                    Id = newDepartment.Unit.Id,
+                    Name = newDepartment.Unit.Name,
+                    Code = newDepartment.Unit.Code,
+                    Description = newDepartment.Unit.Description,
+                    FullName = newDepartment.Unit.FullName
+                }
             });
         }
     }

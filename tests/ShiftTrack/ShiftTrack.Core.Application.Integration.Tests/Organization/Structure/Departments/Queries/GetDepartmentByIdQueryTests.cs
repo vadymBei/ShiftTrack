@@ -34,14 +34,14 @@ namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.D
         {
             // Arrange
             var createUnitCommand = new CreateUnitCommand(
-                "Хмельницький",
-                "Хмельницький регіон",
-                "Хм");
+            "Хмельницький",
+            "Хмельницький регіон",
+            "Хм");
 
             var unit = await Sender.Send(createUnitCommand);
 
             var createDepartmentCommand = new CreateDepartmentCommand(
-                "ТЦ Либіль Плаза",
+                "ТЦ Либіль Плаза", 
                 unit.Id);
 
             var newDepartment = await Sender.Send(createDepartmentCommand);
@@ -57,7 +57,16 @@ namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.D
                 new DepartmentVM()
                 {
                     Id = newDepartment.Id,
-                    Name = newDepartment.Name
+                    Name = newDepartment.Name,
+                    UnitId = newDepartment.UnitId,
+                    Unit = new UnitVM()
+                    {
+                        Id = newDepartment.Unit.Id,
+                        Name = newDepartment.Unit.Name,
+                        Code = newDepartment.Unit.Code,
+                        Description = newDepartment.Unit.Description,
+                        FullName = newDepartment.Unit.FullName
+                    }
                 });
         }
     }

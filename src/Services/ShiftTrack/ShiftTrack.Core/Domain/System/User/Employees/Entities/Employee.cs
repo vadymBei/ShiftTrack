@@ -37,6 +37,9 @@ namespace ShiftTrack.Core.Domain.System.User.Employees.Entities
         public long? DepartmentId { get; set; }
         public Department Department { get; set; }
 
+        //public long? UnitId { get; set; }
+        //public Unit Unit { get; set; }
+
         public long? PositionId { get; set; }
         public Position Position { get; set; }
 

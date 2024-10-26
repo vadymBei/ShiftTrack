@@ -27,6 +27,9 @@ namespace ShiftTrack.Core.Application.System.User.Common.ViewModels
         public long? DepartmentId { get; set; }
         public DepartmentVM Department { get; set; }
 
+        //public long? UnitId { get; set; }
+        //public UnitVM Unit { get; set; }
+
         public long? PositionId { get; set; }
         public PositionVM Position { get; set; }
 

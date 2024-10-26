@@ -33,7 +33,7 @@ namespace User.Authentication.Core.Infrastructure.OAuth.Clients
                 AlwaysIncludeUserClaimsInIdToken = true,
                 IncludeJwtId = true,
                 AlwaysSendClientClaims = true,
-                AccessTokenLifetime = 30 * 24 * 3600,
+                AccessTokenLifetime = 300,
 
                 //refresh token settings
                 AllowOfflineAccess = true,

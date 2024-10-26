@@ -43,7 +43,7 @@ namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.D
             var unit = await Sender.Send(createUnitCommand);
 
             var createDepartmentCommand = new CreateDepartmentCommand(
-                "ТЦ Либіль Плаза",
+                "ТЦ Либіль Плаза", 
                 unit.Id);
 
             var newDepartment = await Sender.Send(createDepartmentCommand);
@@ -61,7 +61,16 @@ namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.D
                 new DepartmentVM()
                 {
                     Id = updateDepartmentCommand.Id,
-                    Name = updateDepartmentCommand.Name
+                    Name = updateDepartmentCommand.Name,
+                    UnitId = newDepartment.UnitId,
+                    Unit = new UnitVM()
+                    {
+                        Id = newDepartment.Unit.Id,
+                        Name = newDepartment.Unit.Name,
+                        Code = newDepartment.Unit.Code,
+                        Description = newDepartment.Unit.Description,
+                        FullName = newDepartment.Unit.FullName
+                    }
                 });
         }
     }

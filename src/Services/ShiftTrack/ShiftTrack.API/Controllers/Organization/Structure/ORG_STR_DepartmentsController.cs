@@ -6,6 +6,7 @@ using ShiftTrack.Core.Application.Organization.Structure.Departments.Commands.De
 using ShiftTrack.Core.Application.Organization.Structure.Departments.Commands.UpdateDepartment;
 using ShiftTrack.Core.Application.Organization.Structure.Departments.Queries.GetDepartmentById;
 using ShiftTrack.Core.Application.Organization.Structure.Departments.Queries.GetDepartmentsByUnitId;
+using ShiftTrack.Core.Application.Organization.Structure.Departments.Queries.GetGroupedDepartmentsByUnit;
 using ShiftTrack.Kernel.Controllers;
 
 namespace ShiftTrack.API.Controllers.Organization.Structure
@@ -15,12 +16,12 @@ namespace ShiftTrack.API.Controllers.Organization.Structure
     public class ORG_STR_DepartmentsController : ApiController
     {
         [HttpPost]
-        public async Task<DepartmentVM> Create(CreateDepartmentCommand command)
-            => await Mediator.Send(command);
+        public Task<DepartmentVM> Create(CreateDepartmentCommand command)
+            => Mediator.Send(command);
 
         [HttpPut]
-        public async Task<DepartmentVM> UpdateDepartment(UpdateDepartmentCommand command)
-            => await Mediator.Send(command);
+        public Task<DepartmentVM> UpdateDepartment(UpdateDepartmentCommand command)
+            => Mediator.Send(command);
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDepartment(long id)
@@ -31,11 +32,15 @@ namespace ShiftTrack.API.Controllers.Organization.Structure
         }
 
         [HttpGet("by-unitId/{unitId}")]
-        public async Task<IEnumerable<DepartmentVM>> GetDepartments(long unitId)
-            => await Mediator.Send(new GetDepartmentsByUnitIdQuery(unitId));
+        public Task<IEnumerable<DepartmentVM>> GetDepartments(long unitId)
+            => Mediator.Send(new GetDepartmentsByUnitIdQuery(unitId));
 
         [HttpGet("by-id/{id}")]
-        public async Task<DepartmentVM> GetDepartmentById(long id)
-            => await Mediator.Send(new GetDepartmentByIdQuery(id));
+        public Task<DepartmentVM> GetDepartmentById(long id)
+            => Mediator.Send(new GetDepartmentByIdQuery(id));
+
+        [HttpGet("grouped/by-unit")]
+        public Task<IEnumerable<GroupedDepartmentsByUnitVM>> GetGroupedDepartmentsByUnit()
+            => Mediator.Send(new GetGroupedDepartmentsByUnitQuery());
     }
 }

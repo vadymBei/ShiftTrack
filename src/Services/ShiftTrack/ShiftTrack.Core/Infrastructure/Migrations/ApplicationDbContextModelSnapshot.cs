@@ -205,7 +205,7 @@ namespace ShiftTrack.Core.Infrastructure.Migrations
 
                     b.HasIndex("PositionId");
 
-                    b.ToTable("Profiles", (string)null);
+                    b.ToTable("Employees", (string)null);
                 });
 
             modelBuilder.Entity("ShiftTrack.Core.Domain.Organization.Structure.Entities.Department", b =>
@@ -220,7 +220,7 @@ namespace ShiftTrack.Core.Infrastructure.Migrations
             modelBuilder.Entity("ShiftTrack.Core.Domain.System.User.Employees.Entities.Employee", b =>
                 {
                     b.HasOne("ShiftTrack.Core.Domain.Organization.Structure.Entities.Department", "Department")
-                        .WithMany("Employees")
+                        .WithMany()
                         .HasForeignKey("DepartmentId");
 
                     b.HasOne("ShiftTrack.Core.Domain.Organization.Structure.Entities.Position", "Position")
@@ -230,11 +230,6 @@ namespace ShiftTrack.Core.Infrastructure.Migrations
                     b.Navigation("Department");
 
                     b.Navigation("Position");
-                });
-
-            modelBuilder.Entity("ShiftTrack.Core.Domain.Organization.Structure.Entities.Department", b =>
-                {
-                    b.Navigation("Employees");
                 });
 
             modelBuilder.Entity("ShiftTrack.Core.Domain.Organization.Structure.Entities.Unit", b =>

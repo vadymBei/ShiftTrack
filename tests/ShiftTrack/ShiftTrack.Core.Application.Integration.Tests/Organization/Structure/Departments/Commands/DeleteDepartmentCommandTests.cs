@@ -41,7 +41,7 @@ namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.D
 
             var createDepartmentCommand = new CreateDepartmentCommand(
                 "ТЦ Либіль Плаза",
-                unit.Id);
+                 unit.Id);
 
             var newDepartment = await Sender.Send(createDepartmentCommand);
 

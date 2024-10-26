@@ -48,11 +48,6 @@ namespace ShiftTrack.Core.Application.System.User.Employees.Commands.CreateEmplo
                 .Matches(@"^\+\d{1,3}\s?\d{1,14}(\s?\d{1,13})?$")
                     .WithMessage("PhoneNumber must be a valid international phone number.");
 
-            RuleFor(x => x.DateOfBirth)
-                .LessThan(DateTime.Now)
-                    .When(x => x.DateOfBirth.HasValue)
-                        .WithMessage("Date of birth must be in the past.");
-
             RuleFor(x => x.Gender)
                 .IsInEnum()
                     .WithMessage("Invalid gender.");

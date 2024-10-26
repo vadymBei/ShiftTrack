@@ -23,7 +23,7 @@ namespace ShiftTrack.Core.Application.Organization.Structure.Units.Queries.GetUn
         {
             var units = await _dbContext.Units
                 .AsNoTracking()
-                .Include(x => x.Departments)
+                .OrderBy(x => x.Name)
                 .ToListAsync(cancellationToken);
 
             return _mapper.Map<List<UnitVM>>(units);

@@ -9,5 +9,8 @@ namespace ShiftTrack.Core.Application.Organization.Structure.Common.ViewModels
         public long Id { get; set; }
 
         public string Name { get; set; }
+
+        public long? UnitId { get; set; }
+        public UnitVM Unit { get; set; }
     }
 }

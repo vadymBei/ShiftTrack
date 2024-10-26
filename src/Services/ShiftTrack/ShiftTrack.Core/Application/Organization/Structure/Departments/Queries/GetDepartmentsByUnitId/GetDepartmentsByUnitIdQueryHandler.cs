@@ -28,7 +28,15 @@ namespace ShiftTrack.Core.Application.Organization.Structure.Departments.Queries
             await _unitService
                 .GetById(request.UnitId, cancellationToken);
 
+            //var departmentIds = await _dbContext.Employees
+            //    .AsNoTracking()
+            //    .Where(x => x.UnitId == request.UnitId)
+            //    .Select(x => x.DepartmentId)
+            //    .Distinct()
+            //    .ToListAsync(cancellationToken);
+
             var departments = await _dbContext.Departments
+                .Include(x => x.Unit)
                 .Where(x => x.UnitId == request.UnitId)
                 .ToArrayAsync(cancellationToken);
 

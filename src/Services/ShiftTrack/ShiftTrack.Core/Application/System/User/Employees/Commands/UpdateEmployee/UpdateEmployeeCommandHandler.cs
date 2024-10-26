@@ -15,6 +15,7 @@ namespace ShiftTrack.Core.Application.System.User.Employees.Commands.UpdateEmplo
     public class UpdateEmployeeCommandHandler : IRequestHandler<UpdateEmployeeCommand, EmployeeVM>
     {
         private readonly IMapper _mapper;
+        private readonly IUnitService _unitService;
         private readonly IPositionService _positionService;
         private readonly IEmployeeService _employeeService;
         private readonly IDepartmentService _departmentService;
@@ -23,6 +24,7 @@ namespace ShiftTrack.Core.Application.System.User.Employees.Commands.UpdateEmplo
 
         public UpdateEmployeeCommandHandler(
             IMapper mapper,
+            IUnitService unitService,
             IPositionService positionService,
             IEmployeeService employeeService,
             IDepartmentService departmentService,
@@ -30,6 +32,7 @@ namespace ShiftTrack.Core.Application.System.User.Employees.Commands.UpdateEmplo
             IApplicationDbContext applicationDbContext)
         {
             _mapper = mapper;
+            _unitService = unitService;
             _positionService = positionService;
             _employeeService = employeeService;
             _departmentService = departmentService;
@@ -66,15 +69,21 @@ namespace ShiftTrack.Core.Application.System.User.Employees.Commands.UpdateEmplo
             employee.DateOfBirth = request.DateOfBirth;
             employee.Gender = request.Gender;
 
-            await _departmentService
+            if (request.DepartmentId is not null)
+            {
+                await _departmentService
                     .GetById(request.DepartmentId, cancellationToken);
 
-            employee.DepartmentId = request.DepartmentId;
+                employee.DepartmentId = request.DepartmentId;
+            }
 
-            await _positionService
-                .GetById(request.PositionId, cancellationToken);
+            if (request.PositionId is not null)
+            {
+                await _positionService
+                    .GetById(request.PositionId, cancellationToken);
 
-            employee.PositionId = request.PositionId;
+                employee.PositionId = request.PositionId;
+            }
 
             await _applicationDbContext.SaveChangesAsync(cancellationToken);
 

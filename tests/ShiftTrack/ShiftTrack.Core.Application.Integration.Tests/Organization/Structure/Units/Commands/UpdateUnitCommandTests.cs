@@ -44,8 +44,7 @@ namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.U
                     Name = updateUnitCommand.Name,
                     Description = updateUnitCommand.Description,
                     Code = updateUnitCommand.Code,
-                    FullName = updateUnitCommand.Code + " " + updateUnitCommand.Name,
-                    Departments = new List<DepartmentVM>()
+                    FullName = updateUnitCommand.Code + " " + updateUnitCommand.Name
                 });
         }
 

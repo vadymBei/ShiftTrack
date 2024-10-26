@@ -60,27 +60,36 @@ namespace User.Authentication.Core.Infrastructure.Repositories
 
             using var httpClient = new HttpClient();
 
-            var responce = await httpClient.RequestRefreshTokenAsync(
-                new RefreshTokenRequest()
-                {
-                    Address = authOptions.AuthServer.Authority + "/connect/token",
-                    ClientId = dto.Client,
-                    ClientSecret = dto.ClientSecret,
-                    RefreshToken = refreshToken
-                },
-                cancellationToken);
+            var response = new TokenResponse();
 
-            if (responce.IsError)
+            try
             {
-                throw new InvalidCredentialsException(dto.Login, responce.Error);
+                response = await httpClient.RequestRefreshTokenAsync(
+                                new RefreshTokenRequest()
+                                {
+                                    Address = authOptions.AuthServer.Authority + "/connect/token",
+                                    ClientId = dto.Client,
+                                    ClientSecret = dto.ClientSecret,
+                                    RefreshToken = refreshToken
+                                },
+                                cancellationToken);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            if (response.IsError)
+            {
+                throw new InvalidCredentialsException(dto.Login, response.Error);
             }
 
             return new Token()
             {
-                AccessToken = responce.AccessToken,
-                RefreshToken = responce.RefreshToken,
-                TokenType = responce.TokenType,
-                ExpiresIn = responce.ExpiresIn
+                AccessToken = response.AccessToken,
+                RefreshToken = response.RefreshToken,
+                TokenType = response.TokenType,
+                ExpiresIn = response.ExpiresIn
             };
         }
     }

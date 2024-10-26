@@ -11,15 +11,18 @@ namespace ShiftTrack.Core.Application.Organization.Structure.Departments.Command
     {
         private readonly IMapper _mapper;
         private readonly IUnitService _unitService;
+        private readonly IDepartmentService _departmentService;
         private readonly IApplicationDbContext _applicationDbContext;
 
         public CreateDepartmentCommandHandler(
             IMapper mapper,
             IUnitService unitService,
+            IDepartmentService departmentService,
             IApplicationDbContext applicationDbContext)
         {
             _mapper = mapper;
             _unitService = unitService;
+            _departmentService = departmentService;
             _applicationDbContext = applicationDbContext;
         }
 
@@ -35,6 +38,8 @@ namespace ShiftTrack.Core.Application.Organization.Structure.Departments.Command
 
             await _applicationDbContext.Departments.AddAsync(department, cancellationToken);
             await _applicationDbContext.SaveChangesAsync(cancellationToken);
+
+            department = await _departmentService.GetById(department.Id, cancellationToken);
 
             return _mapper.Map<DepartmentVM>(department);
         }
