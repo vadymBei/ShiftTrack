@@ -16,7 +16,7 @@ namespace ShiftTrack.Core.Infrastructure
            : base(options)
         {
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-
+            
             ChangeTracker.AutoDetectChangesEnabled = true;
         }
 

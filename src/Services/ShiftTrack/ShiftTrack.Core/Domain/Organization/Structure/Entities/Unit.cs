@@ -23,5 +23,7 @@ namespace ShiftTrack.Core.Domain.Organization.Structure.Entities
                 return Code + " " + Name;
             }
         }
+
+        public List<Department> Departments { get; set; }
     }
 }

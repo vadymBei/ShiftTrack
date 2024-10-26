@@ -20,8 +20,7 @@ namespace ShiftTrack.Core.Application.System.User.Employees.Queries.GetEmployeeB
 
         public async Task<EmployeeVM> Handle(GetEmployeeByIdQuery request, CancellationToken cancellationToken)
         {
-            var employee = await _employeeService
-                .GetById(request.Id, cancellationToken);
+            var employee = await _employeeService.GetById(request.Id, cancellationToken);
 
             return _mapper.Map<EmployeeVM>(employee);
         }

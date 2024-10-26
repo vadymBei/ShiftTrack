@@ -5,5 +5,6 @@ namespace ShiftTrack.Core.Application.System.User.Employees.Queries.GetEmployees
 {
     public record GetEmployeesQuery(
         string SearchPattern,
-        long? UnitId) : IRequest<IEnumerable<EmployeeVM>>;
+        long? UnitId,
+        long? DepartmentId) : IRequest<IEnumerable<EmployeeVM>>;
 }

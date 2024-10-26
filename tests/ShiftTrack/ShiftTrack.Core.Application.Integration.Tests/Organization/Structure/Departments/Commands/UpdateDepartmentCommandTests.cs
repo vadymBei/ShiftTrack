@@ -3,6 +3,7 @@ using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
 using ShiftTrack.Core.Application.Organization.Structure.Common.ViewModels;
 using ShiftTrack.Core.Application.Organization.Structure.Departments.Commands.CreateDepartment;
 using ShiftTrack.Core.Application.Organization.Structure.Departments.Commands.UpdateDepartment;
+using ShiftTrack.Core.Application.Organization.Structure.Units.Commands.CreateUnit;
 using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.Departments.Commands
@@ -34,8 +35,16 @@ namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.D
         public async Task Update_ShouldReturnUpdatedDepartment_WhenDepartmentExists()
         {
             // Arrange
+            var createUnitCommand = new CreateUnitCommand(
+                "Хмельницький",
+                "Хмельницький регіон",
+                "Хм");
+
+            var unit = await Sender.Send(createUnitCommand);
+
             var createDepartmentCommand = new CreateDepartmentCommand(
-                "ТЦ Либіль Плаза");
+                "ТЦ Либіль Плаза", 
+                unit.Id);
 
             var newDepartment = await Sender.Send(createDepartmentCommand);
 
@@ -52,7 +61,16 @@ namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.D
                 new DepartmentVM()
                 {
                     Id = updateDepartmentCommand.Id,
-                    Name = updateDepartmentCommand.Name
+                    Name = updateDepartmentCommand.Name,
+                    UnitId = newDepartment.UnitId,
+                    Unit = new UnitVM()
+                    {
+                        Id = newDepartment.Unit.Id,
+                        Name = newDepartment.Unit.Name,
+                        Code = newDepartment.Unit.Code,
+                        Description = newDepartment.Unit.Description,
+                        FullName = newDepartment.Unit.FullName
+                    }
                 });
         }
     }

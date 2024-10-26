@@ -23,7 +23,7 @@ namespace ShiftTrack.API.Controllers.System.User
         public async Task<CurrentUserVM> GetCurrentUser()
             => await Mediator.Send(new GetCurrentUserQuery());
 
-        [HttpPost]
+        [HttpPost("register")]
         [AllowAnonymous]
         public async Task<TokenVM> CreateEmployee(CreateEmployeeCommand command)
         {

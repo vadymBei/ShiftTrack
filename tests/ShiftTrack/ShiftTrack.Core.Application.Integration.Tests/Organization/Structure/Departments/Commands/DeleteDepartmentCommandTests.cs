@@ -32,8 +32,16 @@ namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.D
         public async Task Delete_ShouldRemove_WhenDepartmentExists()
         {
             // Arrange
+            var createUnitCommand = new CreateUnitCommand(
+                "Хмельницький",
+                "Хмельницький регіон",
+                "Хм");
+
+            var unit = await Sender.Send(createUnitCommand);
+
             var createDepartmentCommand = new CreateDepartmentCommand(
-                "ТЦ Либіль Плаза");
+                "ТЦ Либіль Плаза",
+                 unit.Id);
 
             var newDepartment = await Sender.Send(createDepartmentCommand);
 

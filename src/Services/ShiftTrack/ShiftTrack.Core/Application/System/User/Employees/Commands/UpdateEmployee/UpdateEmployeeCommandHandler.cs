@@ -69,18 +69,10 @@ namespace ShiftTrack.Core.Application.System.User.Employees.Commands.UpdateEmplo
             employee.DateOfBirth = request.DateOfBirth;
             employee.Gender = request.Gender;
 
-            if (request.UnitId is not null)
-            {
-                await _unitService
-                    .GetById(request.UnitId, cancellationToken);
-
-                employee.UnitId = request.UnitId;
-            }
-
             if (request.DepartmentId is not null)
             {
                 await _departmentService
-                        .GetById(request.DepartmentId, cancellationToken);
+                    .GetById(request.DepartmentId, cancellationToken);
 
                 employee.DepartmentId = request.DepartmentId;
             }

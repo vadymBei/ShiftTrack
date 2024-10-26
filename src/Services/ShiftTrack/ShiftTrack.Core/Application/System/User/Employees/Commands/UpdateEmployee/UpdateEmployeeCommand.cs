@@ -12,7 +12,6 @@ namespace ShiftTrack.Core.Application.System.User.Employees.Commands.UpdateEmplo
         string Email,
         string PhoneNumber,
         long? DepartmentId,
-        long? UnitId,
         long? PositionId,
         DateTime? DateOfBirth,
         EmployeeGender Gender) : IRequest<EmployeeVM>;

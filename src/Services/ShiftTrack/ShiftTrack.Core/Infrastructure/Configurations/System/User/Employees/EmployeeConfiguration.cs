@@ -8,7 +8,7 @@ namespace ShiftTrack.Core.Infrastructure.Configurations.System.User.Employees
     {
         public void Configure(EntityTypeBuilder<Employee> builder)
         {
-            builder.ToTable("Profiles");
+            builder.ToTable("Employees");
 
             builder.HasIndex(c => c.Email)
                 .IsUnique();
