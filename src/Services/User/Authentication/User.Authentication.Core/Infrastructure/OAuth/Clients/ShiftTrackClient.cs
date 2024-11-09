@@ -29,9 +29,10 @@ namespace User.Authentication.Core.Infrastructure.OAuth.Clients
                     JwtClaimTypes.Id
                 },
 
+                IncludeJwtId = true,
                 RequireConsent = false,
                 AlwaysIncludeUserClaimsInIdToken = true,
-                IncludeJwtId = true,
+                UpdateAccessTokenClaimsOnRefresh = true,
                 AlwaysSendClientClaims = true,
                 AccessTokenLifetime = 300,
 
@@ -39,9 +40,7 @@ namespace User.Authentication.Core.Infrastructure.OAuth.Clients
                 AllowOfflineAccess = true,
                 RefreshTokenUsage = TokenUsage.OneTimeOnly,
                 RefreshTokenExpiration = TokenExpiration.Sliding,
-                AbsoluteRefreshTokenLifetime = int.MaxValue,
-                SlidingRefreshTokenLifetime = int.MaxValue,
-                UpdateAccessTokenClaimsOnRefresh = true
+                SlidingRefreshTokenLifetime = 400,
             };
 
             return client;
