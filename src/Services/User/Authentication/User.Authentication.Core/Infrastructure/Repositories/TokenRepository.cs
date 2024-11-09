@@ -60,24 +60,15 @@ namespace User.Authentication.Core.Infrastructure.Repositories
 
             using var httpClient = new HttpClient();
 
-            var response = new TokenResponse();
-
-            try
-            {
-                response = await httpClient.RequestRefreshTokenAsync(
-                                new RefreshTokenRequest()
-                                {
-                                    Address = authOptions.AuthServer.Authority + "/connect/token",
-                                    ClientId = dto.Client,
-                                    ClientSecret = dto.ClientSecret,
-                                    RefreshToken = refreshToken
-                                },
-                                cancellationToken);
-            }
-            catch (Exception ex)
-            {
-
-            }
+            var response = await httpClient.RequestRefreshTokenAsync(
+                new RefreshTokenRequest()
+                {
+                    Address = authOptions.AuthServer.Authority + "/connect/token",
+                    ClientId = dto.Client,
+                    ClientSecret = dto.ClientSecret,
+                    RefreshToken = refreshToken
+                },
+                cancellationToken);
 
             if (response.IsError)
             {
