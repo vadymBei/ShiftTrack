@@ -20,11 +20,13 @@ namespace ShiftTrack.Core.Application.Organization.Structure.Units.Commands.Dele
         public async Task<Unit> Handle(DeleteUnitCommand request, CancellationToken cancellationToken)
         {
             var unit = await _dbContext.Units
+                .Include(x => x.Departments)
                 .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
             if (unit == null)
                 throw new EntityNotFoundException(typeof(UnitEntity), request.Id);
 
+            _dbContext.Departments.RemoveRange(unit.Departments);
             _dbContext.Units.Remove(unit);
             await _dbContext.SaveChangesAsync(cancellationToken);
 
