@@ -38,9 +38,10 @@ namespace User.Authentication.Core.Infrastructure.OAuth.Clients
 
                 //refresh token settings
                 AllowOfflineAccess = true,
-                RefreshTokenUsage = TokenUsage.OneTimeOnly,
-                RefreshTokenExpiration = TokenExpiration.Sliding,
-                SlidingRefreshTokenLifetime = 400,
+                //RefreshTokenUsage = TokenUsage.OneTimeOnly,
+                //RefreshTokenExpiration = TokenExpiration.Sliding,
+                //AbsoluteRefreshTokenLifetime = 600,
+                //SlidingRefreshTokenLifetime = 400,
             };
 
             return client;
