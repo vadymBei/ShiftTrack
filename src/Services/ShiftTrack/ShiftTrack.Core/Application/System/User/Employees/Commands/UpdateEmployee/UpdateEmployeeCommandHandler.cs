@@ -76,6 +76,10 @@ namespace ShiftTrack.Core.Application.System.User.Employees.Commands.UpdateEmplo
 
                 employee.DepartmentId = request.DepartmentId;
             }
+            else
+            {
+                employee.DepartmentId = null;
+            }
 
             if (request.PositionId is not null)
             {
@@ -83,6 +87,10 @@ namespace ShiftTrack.Core.Application.System.User.Employees.Commands.UpdateEmplo
                     .GetById(request.PositionId, cancellationToken);
 
                 employee.PositionId = request.PositionId;
+            }
+            else
+            {
+                employee.PositionId = null;
             }
 
             await _applicationDbContext.SaveChangesAsync(cancellationToken);

@@ -28,6 +28,7 @@ namespace ShiftTrack.Core.Application.Organization.Structure.Departments.Queries
                 .ToListAsync(cancellationToken);
 
             var groupedDepartments = departments
+                .Where(x => x.UnitId is not null)
                 .GroupBy(x => x.UnitId, (key, values) =>
                     new GroupedDepartmentsByUnit
                     {
@@ -35,7 +36,7 @@ namespace ShiftTrack.Core.Application.Organization.Structure.Departments.Queries
                         Departments = values.OrderBy(x => x.Name).ToList()
                     })
                 .OrderBy(x => x.Unit.Name)
-                .ToList();                
+                .ToList();
 
             return _mapper.Map<List<GroupedDepartmentsByUnitVM>>(groupedDepartments);
         }
