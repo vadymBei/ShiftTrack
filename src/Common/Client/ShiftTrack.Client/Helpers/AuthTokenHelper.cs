@@ -2,7 +2,7 @@
 
 namespace ShiftTrack.Client.Helpers;
 
-public class AuthTokenHelper
+public static class AuthTokenHelper
 {
     public static string GenerateBasicAuthToken(string username, string password)
     {

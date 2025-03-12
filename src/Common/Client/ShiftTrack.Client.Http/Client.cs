@@ -9,9 +9,17 @@ namespace ShiftTrack.Client.Http;
 
 public class Client : IClient
 {
-    public ClientConfig Configuration { get; }
+    public ClientConfig Configuration { get; protected set; }
     public HttpClient HttpClient { get; protected set; }
 
+    public Client(
+        ClientConfig configuration,
+        IHttpClientFactory httpClientFactory)
+    {
+        HttpClient = httpClientFactory.CreateClient();
+        Configuration = configuration;
+    }
+    
     public HttpClient GetHttpClient()
     {
         return HttpClient.ApplyConfiguration(Configuration);
