@@ -16,6 +16,8 @@
 
         public const string WebClientError = "WEB_CLIENT_ERROR";
 
+        public const string HttpClientError = "HTTP_CLIENT_ERROR";
+        
         public const string ForbiddenError = "FORBIDDEN_ERROR";
 
         public const string KernelError = "KERNEL_ERROR";

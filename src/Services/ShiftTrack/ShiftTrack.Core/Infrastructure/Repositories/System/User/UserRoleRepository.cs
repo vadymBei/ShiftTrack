@@ -1,27 +1,27 @@
-﻿using ShiftTrack.Core.Application.System.User.Common.Dtos;
+﻿using ShiftTrack.Client.Enums;
+using ShiftTrack.Client.Http.Extensions;
+using ShiftTrack.Client.Http.Interfaces;
+using ShiftTrack.Core.Application.System.User.Common.Dtos;
 using ShiftTrack.Core.Application.System.User.Common.Interfaces;
-using ShiftTrack.WebClient.Http.Extensions;
-using ShiftTrack.WebClient.Http.Interfaces;
 
-namespace ShiftTrack.Core.Infrastructure.Repositories.System.User
+namespace ShiftTrack.Core.Infrastructure.Repositories.System.User;
+
+public class UserRoleRepository : IUserRoleRepository
 {
-    public class UserRoleRepository : IUserRoleRepository
+    private readonly IClient _client;
+
+    public UserRoleRepository(
+        IClient client)
     {
-        private readonly IWebClient _webClient;
+        _client = client;
+    }
 
-        public UserRoleRepository(
-            IWebClient webClient)
-        {
-            _webClient = webClient;
-        }
-
-        public async Task CreateUserRole(UserRoleToCreateDto dto, CancellationToken cancellationToken)
-        {
-            await _webClient
-                .BasicAuthentication("user-authentication-api/request-authentication-service")
-                .Path("user-authentication-api/request-authentication-service")
-                .Body(dto)
-                .Post("user-roles", cancellationToken);
-        }
+    public async Task CreateUserRole(UserRoleToCreateDto dto, CancellationToken cancellationToken)
+    {
+        await _client
+            .Path("user-authentication-api/request-authentication-service")
+            .Auth(AuthProvider.Basic)
+            .Body(dto)
+            .Post("user-roles", cancellationToken);
     }
 }

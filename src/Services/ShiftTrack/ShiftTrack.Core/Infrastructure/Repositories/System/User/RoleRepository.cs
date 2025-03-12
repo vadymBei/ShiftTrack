@@ -1,27 +1,27 @@
-﻿using ShiftTrack.Core.Application.System.User.Common.Interfaces;
+﻿using ShiftTrack.Client.Enums;
+using ShiftTrack.Client.Http.Extensions;
+using ShiftTrack.Client.Http.Interfaces;
+using ShiftTrack.Core.Application.System.User.Common.Interfaces;
 using ShiftTrack.Core.Domain.System.User.Roles.Models;
-using ShiftTrack.WebClient.Http.Extensions;
-using ShiftTrack.WebClient.Http.Interfaces;
 
-namespace ShiftTrack.Core.Infrastructure.Repositories.System.User
+namespace ShiftTrack.Core.Infrastructure.Repositories.System.User;
+
+public class RoleRepository : IRoleRepository
 {
-    public class RoleRepository : IRoleRepository
+    private readonly IClient _client;
+
+    public RoleRepository(IClient client)
     {
-        private readonly IWebClient _webClient;
+        _client = client;
+    }
 
-        public RoleRepository(IWebClient webClient)
-        {
-            _webClient = webClient;
-        }
+    public async Task<IEnumerable<Role>> GetRoles(CancellationToken cancellationToken)
+    {
+        var roles = await _client
+            .Path("user-authentication-api/request-authentication-service")
+            .Auth(AuthProvider.Basic)
+            .Get<IEnumerable<Role>>("roles", cancellationToken);
 
-        public async Task<IEnumerable<Role>> GetRoles(CancellationToken cancellationToken)
-        {
-            var roles = await _webClient
-                .BasicAuthentication("user-authentication-api/request-authentication-service")
-                .Path("user-authentication-api/request-authentication-service")
-                .Get<IEnumerable<Role>>("roles", cancellationToken);
-
-            return roles;
-        }
+        return roles;
     }
 }

@@ -20,10 +20,10 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\..\Common\Authentication\ShiftTrack.Authentication\ShiftTrack.Authentication.csproj" />
+	  <ProjectReference Include="..\..\..\Common\Client\ShiftTrack.Client.Http\ShiftTrack.Client.Http.csproj" />
+	  <ProjectReference Include="..\..\..\Common\Client\ShiftTrack.Client\ShiftTrack.Client.csproj" />
 	  <ProjectReference Include="..\..\..\Common\Data\ShiftTrack.Data\ShiftTrack.Data.csproj" />
 	  <ProjectReference Include="..\..\..\Common\Kernel\ShiftTrack.Kernel\ShiftTrack.Kernel.csproj" />
-	  <ProjectReference Include="..\..\..\Common\WebClient\ShiftTrack.WebClient.Http\ShiftTrack.WebClient.Http.csproj" />
-	  <ProjectReference Include="..\..\..\Common\WebClient\ShiftTrack.WebClient\ShiftTrack.WebClient.csproj" />
 	</ItemGroup>
 
 </Project>

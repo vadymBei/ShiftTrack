@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ShiftTrack.Authentication.Extensions;
+using ShiftTrack.Client.Http;
 using ShiftTrack.Core.Application.Data.Common.Interfaces;
 using ShiftTrack.Core.Application.Organization.Structure.Common.Interfaces;
 using ShiftTrack.Core.Application.Organization.Structure.Common.Services;
@@ -16,7 +17,6 @@ using ShiftTrack.Core.Infrastructure.Repositories.System.Tokens;
 using ShiftTrack.Core.Infrastructure.Repositories.System.User;
 using ShiftTrack.Kernel;
 using ShiftTrack.Kernel.Attributes;
-using ShiftTrack.WebClient.Http;
 
 namespace ShiftTrack.Core
 {
@@ -27,7 +27,7 @@ namespace ShiftTrack.Core
         {
             services.AddKernel();
 
-            services.AddWebClientHttp(configuration);
+            services.AddClientHttp(configuration);
 
             services.AddCurrentUserService();
 
@@ -61,7 +61,6 @@ namespace ShiftTrack.Core
 
             //Tokens repositories
             services.AddTransient<ITokenRepository, TokenRepository>();
-
 
             return services;
         }
