@@ -24,7 +24,7 @@ public class UpdateShiftCommandHandler(
         }
 
         shift.Code = request.Code;
-        shift.Dercription = request.Description;
+        shift.Description = request.Description;
         shift.Color = request.Color;
         shift.Type = request.Type;
 

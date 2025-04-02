@@ -40,7 +40,7 @@ namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Timesheet.S
 
             shifts.Should().Contain(x => x.Id == newShift.Id);
             shifts.Should().Contain(x => x.Code ==  newShift.Code);
-            shifts.Should().Contain(x => x.Dercription ==  newShift.Dercription);
+            shifts.Should().Contain(x => x.Description ==  newShift.Description);
             shifts.Should().Contain(x => x.Color ==  newShift.Color);
             shifts.Should().Contain(x => x.Type ==  newShift.Type);
         }

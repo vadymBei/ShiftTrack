@@ -16,7 +16,7 @@ public class CreateShiftCommandHandler(
         var shift = new Shift()
         {
             Code = request.Code,
-            Dercription = request.Description,
+            Description = request.Description,
             Type = request.Type,
             Color = request.Color
         };
