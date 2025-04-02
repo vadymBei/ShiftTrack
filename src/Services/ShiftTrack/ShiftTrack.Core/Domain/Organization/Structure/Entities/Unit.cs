@@ -1,29 +1,23 @@
 ﻿using ShiftTrack.Data.Interfaces;
 
-namespace ShiftTrack.Core.Domain.Organization.Structure.Entities
+namespace ShiftTrack.Core.Domain.Organization.Structure.Entities;
+
+public class Unit : ISoftDeletable
 {
-    public class Unit : ISoftDeletable
+    public long Id { get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
+    public string Code { get; set; }
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
+
+    public string FullName
     {
-        public long Id { get; set; }
-
-        public string Name { get; set; }
-
-        public string Description { get; set; }
-
-        public string Code { get; set; }
-
-        public bool IsDeleted { get; set; }
-
-        public DateTime? DeletedAt { get; set; }
-
-        public string FullName
+        get
         {
-            get
-            {
-                return Code + " " + Name;
-            }
+            return Code + " " + Name;
         }
-
-        public List<Department> Departments { get; set; }
     }
+
+    public List<Department> Departments { get; set; }
 }

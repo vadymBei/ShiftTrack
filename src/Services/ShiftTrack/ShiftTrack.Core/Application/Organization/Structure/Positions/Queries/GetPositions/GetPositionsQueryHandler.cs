@@ -4,28 +4,20 @@ using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Core.Application.Data.Common.Interfaces;
 using ShiftTrack.Core.Application.Organization.Structure.Common.ViewModels;
 
-namespace ShiftTrack.Core.Application.Organization.Structure.Positions.Queries.GetPositions
+namespace ShiftTrack.Core.Application.Organization.Structure.Positions.Queries.GetPositions;
+
+public class GetPositionsQueryHandler(
+    IMapper mapper,
+    IApplicationDbContext applicationDbContext)
+    : IRequestHandler<GetPositionsQuery, IEnumerable<PositionVM>>
 {
-    public class GetPositionsQueryHandler : IRequestHandler<GetPositionsQuery, IEnumerable<PositionVM>>
+    public async Task<IEnumerable<PositionVM>> Handle(GetPositionsQuery request, CancellationToken cancellationToken)
     {
-        private readonly IMapper _mapper;
-        private readonly IApplicationDbContext _applicationDbContext;
+        var positions = await applicationDbContext.Positions
+            .AsNoTracking()
+            .OrderBy(x => x.Name)
+            .ToListAsync(cancellationToken);
 
-        public GetPositionsQueryHandler(
-            IMapper mapper,
-            IApplicationDbContext applicationDbContext)
-        {
-            _mapper = mapper;
-            _applicationDbContext = applicationDbContext;
-        }
-
-        public async Task<IEnumerable<PositionVM>> Handle(GetPositionsQuery request, CancellationToken cancellationToken)
-        {
-            var positions = await _applicationDbContext.Positions
-                .AsNoTracking()
-                .ToListAsync(cancellationToken);
-
-            return _mapper.Map<List<PositionVM>>(positions);
-        }
+        return mapper.Map<List<PositionVM>>(positions);
     }
 }

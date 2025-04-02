@@ -1,18 +1,17 @@
 ﻿using FluentValidation;
 
-namespace ShiftTrack.Core.Application.Organization.Structure.Departments.Commands.DeleteDepartment
+namespace ShiftTrack.Core.Application.Organization.Structure.Departments.Commands.DeleteDepartment;
+
+public class DeleteDepartmentCommandValidator : AbstractValidator<DeleteDepartmentCommand>
 {
-    public class DeleteDepartmentCommandValidator : AbstractValidator<DeleteDepartmentCommand>
+    public DeleteDepartmentCommandValidator()
     {
-        public DeleteDepartmentCommandValidator()
-        {
-            RuleFor(x => x.Id)
-                .NotEmpty()
-                    .WithMessage("Id is required")
-                .NotNull()
-                    .WithMessage("Id is required")
-                .GreaterThan(0)
-                    .WithMessage("Id must be bigger than 0");
-        }
+        RuleFor(x => x.Id)
+            .NotEmpty()
+            .WithMessage("Id is required")
+            .NotNull()
+            .WithMessage("Id is required")
+            .GreaterThan(0)
+            .WithMessage("Id must be bigger than 0");
     }
 }

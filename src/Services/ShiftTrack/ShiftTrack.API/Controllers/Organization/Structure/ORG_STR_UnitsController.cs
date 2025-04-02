@@ -8,34 +8,33 @@ using ShiftTrack.Core.Application.Organization.Structure.Units.Queries.GetUnitBy
 using ShiftTrack.Core.Application.Organization.Structure.Units.Queries.GetUnits;
 using ShiftTrack.Kernel.Controllers;
 
-namespace ShiftTrack.API.Controllers.Organization.Structure
+namespace ShiftTrack.API.Controllers.Organization.Structure;
+
+[Authorize]
+[Route("api/shift-track/organization/structure/units")]
+public class ORG_STR_UnitsController : ApiController
 {
-    [Authorize]
-    [Route("api/shift-track/organization/structure/units")]
-    public class ORG_STR_UnitsController : ApiController
+    [HttpPost]
+    public async Task<UnitVM> CreateUnit(CreateUnitCommand command)
+        => await Mediator.Send(command);
+
+    [HttpPut]
+    public async Task<UnitVM> UpdateUnit(UpdateUnitCommand command)
+        => await Mediator.Send(command);
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteUnit(long id)
     {
-        [HttpPost]
-        public async Task<UnitVM> CreateUnit(CreateUnitCommand command)
-            => await Mediator.Send(command);
+        await Mediator.Send(new DeleteUnitCommand(id));
 
-        [HttpPut]
-        public async Task<UnitVM> UpdateUnit(UpdateUnitCommand command)
-            => await Mediator.Send(command);
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUnit(long id)
-        {
-            await Mediator.Send(new DeleteUnitCommand(id));
-
-            return Ok();
-        }
-
-        [HttpGet]
-        public async Task<IEnumerable<UnitVM>> GetUnits()
-            => await Mediator.Send(new GetUnitsQuery());
-
-        [HttpGet("{id}")]
-        public async Task<UnitVM> GetUnitById(long id)
-            => await Mediator.Send(new GetUnitByIdQuery(id));
+        return Ok();
     }
+
+    [HttpGet]
+    public async Task<IEnumerable<UnitVM>> GetUnits()
+        => await Mediator.Send(new GetUnitsQuery());
+
+    [HttpGet("{id}")]
+    public async Task<UnitVM> GetUnitById(long id)
+        => await Mediator.Send(new GetUnitByIdQuery(id));
 }

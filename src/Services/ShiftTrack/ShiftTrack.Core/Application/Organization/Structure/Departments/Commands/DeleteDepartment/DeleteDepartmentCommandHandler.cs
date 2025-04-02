@@ -4,30 +4,22 @@ using ShiftTrack.Core.Application.Data.Common.Interfaces;
 using ShiftTrack.Core.Domain.Organization.Structure.Entities;
 using ShiftTrack.Kernel.Exceptions;
 
-namespace ShiftTrack.Core.Application.Organization.Structure.Departments.Commands.DeleteDepartment
+namespace ShiftTrack.Core.Application.Organization.Structure.Departments.Commands.DeleteDepartment;
+
+public class DeleteDepartmentCommandHandler(
+    IApplicationDbContext dbContext) : IRequestHandler<DeleteDepartmentCommand>
 {
-    public class DeleteDepartmentCommandHandler : IRequestHandler<DeleteDepartmentCommand>
+    public async Task<MediatR.Unit> Handle(DeleteDepartmentCommand request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _dbContext;
+        var department = await dbContext.Departments
+            .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
-        public DeleteDepartmentCommandHandler(
-            IApplicationDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
+        if (department == null)
+            throw new EntityNotFoundException(typeof(Department), request.Id);
 
-        public async Task<MediatR.Unit> Handle(DeleteDepartmentCommand request, CancellationToken cancellationToken)
-        {
-            var department = await _dbContext.Departments
-                .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
+        dbContext.Departments.Remove(department);
+        await dbContext.SaveChangesAsync(cancellationToken);
 
-            if (department == null)
-                throw new EntityNotFoundException(typeof(Department), request.Id);
-
-            _dbContext.Departments.Remove(department);
-            await _dbContext.SaveChangesAsync(cancellationToken);
-
-            return MediatR.Unit.Value;
-        }
+        return MediatR.Unit.Value;
     }
 }

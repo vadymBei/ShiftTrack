@@ -6,41 +6,30 @@ using ShiftTrack.Core.Application.Organization.Structure.Common.Interfaces;
 using ShiftTrack.Core.Application.Organization.Structure.Common.ViewModels;
 using ShiftTrack.Kernel.Exceptions;
 
-namespace ShiftTrack.Core.Application.Organization.Structure.Units.Commands.UpdateUnit
+namespace ShiftTrack.Core.Application.Organization.Structure.Units.Commands.UpdateUnit;
+
+public class UpdateUnitCommandHandler(
+    IMapper mapper,
+    IUnitService unitService,
+    IApplicationDbContext dbContext)
+    : IRequestHandler<UpdateUnitCommand, UnitVM>
 {
-    public class UpdateUnitCommandHandler : IRequestHandler<UpdateUnitCommand, UnitVM>
+    public async Task<UnitVM> Handle(UpdateUnitCommand request, CancellationToken cancellationToken)
     {
-        private readonly IMapper _mapper;
-        private readonly IUnitService _unitService;
-        private readonly IApplicationDbContext _dbContext;
+        var unit = await dbContext.Units
+            .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
-        public UpdateUnitCommandHandler(
-            IMapper mapper,
-            IUnitService unitService,
-            IApplicationDbContext dbContext)
-        {
-            _mapper = mapper;
-            _unitService = unitService;
-            _dbContext = dbContext;
-        }
+        if (unit == null)
+            throw new EntityNotFoundException(typeof(Domain.Organization.Structure.Entities.Unit), request.Id);
 
-        public async Task<UnitVM> Handle(UpdateUnitCommand request, CancellationToken cancellationToken)
-        {
-            var unit = await _dbContext.Units
-                .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
+        unit.Name = request.Name;
+        unit.Description = request.Description;
+        unit.Code = request.Code;
 
-            if (unit == null)
-                throw new EntityNotFoundException(typeof(Domain.Organization.Structure.Entities.Unit), request.Id);
+        await dbContext.SaveChangesAsync(cancellationToken);
 
-            unit.Name = request.Name;
-            unit.Description = request.Description;
-            unit.Code = request.Code;
+        unit = await unitService.GetById(request.Id, cancellationToken);
 
-            await _dbContext.SaveChangesAsync(cancellationToken);
-
-            unit = await _unitService.GetById(request.Id, cancellationToken);
-
-            return _mapper.Map<UnitVM>(unit);
-        }
+        return mapper.Map<UnitVM>(unit);
     }
 }

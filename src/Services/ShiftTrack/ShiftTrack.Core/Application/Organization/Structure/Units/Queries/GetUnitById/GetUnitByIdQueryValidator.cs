@@ -1,14 +1,13 @@
 ﻿using FluentValidation;
 
-namespace ShiftTrack.Core.Application.Organization.Structure.Units.Queries.GetUnitById
+namespace ShiftTrack.Core.Application.Organization.Structure.Units.Queries.GetUnitById;
+
+public class GetUnitByIdQueryValidator : AbstractValidator<GetUnitByIdQuery>
 {
-    public class GetUnitByIdQueryValidator : AbstractValidator<GetUnitByIdQuery>
+    public GetUnitByIdQueryValidator()
     {
-        public GetUnitByIdQueryValidator()
-        {
-            RuleFor(x => x.Id)
-               .NotNull()
-                   .WithMessage("Id is required");
-        }
+        RuleFor(x => x.Id)
+            .NotNull()
+            .WithMessage("Id is required");
     }
 }

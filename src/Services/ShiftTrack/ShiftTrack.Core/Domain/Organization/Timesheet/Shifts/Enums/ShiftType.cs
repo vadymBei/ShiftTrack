@@ -1,11 +1,10 @@
-﻿namespace ShiftTrack.Core.Domain.Organization.Timesheet.Shifts.Enums
+﻿namespace ShiftTrack.Core.Domain.Organization.Timesheet.Shifts.Enums;
+
+public enum ShiftType
 {
-    public enum ShiftType
-    {
-        None,
-        Workday,
-        Holiday,
-        Vacation,
-        DayOff
-    }
+    None,
+    Workday,
+    Holiday,
+    Vacation,
+    DayOff
 }

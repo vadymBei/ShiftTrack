@@ -4,31 +4,23 @@ using ShiftTrack.Core.Application.Organization.Structure.Common.Interfaces;
 using ShiftTrack.Core.Domain.Organization.Structure.Entities;
 using ShiftTrack.Kernel.Exceptions;
 
-namespace ShiftTrack.Core.Application.Organization.Structure.Common.Services
+namespace ShiftTrack.Core.Application.Organization.Structure.Common.Services;
+
+public class DepartmentService(
+    IApplicationDbContext dbContext) : IDepartmentService
 {
-    public class DepartmentService : IDepartmentService
+    public async Task<Department> GetById(object id, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _dbContext;
+        var departmentId = (long)id;
 
-        public DepartmentService(
-            IApplicationDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
+        var department = await dbContext.Departments
+            .AsNoTracking()
+            .Include(x => x.Unit)
+            .FirstOrDefaultAsync(x => x.Id == departmentId, cancellationToken);
 
-        public async Task<Department> GetById(object id, CancellationToken cancellationToken)
-        {
-            var departmentId = (long)id;
+        if (department == null)
+            throw new EntityNotFoundException(typeof(Department), departmentId);
 
-            var department = await _dbContext.Departments
-               .AsNoTracking()
-               .Include(x => x.Unit)
-               .FirstOrDefaultAsync(x => x.Id == departmentId, cancellationToken);
-
-            if (department == null)
-                throw new EntityNotFoundException(typeof(Department), departmentId);
-
-            return department;
-        }
+        return department;
     }
 }

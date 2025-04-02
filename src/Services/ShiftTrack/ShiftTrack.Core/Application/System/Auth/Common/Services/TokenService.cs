@@ -2,26 +2,18 @@
 using ShiftTrack.Core.Application.System.Auth.Common.Interfaces;
 using ShiftTrack.Core.Domain.System.Tokens.Models;
 
-namespace ShiftTrack.Core.Application.System.Auth.Common.Services
+namespace ShiftTrack.Core.Application.System.Auth.Common.Services;
+
+public class TokenService(
+    ITokenRepository tokenRepository) : ITokenService
 {
-    public class TokenService : ITokenService
+    public Task<Token> GenerateToken(GenerateTokenDto dto, CancellationToken cancellationToken)
     {
-        private readonly ITokenRepository _tokenRepository;
+        return tokenRepository.GenerateToken(dto, cancellationToken);
+    }
 
-        public TokenService(
-            ITokenRepository tokenRepository)
-        {
-            _tokenRepository = tokenRepository;
-        }
-
-        public Task<Token> GenerateToken(GenerateTokenDto dto, CancellationToken cancellationToken)
-        {
-            return _tokenRepository.GenerateToken(dto, cancellationToken);
-        }
-
-        public Task<Token> RefreshToken(RefreshTokenDto dto, CancellationToken cancellationToken)
-        {
-            return _tokenRepository.RefreshToken(dto, cancellationToken);
-        }
+    public Task<Token> RefreshToken(RefreshTokenDto dto, CancellationToken cancellationToken)
+    {
+        return tokenRepository.RefreshToken(dto, cancellationToken);
     }
 }

@@ -3,26 +3,16 @@ using MediatR;
 using ShiftTrack.Core.Application.Organization.Structure.Common.Interfaces;
 using ShiftTrack.Core.Application.Organization.Structure.Common.ViewModels;
 
-namespace ShiftTrack.Core.Application.Organization.Structure.Departments.Queries.GetDepartmentById
+namespace ShiftTrack.Core.Application.Organization.Structure.Departments.Queries.GetDepartmentById;
+
+public class GetDepartmentByIdQueryHandler(
+    IMapper mapper,
+    IDepartmentService departmentService) : IRequestHandler<GetDepartmentByIdQuery, DepartmentVM>
 {
-    public class GetDepartmentByIdQueryHandler : IRequestHandler<GetDepartmentByIdQuery, DepartmentVM>
+    public async Task<DepartmentVM> Handle(GetDepartmentByIdQuery request, CancellationToken cancellationToken)
     {
-        private readonly IMapper _mapper;
-        private readonly IDepartmentService _departmentService;
+        var department = await departmentService.GetById(request.Id, cancellationToken);
 
-        public GetDepartmentByIdQueryHandler(
-            IMapper mapper,
-            IDepartmentService departmentService)
-        {
-            _mapper = mapper;
-            _departmentService = departmentService;
-        }
-
-        public async Task<DepartmentVM> Handle(GetDepartmentByIdQuery request, CancellationToken cancellationToken)
-        {
-            var department = await _departmentService.GetById(request.Id, cancellationToken);
-
-            return _mapper.Map<DepartmentVM>(department);
-        }
+        return mapper.Map<DepartmentVM>(department);
     }
 }

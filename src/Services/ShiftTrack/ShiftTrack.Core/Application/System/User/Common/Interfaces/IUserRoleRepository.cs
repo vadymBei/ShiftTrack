@@ -1,9 +1,8 @@
 ﻿using ShiftTrack.Core.Application.System.User.Common.Dtos;
 
-namespace ShiftTrack.Core.Application.System.User.Common.Interfaces
+namespace ShiftTrack.Core.Application.System.User.Common.Interfaces;
+
+public interface IUserRoleRepository
 {
-    public interface IUserRoleRepository
-    {
-        Task CreateUserRole(UserRoleToCreateDto dto, CancellationToken cancellationToken);
-    }
+    Task CreateUserRole(UserRoleToCreateDto dto, CancellationToken cancellationToken);
 }

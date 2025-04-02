@@ -4,32 +4,24 @@ using ShiftTrack.Core.Application.Data.Common.Interfaces;
 using ShiftTrack.Core.Domain.Organization.Timesheet.Shifts.Entities;
 using ShiftTrack.Kernel.Exceptions;
 
-namespace ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Commands.DeleteShift
+namespace ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Commands.DeleteShift;
+
+public class DeleteShiftCommandHandler(
+    IApplicationDbContext applicationDbContext) : IRequestHandler<DeleteShiftCommand>
 {
-    public class DeleteShiftCommandHandler : IRequestHandler<DeleteShiftCommand>
+    public async Task<Unit> Handle(DeleteShiftCommand request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _applicationDbContext;
+        var shift = await applicationDbContext.Shifts
+            .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
-        public DeleteShiftCommandHandler(
-            IApplicationDbContext applicationDbContext)
+        if (shift == null)
         {
-            _applicationDbContext = applicationDbContext;
+            throw new EntityNotFoundException(typeof(Shift), request.Id);
         }
 
-        public async Task<Unit> Handle(DeleteShiftCommand request, CancellationToken cancellationToken)
-        {
-            var shift = await _applicationDbContext.Shifts
-                .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
+        applicationDbContext.Shifts.Remove(shift);
+        await applicationDbContext.SaveChangesAsync(cancellationToken);
 
-            if (shift == null)
-            {
-                throw new EntityNotFoundException(typeof(Shift), request.Id);
-            }
-
-            _applicationDbContext.Shifts.Remove(shift);
-            await _applicationDbContext.SaveChangesAsync(cancellationToken);
-
-            return Unit.Value;
-        }
+        return Unit.Value;
     }
 }

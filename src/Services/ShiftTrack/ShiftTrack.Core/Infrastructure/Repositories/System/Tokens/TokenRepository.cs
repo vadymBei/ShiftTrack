@@ -7,19 +7,12 @@ using ShiftTrack.Core.Domain.System.Tokens.Models;
 
 namespace ShiftTrack.Core.Infrastructure.Repositories.System.Tokens;
 
-public class TokenRepository : ITokenRepository
+public class TokenRepository(
+    IClient client) : ITokenRepository
 {
-    private readonly IClient _client;
-
-    public TokenRepository(
-        IClient client)
-    {
-        _client = client;
-    }
-
     public async Task<Token> GenerateToken(GenerateTokenDto dto, CancellationToken cancellationToken)
     {
-        var token = await _client
+        var token = await client
             .Path("user-authentication-api/request-authentication-service")
             .Auth(AuthProvider.Basic)
             .Body(dto)
@@ -30,7 +23,7 @@ public class TokenRepository : ITokenRepository
 
     public async Task<Token> RefreshToken(RefreshTokenDto dto, CancellationToken cancellationToken)
     {
-        var token = await _client
+        var token = await client
             .Path("user-authentication-api/request-authentication-service")
             .Auth(AuthProvider.Basic)
             .Body(dto)

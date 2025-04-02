@@ -1,9 +1,8 @@
-﻿namespace ShiftTrack.Core.Domain.System.User.Employees.Enums
+﻿namespace ShiftTrack.Core.Domain.System.User.Employees.Enums;
+
+public enum EmployeeGender
 {
-    public enum EmployeeGender
-    {
-        None,
-        Male,
-        Female
-    }
+    None,
+    Male,
+    Female
 }

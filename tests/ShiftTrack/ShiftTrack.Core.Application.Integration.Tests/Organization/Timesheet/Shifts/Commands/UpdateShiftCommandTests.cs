@@ -64,7 +64,7 @@ namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Timesheet.S
                 {
                     Id = updateShiftCommand.Id,
                     Code = updateShiftCommand.Code,
-                    Dercription = updateShiftCommand.Dercription,
+                    Dercription = updateShiftCommand.Description,
                     Color = updateShiftCommand.Color,
                     Type = updateShiftCommand.Type
                 });

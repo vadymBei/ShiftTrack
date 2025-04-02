@@ -4,33 +4,24 @@ using ShiftTrack.Core.Application.Data.Common.Interfaces;
 using ShiftTrack.Core.Application.Organization.Structure.Common.ViewModels;
 using ShiftTrack.Core.Domain.Organization.Structure.Entities;
 
-namespace ShiftTrack.Core.Application.Organization.Structure.Positions.Commands.CreatePosition
+namespace ShiftTrack.Core.Application.Organization.Structure.Positions.Commands.CreatePosition;
+
+internal class CreatePositionCommandHandler(
+    IMapper mapper,
+    IApplicationDbContext applicationDbContext)
+    : IRequestHandler<CreatePositionCommand, PositionVM>
 {
-    internal class CreatePositionCommandHandler : IRequestHandler<CreatePositionCommand, PositionVM>
+    public async Task<PositionVM> Handle(CreatePositionCommand request, CancellationToken cancellationToken)
     {
-        private readonly IMapper _mapper;
-        private readonly IApplicationDbContext _applicationDbContext;
-
-        public CreatePositionCommandHandler(
-            IMapper mapper,
-            IApplicationDbContext applicationDbContext)
+        var position = new Position()
         {
-            _mapper = mapper;
-            _applicationDbContext = applicationDbContext;
-        }
+            Name = request.Name,
+            Description = request.Description
+        };
 
-        public async Task<PositionVM> Handle(CreatePositionCommand request, CancellationToken cancellationToken)
-        {
-            var position = new Position()
-            {
-                Name = request.Name,
-                Description = request.Description
-            };
+        applicationDbContext.Positions.Add(position);
+        await applicationDbContext.SaveChangesAsync(cancellationToken);
 
-            _applicationDbContext.Positions.Add(position);
-            await _applicationDbContext.SaveChangesAsync(cancellationToken);
-
-            return _mapper.Map<PositionVM>(position);
-        }
+        return mapper.Map<PositionVM>(position);
     }
 }

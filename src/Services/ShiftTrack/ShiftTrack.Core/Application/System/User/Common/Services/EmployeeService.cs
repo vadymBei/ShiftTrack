@@ -8,89 +8,78 @@ using ShiftTrack.Core.Domain.System.User.Employees.Entities;
 using ShiftTrack.Core.Domain.System.User.Employees.Models;
 using ShiftTrack.Kernel.Exceptions;
 
-namespace ShiftTrack.Core.Application.System.User.Common.Services
+namespace ShiftTrack.Core.Application.System.User.Common.Services;
+
+public class EmployeeService(
+    IUserRepository userRepository,
+    ICurrentUserService currentUserService,
+    IApplicationDbContext applicationDbContext)
+    : IEmployeeService
 {
-    public class EmployeeService : IEmployeeService
+    public async Task<Token> ChangePassword(ChangeEmployeePasswordDto dto, CancellationToken cancellationToken)
     {
-        private readonly IUserRepository _userRepository;
-        private readonly ICurrentUserService _currentUserService;
-        private readonly IApplicationDbContext _applicationDbContext;
+        var employee = await GetById(dto.EmployeeId, cancellationToken);
 
-        public EmployeeService(
-            IUserRepository userRepository,
-            ICurrentUserService currentUserService,
-            IApplicationDbContext applicationDbContext)
+        var token = await userRepository.ChangePassword(
+            new ChangeUserPasswordDto(
+                employee.IntegrationId,
+                dto.OldPassword,
+                dto.NewPassword,
+                dto.ConfirmPassword),
+            cancellationToken);
+
+        return token;
+    }
+
+    public async Task<Employee> GetById(object id, CancellationToken cancellationToken)
+    {
+        long employeeId = (long)id;
+
+        var employee = await applicationDbContext.Employees
+            .AsNoTracking()
+            .Include(x => x.Department)
+            .ThenInclude(x => x.Unit)
+            .Include(x => x.Position)
+            .FirstOrDefaultAsync(x => x.Id == employeeId, cancellationToken);
+
+        if (employee == null)
         {
-            _userRepository = userRepository;
-            _currentUserService = currentUserService;
-            _applicationDbContext = applicationDbContext;
+            throw new EntityNotFoundException(typeof(Employee), employeeId);
         }
 
-        public async Task<Token> ChangePassword(ChangeEmployeePasswordDto dto, CancellationToken cancellationToken)
+        return employee;
+    }
+
+    public async Task<CurrentUser> GetCurrentUser(CancellationToken cancellationToken)
+    {
+        var currentUser = currentUserService.User;
+
+        var employee = await applicationDbContext.Employees
+            .AsNoTracking()
+            .Include(x => x.Department)
+            .ThenInclude(x => x.Unit)
+            .Include(x => x.Position)
+            .FirstOrDefaultAsync(x => x.IntegrationId == currentUser.Id, cancellationToken);
+
+        if (employee == null)
         {
-            var employee = await GetById(dto.EmployeeId, cancellationToken);
-
-            var token = await _userRepository.ChangePassword(
-                new ChangeUserPasswordDto(
-                    employee.IntegrationId,
-                    dto.OldPassword,
-                    dto.NewPassword,
-                    dto.ConfirmPassword),
-                cancellationToken);
-
-            return token;
+            return new CurrentUser();
         }
 
-        public async Task<Employee> GetById(object id, CancellationToken cancellationToken)
+        return new CurrentUser
         {
-            long employeeId = (long)id;
+            Employee = employee,
+            Roles = currentUser.Roles
+        };
+    }
 
-            var employee = await _applicationDbContext.Employees
-                .AsNoTracking()
-                .Include(x => x.Department)
-                    .ThenInclude(x => x.Unit)
-                .Include(x => x.Position)
-                .FirstOrDefaultAsync(x => x.Id == employeeId, cancellationToken);
+    public Task<Authentication.Models.User> RegisterAuthUser(UserToRegisterDto dto, CancellationToken cancellationToken)
+    {
+        return userRepository.RegisterUser(dto, cancellationToken);
+    }
 
-            if (employee == null)
-            {
-                throw new EntityNotFoundException(typeof(Employee), employeeId);
-            }
-
-            return employee;
-        }
-
-        public async Task<CurrentUser> GetCurrentUser(CancellationToken cancellationToken)
-        {
-            var currentUser = _currentUserService.User;
-
-            var employee = await _applicationDbContext.Employees
-                .AsNoTracking()
-                .Include(x => x.Department)
-                    .ThenInclude(x => x.Unit)
-                .Include(x => x.Position)
-                .FirstOrDefaultAsync(x => x.IntegrationId == currentUser.Id, cancellationToken);
-
-            if (employee == null)
-            {
-                return new CurrentUser();
-            }
-
-            return new CurrentUser
-            {
-                Employee = employee,
-                Roles = currentUser.Roles
-            };
-        }
-
-        public Task<Authentication.Models.User> RegisterAuthUser(UserToRegisterDto dto, CancellationToken cancellationToken)
-        {
-            return _userRepository.RegisterUser(dto, cancellationToken);
-        }
-
-        public Task<Authentication.Models.User> UpdateAuthUser(UserToUpdateDto dto, CancellationToken cancellationToken)
-        {
-            return _userRepository.UpdateUser(dto, cancellationToken);
-        }
+    public Task<Authentication.Models.User> UpdateAuthUser(UserToUpdateDto dto, CancellationToken cancellationToken)
+    {
+        return userRepository.UpdateUser(dto, cancellationToken);
     }
 }

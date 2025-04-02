@@ -8,34 +8,33 @@ using ShiftTrack.Core.Application.Organization.Structure.Positions.Queries.GetPo
 using ShiftTrack.Core.Application.Organization.Structure.Positions.Queries.GetPositions;
 using ShiftTrack.Kernel.Controllers;
 
-namespace ShiftTrack.API.Controllers.Organization.Structure
+namespace ShiftTrack.API.Controllers.Organization.Structure;
+
+[Authorize]
+[Route("api/shift-track/organization/structure/positions")]
+public class ORG_STR_PositionsController : ApiController
 {
-    [Authorize]
-    [Route("api/shift-track/organization/structure/positions")]
-    public class ORG_STR_PositionsController : ApiController
+    [HttpPost]
+    public async Task<PositionVM> CreatePosition(CreatePositionCommand command)
+        => await Mediator.Send(command);
+
+    [HttpPut]
+    public async Task<PositionVM> UpdatePosition(UpdatePositionCommand command)
+        => await Mediator.Send(command);
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeletePosition(long id)
     {
-        [HttpPost]
-        public async Task<PositionVM> CreatePosition(CreatePositionCommand command)
-            => await Mediator.Send(command);
+        await Mediator.Send(new DeletePositionCommand(id));
 
-        [HttpPut]
-        public async Task<PositionVM> UpdatePosition(UpdatePositionCommand command)
-            => await Mediator.Send(command);
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePosition(long id)
-        {
-            await Mediator.Send(new DeletePositionCommand(id));
-
-            return Ok();
-        }
-
-        [HttpGet]
-        public async Task<IEnumerable<PositionVM>> GetPositions()
-            => await Mediator.Send(new GetPositionsQuery());
-
-        [HttpGet("{id}")]
-        public async Task<PositionVM> GetPositionById(long id)
-            => await Mediator.Send(new GetPositionByIdQuery(id));
+        return Ok();
     }
+
+    [HttpGet]
+    public async Task<IEnumerable<PositionVM>> GetPositions()
+        => await Mediator.Send(new GetPositionsQuery());
+
+    [HttpGet("{id}")]
+    public async Task<PositionVM> GetPositionById(long id)
+        => await Mediator.Send(new GetPositionByIdQuery(id));
 }
