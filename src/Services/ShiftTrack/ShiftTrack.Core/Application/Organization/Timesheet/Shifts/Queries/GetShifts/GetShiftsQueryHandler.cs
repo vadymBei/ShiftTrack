@@ -15,6 +15,7 @@ public class GetShiftsQueryHandler(
     {
         var shifts = await applicationDbContext.Shifts
             .AsNoTracking()
+            .OrderBy(x => x.Code)
             .ToListAsync(cancellationToken);
 
         return mapper.Map<List<ShiftVM>>(shifts);

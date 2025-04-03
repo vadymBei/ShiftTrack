@@ -9,6 +9,9 @@ public class Shift : ISoftDeletable
     public string Code { get; set; }
     public string Description { get; set; }
     public string Color { get; set; }
+    public TimeSpan? StartTime { get; set; }
+    public TimeSpan? EndTime { get; set; }
+    public TimeSpan? WorkHours { get; set; }
     public bool IsDeleted { get; set; }
     public DateTime? DeletedAt { get; set; }
     public ShiftType Type { get; set; }
