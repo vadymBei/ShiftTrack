@@ -6,64 +6,67 @@ using ShiftTrack.Core.Application.Organization.Structure.Departments.Queries.Get
 using ShiftTrack.Core.Application.Organization.Structure.Units.Commands.CreateUnit;
 using ShiftTrack.Kernel.Exceptions;
 
-namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.Departments.Queries
+namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.Departments.Queries;
+
+public class GetDepartmentsByUnitIdQueryTests(
+    IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory)
 {
-    public class GetDepartmentsByUnitIdQueryTests : BaseIntegrationTest
+    [Fact]
+    public async Task GetDepartmentsByUnitId_ShouldReturnEntityNotFoundException_WhenUnitNotFound()
     {
-        public GetDepartmentsByUnitIdQueryTests(
-            IntegrationTestWebAppFactory factory) : base(factory)
-        {
-        }
+        // Arrange
+        var getDepartmentsByUnitIdQuery = new GetDepartmentsByUnitIdQuery(1000);
 
-        [Fact]
-        public async Task GetDepartmentsByUnitId_ShouldReturnEntityNotFoundException_WhenUnitNotFound()
-        {
-            // Arrange
-            var getDepartmentsByUnitIdQuery = new GetDepartmentsByUnitIdQuery(1000);
+        // Act
+        Func<Task> act = async () => await Sender.Send(getDepartmentsByUnitIdQuery);
 
-            // Act
-            Func<Task> act = async () => await Sender.Send(getDepartmentsByUnitIdQuery);
+        // Assert
+        await act.Should()
+            .ThrowAsync<EntityNotFoundException>();
+    }
 
-            // Assert
-            await act.Should()
-                .ThrowAsync<EntityNotFoundException>();
-        }
+    [Fact]
+    public async Task GetDepartmentsByUnitId_ShouldReturnOneDepartment_WhenUnitAndDepartmentExists()
+    {
+        // Arrange
+        var departmentsToRemove = DbContext.Departments.ToList();
+        DbContext.Departments.RemoveRange(departmentsToRemove);
 
-        //[Fact]
-        //public async Task GetDepartmentsByUnitId_ShouldReturnOneDepartment_WhenUnitAndDepartmentExists()
-        //{
-        //    // Arrange
-        //    var departmentsToRemove = DbContext.Departments.ToList();
-        //    DbContext.Departments.RemoveRange(departmentsToRemove);
+        var createUnitCommand = new CreateUnitCommand(
+           "Хмельницький",
+           "Хмельницький регіон",
+           "Хм");
 
-        //    var createUnitCommand = new CreateUnitCommand(
-        //       "Хмельницький",
-        //       "Хмельницький регіон",
-        //       "Хм");
+        var unit = await Sender.Send(createUnitCommand);
 
-        //    var unit = await Sender.Send(createUnitCommand);
+        var createDepartmentCommand = new CreateDepartmentCommand(
+            "ТЦ Либіль Плаза",
+            unit.Id);
 
-        //    var createDepartmentCommand = new CreateDepartmentCommand(
-        //        "ТЦ Либіль Плаза",
-        //        unit.Id);
+        var department = await Sender.Send(createDepartmentCommand);
 
-        //    var department = await Sender.Send(createDepartmentCommand);
+        var getDepartmentsByUnitIdQuery = new GetDepartmentsByUnitIdQuery(unit.Id);
 
-        //    var getDepartmentsByUnitIdQuery = new GetDepartmentsByUnitIdQuery(unit.Id);
+        // Act
+        var departments = await Sender.Send(getDepartmentsByUnitIdQuery);
 
-        //    // Act
-        //    var departments = await Sender.Send(getDepartmentsByUnitIdQuery);
-
-        //    // Assert
-        //    departments.Should().NotBeNull();
-        //    departments.Should().NotBeEmpty();
-        //    departments.Should().HaveCount(1);
-        //    departments.FirstOrDefault().Should().BeEquivalentTo(
-        //        new DepartmentVM()
-        //        {
-        //            Id = department.Id,
-        //            Name = department.Name
-        //        });
-        //}
+        // Assert
+        departments.Should().NotBeNull();
+        departments.Should().NotBeEmpty();
+        departments.FirstOrDefault().Should().BeEquivalentTo(
+            new DepartmentVM()
+            {
+                Id = department.Id,
+                Name = department.Name,
+                UnitId = department.UnitId,
+                Unit = new UnitVM()
+                {
+                    Id = unit.Id,
+                    Name = unit.Name,
+                    Code = unit.Code,
+                    Description = unit.Description,
+                    FullName = unit.FullName
+                }
+            });
     }
 }

@@ -8,4 +8,6 @@ public record CreateShiftCommand(
     string Code,
     string Description,
     string Color,
-    ShiftType Type) : IRequest<ShiftVM>;
+    ShiftType Type,
+    TimeSpan? StartTime,
+    TimeSpan? EndTime) : IRequest<ShiftVM>;

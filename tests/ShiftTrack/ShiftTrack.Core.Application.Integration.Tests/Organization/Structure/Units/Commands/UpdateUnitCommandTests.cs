@@ -5,65 +5,60 @@ using ShiftTrack.Core.Application.Organization.Structure.Units.Commands.CreateUn
 using ShiftTrack.Core.Application.Organization.Structure.Units.Commands.UpdateUnit;
 using ShiftTrack.Kernel.Exceptions;
 
-namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.Units.Commands
+namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.Units.Commands;
+
+public class UpdateUnitCommandTests(
+    IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory)
 {
-    public class UpdateUnitCommandTests : BaseIntegrationTest
+    [Fact]
+    public async Task Update_ShouldReturnUpdatedUnit_WhenUnitExists()
     {
-        public UpdateUnitCommandTests(
-            IntegrationTestWebAppFactory factory) : base(factory)
-        {
-        }
+        // Arrange
+        var createUnitCommand = new CreateUnitCommand(
+            "Хмельницький",
+            "Хмельницький регіон",
+            "Хм");
 
-        [Fact]
-        public async Task Update_ShoulReturnUpdatedUnit_WhenUnitExists()
-        {
-            // Arrange
-            var createUnitCommand = new CreateUnitCommand(
-                "Хмельницький",
-                "Хмельницький регіон",
-                "Хм");
+        var newUnit = await Sender.Send(createUnitCommand);
 
-            var newUnit = await Sender.Send(createUnitCommand);
+        var updateUnitCommand = new UpdateUnitCommand(
+            newUnit.Id,
+            "Хмельницький оновлено",
+            "Хмельницький регіон оновлено",
+            "Хмо");
 
-            var updateUnitCommand = new UpdateUnitCommand(
-                newUnit.Id,
-                "Хмельницький оновлено",
-                "Хмельницький регіон оновлено",
-                "Хмо");
+        // Act
+        var updatedUnit = await Sender.Send(updateUnitCommand);
 
-            // Act
-            var updatedUnit = await Sender.Send(updateUnitCommand);
+        // Assert
+        updatedUnit.Should().NotBeNull();
 
-            // Assert
-            updatedUnit.Should().NotBeNull();
+        updatedUnit.Should().BeEquivalentTo(
+            new UnitVM()
+            {
+                Id = updateUnitCommand.Id,
+                Name = updateUnitCommand.Name,
+                Description = updateUnitCommand.Description,
+                Code = updateUnitCommand.Code,
+                FullName = updateUnitCommand.Code + " " + updateUnitCommand.Name
+            });
+    }
 
-            updatedUnit.Should().BeEquivalentTo(
-                new UnitVM()
-                {
-                    Id = updateUnitCommand.Id,
-                    Name = updateUnitCommand.Name,
-                    Description = updateUnitCommand.Description,
-                    Code = updateUnitCommand.Code,
-                    FullName = updateUnitCommand.Code + " " + updateUnitCommand.Name
-                });
-        }
+    [Fact]
+    public async Task Update_ShouldReturnEntityNotFoundException_WhenUnitNotFound()
+    {
+        // Arrange
+        var updateUnitCommand = new UpdateUnitCommand(
+            1000,
+            "Хмельницький оновлено",
+            "Хмельницький регіон оновлено",
+            "Хмо");
 
-        [Fact]
-        public async Task Update_ShouldReturnEntityNotFoundException_WhenUnitNotFound()
-        {
-            // Arrange
-            var updateUnitCommand = new UpdateUnitCommand(
-                1000,
-                "Хмельницький оновлено",
-                "Хмельницький регіон оновлено",
-                "Хмо");
+        // Act
+        Func<Task> act = async () => await Sender.Send(updateUnitCommand);
 
-            // Act
-            Func<Task> act = async () => await Sender.Send(updateUnitCommand);
-
-            // Assert
-            await act.Should()
-                .ThrowAsync<EntityNotFoundException>();
-        }
+        // Assert
+        await act.Should()
+            .ThrowAsync<EntityNotFoundException>();
     }
 }

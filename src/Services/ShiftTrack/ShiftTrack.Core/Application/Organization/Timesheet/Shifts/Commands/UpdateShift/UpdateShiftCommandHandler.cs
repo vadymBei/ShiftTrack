@@ -27,7 +27,19 @@ public class UpdateShiftCommandHandler(
         shift.Description = request.Description;
         shift.Color = request.Color;
         shift.Type = request.Type;
+        shift.StartTime = request.StartTime;
+        shift.EndTime = request.EndTime;
 
+        if (request.StartTime.HasValue 
+            && request.EndTime.HasValue)
+        {
+            shift.WorkHours = request.EndTime.Value - request.StartTime.Value;
+        }
+        else
+        {
+            shift.WorkHours = null;
+        }
+        
         await applicationDbContext.SaveChangesAsync(cancellationToken);
 
         return mapper.Map<ShiftVM>(shift);

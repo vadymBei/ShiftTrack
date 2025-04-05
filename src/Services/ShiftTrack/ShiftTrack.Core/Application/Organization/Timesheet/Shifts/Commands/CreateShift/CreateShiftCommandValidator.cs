@@ -21,5 +21,12 @@ public class CreateShiftCommandValidator : AbstractValidator<CreateShiftCommand>
         RuleFor(x => x.Type)
             .NotNull()
             .WithMessage("Type is required");
+
+        When(x => x.StartTime.HasValue && x.EndTime.HasValue, () =>
+        {
+            RuleFor(x => x.EndTime)
+                .GreaterThan(x => x.StartTime.Value)
+                .WithMessage("EndTime must be greater than StartTime");
+        });
     }
 }

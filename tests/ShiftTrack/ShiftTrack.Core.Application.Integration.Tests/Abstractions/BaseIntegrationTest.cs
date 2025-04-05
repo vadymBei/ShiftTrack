@@ -2,21 +2,20 @@
 using Microsoft.Extensions.DependencyInjection;
 using ShiftTrack.Core.Application.Data.Common.Interfaces;
 
-namespace ShiftTrack.Core.Application.Integration.Tests.Abstractions
+namespace ShiftTrack.Core.Application.Integration.Tests.Abstractions;
+
+public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppFactory>
 {
-    public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppFactory>
+    private readonly IServiceScope _serviceScope;
+    protected readonly ISender Sender;
+    protected readonly IApplicationDbContext DbContext;
+
+    protected BaseIntegrationTest(
+        IntegrationTestWebAppFactory factory)
     {
-        private readonly IServiceScope _serviceScope;
-        protected readonly ISender Sender;
-        protected readonly IApplicationDbContext DbContext;
+        _serviceScope = factory.Services.CreateScope();
 
-        protected BaseIntegrationTest(
-            IntegrationTestWebAppFactory factory)
-        {
-            _serviceScope = factory.Services.CreateScope();
-
-            Sender = _serviceScope.ServiceProvider.GetRequiredService<ISender>();
-            DbContext = _serviceScope.ServiceProvider.GetRequiredService<IApplicationDbContext>();
-        }
+        Sender = _serviceScope.ServiceProvider.GetRequiredService<ISender>();
+        DbContext = _serviceScope.ServiceProvider.GetRequiredService<IApplicationDbContext>();
     }
 }

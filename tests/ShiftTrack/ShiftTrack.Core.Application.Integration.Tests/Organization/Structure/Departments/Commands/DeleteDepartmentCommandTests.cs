@@ -5,55 +5,50 @@ using ShiftTrack.Core.Application.Organization.Structure.Departments.Commands.De
 using ShiftTrack.Core.Application.Organization.Structure.Units.Commands.CreateUnit;
 using ShiftTrack.Kernel.Exceptions;
 
-namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.Departments.Commands
+namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.Departments.Commands;
+
+public class DeleteDepartmentCommandTests(
+    IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory)
 {
-    public class DeleteDepartmentCommandTests : BaseIntegrationTest
+    [Fact]
+    public async Task Delete_ShouldReturnEntityNotFoundException_WhenDepartmentNotFound()
     {
-        public DeleteDepartmentCommandTests(
-            IntegrationTestWebAppFactory factory) : base(factory)
-        {
-        }
+        // Arrange
+        var deleteDepartmentCommand = new DeleteDepartmentCommand(1000);
 
-        [Fact]
-        public async Task Delete_ShouldReturnEntityNotFoundException_WhenDepartmentNotFound()
-        {
-            // Arrange
-            var deleteDepartmentCommand = new DeleteDepartmentCommand(1000);
+        // Act
+        Func<Task> act = async () => await Sender.Send(deleteDepartmentCommand);
 
-            // Act
-            Func<Task> act = async () => await Sender.Send(deleteDepartmentCommand);
+        // Assert
+        await act.Should()
+            .ThrowAsync<EntityNotFoundException>();
+    }
 
-            // Assert
-            await act.Should()
-                .ThrowAsync<EntityNotFoundException>();
-        }
+    [Fact]
+    public async Task Delete_ShouldRemove_WhenDepartmentExists()
+    {
+        // Arrange
+        var createUnitCommand = new CreateUnitCommand(
+            "Хмельницький",
+            "Хмельницький регіон",
+            "Хм");
 
-        [Fact]
-        public async Task Delete_ShouldRemove_WhenDepartmentExists()
-        {
-            // Arrange
-            var createUnitCommand = new CreateUnitCommand(
-                "Хмельницький",
-                "Хмельницький регіон",
-                "Хм");
+        var unit = await Sender.Send(createUnitCommand);
 
-            var unit = await Sender.Send(createUnitCommand);
+        var createDepartmentCommand = new CreateDepartmentCommand(
+            "ТЦ Либіль Плаза",
+            unit.Id);
 
-            var createDepartmentCommand = new CreateDepartmentCommand(
-                "ТЦ Либіль Плаза",
-                 unit.Id);
+        var newDepartment = await Sender.Send(createDepartmentCommand);
 
-            var newDepartment = await Sender.Send(createDepartmentCommand);
+        var deleteDepartmentCommand = new DeleteDepartmentCommand(newDepartment.Id);
 
-            var deleteDepartmentCommand = new DeleteDepartmentCommand(newDepartment.Id);
+        // Act
+        await Sender.Send(deleteDepartmentCommand);
 
-            // Act
-            await Sender.Send(deleteDepartmentCommand);
+        // Assert
+        var deletedDepartment = DbContext.Departments.FirstOrDefault(x => x.Id == newDepartment.Id);
 
-            // Assert
-            var deletedDepartment = DbContext.Departments.FirstOrDefault(x => x.Id == newDepartment.Id);
-
-            deletedDepartment.Should().BeNull();
-        }
+        deletedDepartment.Should().BeNull();
     }
 }

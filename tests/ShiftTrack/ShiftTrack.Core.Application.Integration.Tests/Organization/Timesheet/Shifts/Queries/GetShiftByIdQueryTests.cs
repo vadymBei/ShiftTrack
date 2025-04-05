@@ -8,13 +8,9 @@ using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Timesheet.Shifts.Queries;
 
-public class GetShiftByIdQueryTests : BaseIntegrationTest
+public class GetShiftByIdQueryTests(
+    IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory)
 {
-    public GetShiftByIdQueryTests(
-        IntegrationTestWebAppFactory factory) : base(factory)
-    {
-    }
-
     [Fact]
     public async Task GetById_ShouldReturnEntityNotFoundException_WhenShiftNotFound()
     {
@@ -37,7 +33,9 @@ public class GetShiftByIdQueryTests : BaseIntegrationTest
             "ВХ",
             "Вихідний",
             "#FFFFF",
-            ShiftType.DayOff);
+            ShiftType.DayOff,
+            new TimeSpan(09, 30, 00),
+            new TimeSpan(21, 00, 00));
 
         var newShift = await Sender.Send(createShiftCommand);
 
@@ -56,8 +54,10 @@ public class GetShiftByIdQueryTests : BaseIntegrationTest
                 Code = newShift.Code,
                 Description = newShift.Description,
                 Color = newShift.Color,
-                Type = newShift.Type
+                Type = newShift.Type,
+                StartTime = newShift.StartTime,
+                EndTime = newShift.EndTime,
+                WorkHours = newShift.EndTime - newShift.StartTime
             });
-
     }
 }
