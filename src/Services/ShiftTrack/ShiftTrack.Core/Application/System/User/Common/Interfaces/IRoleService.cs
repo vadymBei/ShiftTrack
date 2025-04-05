@@ -1,9 +1,8 @@
 ﻿using ShiftTrack.Core.Domain.System.User.Roles.Models;
 
-namespace ShiftTrack.Core.Application.System.User.Common.Interfaces
+namespace ShiftTrack.Core.Application.System.User.Common.Interfaces;
+
+public interface IRoleService
 {
-    public interface IRoleService
-    {
-        Task<IEnumerable<Role>> GetRoles(CancellationToken cancellationToken);
-    }
+    Task<IEnumerable<Role>> GetRoles(CancellationToken cancellationToken);
 }

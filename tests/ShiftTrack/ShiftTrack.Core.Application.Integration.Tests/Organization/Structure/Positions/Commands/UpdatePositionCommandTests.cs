@@ -6,64 +6,59 @@ using ShiftTrack.Core.Application.Organization.Structure.Positions.Commands.Upda
 using ShiftTrack.Core.Application.Organization.Structure.Positions.Queries.GetPositionById;
 using ShiftTrack.Kernel.Exceptions;
 
-namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.Positions.Commands
+namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.Positions.Commands;
+
+public class UpdatePositionCommandTests(
+    IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory)
 {
-    public class UpdatePositionCommandTests : BaseIntegrationTest
+    [Fact]
+    public async Task Update_ShouldReturnUpdatedPosition_WhenPositionExists()
     {
-        public UpdatePositionCommandTests(
-            IntegrationTestWebAppFactory factory) : base(factory)
-        {
-        }
+        // Arrange
+        var createPositionCommand = new CreatePositionCommand(
+            "Адміністратор",
+            "Адміністратор магазину");
 
-        [Fact]
-        public async Task Update_ShouldReturnUpdatedPosition_WhenPositionExists()
-        {
-            // Arrange
-            var createPositionCommand = new CreatePositionCommand(
-                   "Адміністратор",
-                   "Адміністратор магазину");
+        var newPosition = await Sender.Send(createPositionCommand);
 
-            var newPosition = await Sender.Send(createPositionCommand);
+        var getPositionByIdQuery = new GetPositionByIdQuery(newPosition.Id);
 
-            var getPositionByIdQuery = new GetPositionByIdQuery(newPosition.Id);
+        var position = await Sender.Send(getPositionByIdQuery);
 
-            var position = await Sender.Send(getPositionByIdQuery);
+        var updatePositionCommand = new UpdatePositionCommand(
+            position.Id,
+            "Адміністратор оновлений",
+            "Адміністратор магазину оновлений");
 
-            var updatePositionCommand = new UpdatePositionCommand(
-                position.Id,
-                "Адміністратор оновлений",
-                "Адміністратор магазину оновлений");
+        // Act
+        var updatedPosition = await Sender.Send(updatePositionCommand);
 
-            // Act
-            var updatedPosition = await Sender.Send(updatePositionCommand);
+        // Assert
+        updatedPosition.Should().NotBeNull();
 
-            // Assert
-            updatedPosition.Should().NotBeNull();
+        updatedPosition.Should().BeEquivalentTo(
+            new PositionVM()
+            {
+                Id = position.Id,
+                Name = updatePositionCommand.Name,
+                Description = updatePositionCommand.Description
+            });
+    }
 
-            updatedPosition.Should().BeEquivalentTo(
-                new PositionVM()
-                {
-                    Id = position.Id,
-                    Name = updatePositionCommand.Name,
-                    Description = updatePositionCommand.Description
-                });
-        }
+    [Fact]
+    public async Task Update_ShouldReturnEntityNotFoundException_WhenPositionNotExists()
+    {
+        // Arrange
+        var updatePositionCommand = new UpdatePositionCommand(
+            1000,
+            "Тест",
+            "Тест оновлення посади з помилкою");
 
-        [Fact]
-        public async Task Update_ShouldReturnEntityNotFoundException_WhenPositionNotExists()
-        {
-            // Arrange
-            var updatePositionCommand = new UpdatePositionCommand(
-                1000,
-                "Тест",
-                "Тест оновлення посади з помилкою");
+        // Act
+        Func<Task> act = async () => await Sender.Send(updatePositionCommand);
 
-            // Act
-            Func<Task> act = async () => await Sender.Send(updatePositionCommand);
-
-            // Assert
-            await act.Should()
-                .ThrowAsync<EntityNotFoundException>();
-        }
+        // Assert
+        await act.Should()
+            .ThrowAsync<EntityNotFoundException>();
     }
 }

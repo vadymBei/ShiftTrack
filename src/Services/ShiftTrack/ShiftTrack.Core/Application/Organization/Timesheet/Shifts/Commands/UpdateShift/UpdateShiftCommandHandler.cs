@@ -6,39 +6,42 @@ using ShiftTrack.Core.Application.Organization.Timesheet.Common.ViewModels.Shift
 using ShiftTrack.Core.Domain.Organization.Timesheet.Shifts.Entities;
 using ShiftTrack.Kernel.Exceptions;
 
-namespace ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Commands.UpdateShift
+namespace ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Commands.UpdateShift;
+
+public class UpdateShiftCommandHandler(
+    IMapper mapper,
+    IApplicationDbContext applicationDbContext)
+    : IRequestHandler<UpdateShiftCommand, ShiftVM>
 {
-    public class UpdateShiftCommandHandler : IRequestHandler<UpdateShiftCommand, ShiftVM>
+    public async Task<ShiftVM> Handle(UpdateShiftCommand request, CancellationToken cancellationToken)
     {
-        private readonly IMapper _mapper;
-        private readonly IApplicationDbContext _applicationDbContext;
+        var shift = await applicationDbContext.Shifts
+            .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
-        public UpdateShiftCommandHandler(
-            IMapper mapper,
-            IApplicationDbContext applicationDbContext)
+        if (shift == null)
         {
-            _mapper = mapper;
-            _applicationDbContext = applicationDbContext;
+            throw new EntityNotFoundException(typeof(Shift), request.Id);
         }
 
-        public async Task<ShiftVM> Handle(UpdateShiftCommand request, CancellationToken cancellationToken)
+        shift.Code = request.Code;
+        shift.Description = request.Description;
+        shift.Color = request.Color;
+        shift.Type = request.Type;
+        shift.StartTime = request.StartTime;
+        shift.EndTime = request.EndTime;
+
+        if (request.StartTime.HasValue 
+            && request.EndTime.HasValue)
         {
-            var shift = await _applicationDbContext.Shifts
-                .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
-
-            if (shift == null)
-            {
-                throw new EntityNotFoundException(typeof(Shift), request.Id);
-            }
-
-            shift.Code = request.Code;
-            shift.Dercription = request.Dercription;
-            shift.Color = request.Color;
-            shift.Type = request.Type;
-
-            await _applicationDbContext.SaveChangesAsync(cancellationToken);
-
-            return _mapper.Map<ShiftVM>(shift);
+            shift.WorkHours = request.EndTime.Value - request.StartTime.Value;
         }
+        else
+        {
+            shift.WorkHours = null;
+        }
+        
+        await applicationDbContext.SaveChangesAsync(cancellationToken);
+
+        return mapper.Map<ShiftVM>(shift);
     }
 }

@@ -4,29 +4,19 @@ using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Core.Application.Data.Common.Interfaces;
 using ShiftTrack.Core.Application.Organization.Structure.Common.ViewModels;
 
-namespace ShiftTrack.Core.Application.Organization.Structure.Units.Queries.GetUnits
+namespace ShiftTrack.Core.Application.Organization.Structure.Units.Queries.GetUnits;
+
+public class GetUnitsQueryHandler(
+    IMapper mapper,
+    IApplicationDbContext dbContext) : IRequestHandler<GetUnitsQuery, IEnumerable<UnitVM>>
 {
-    public class GetUnitsQueryHandler : IRequestHandler<GetUnitsQuery, IEnumerable<UnitVM>>
+    public async Task<IEnumerable<UnitVM>> Handle(GetUnitsQuery request, CancellationToken cancellationToken)
     {
-        private readonly IMapper _mapper;
-        private readonly IApplicationDbContext _dbContext;
+        var units = await dbContext.Units
+            .AsNoTracking()
+            .OrderBy(x => x.Name)
+            .ToListAsync(cancellationToken);
 
-        public GetUnitsQueryHandler(
-            IMapper mapper,
-            IApplicationDbContext dbContext)
-        {
-            _mapper = mapper;
-            _dbContext = dbContext;
-        }
-
-        public async Task<IEnumerable<UnitVM>> Handle(GetUnitsQuery request, CancellationToken cancellationToken)
-        {
-            var units = await _dbContext.Units
-                .AsNoTracking()
-                .OrderBy(x => x.Name)
-                .ToListAsync(cancellationToken);
-
-            return _mapper.Map<List<UnitVM>>(units);
-        }
+        return mapper.Map<List<UnitVM>>(units);
     }
 }

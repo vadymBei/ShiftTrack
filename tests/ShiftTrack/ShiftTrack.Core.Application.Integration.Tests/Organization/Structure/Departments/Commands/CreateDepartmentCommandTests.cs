@@ -5,53 +5,48 @@ using ShiftTrack.Core.Application.Organization.Structure.Common.ViewModels;
 using ShiftTrack.Core.Application.Organization.Structure.Departments.Commands.CreateDepartment;
 using ShiftTrack.Core.Application.Organization.Structure.Units.Commands.CreateUnit;
 
-namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.Departments.Commands
+namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.Departments.Commands;
+
+public class CreateDepartmentCommandTests(
+    IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory)
 {
-    public class CreateDepartmentCommandTests : BaseIntegrationTest
+    [Fact]
+    public async Task Create_ShouldAdd_NewDepartmentToDatabase()
     {
-        public CreateDepartmentCommandTests(
-            IntegrationTestWebAppFactory factory) : base(factory)
+        // Arrange
+        var createUnitCommand = new CreateUnitCommand(
+            "Хмельницький",
+            "Хмельницький регіон",
+            "Хм");
+
+        var unit = await Sender.Send(createUnitCommand);
+
+        var createDepartmentCommand = new CreateDepartmentCommand(
+            "ТЦ Либіль Плаза",
+            unit.Id);
+
+        // Act
+        var newDepartment = await Sender.Send(createDepartmentCommand);
+
+        // Assert
+        var department = DbContext.Departments
+            .Include(x => x.Unit)
+            .FirstOrDefault(x => x.Id == newDepartment.Id);
+
+        department.Should().NotBeNull();
+        department.Should().BeEquivalentTo(new DepartmentVM()
         {
-        }
-
-        [Fact]
-        public async Task Create_ShouldAdd_NewDepartmentToDatabase()
-        {
-            // Arrange
-            var createUnitCommand = new CreateUnitCommand(
-                "Хмельницький",
-                "Хмельницький регіон",
-                "Хм");
-
-            var unit = await Sender.Send(createUnitCommand);
-
-            var createDepartmentCommand = new CreateDepartmentCommand(
-                "ТЦ Либіль Плаза",
-                unit.Id);
-
-            // Act
-            var newDepartment = await Sender.Send(createDepartmentCommand);
-
-            // Assert
-            var department = DbContext.Departments
-                .Include(x => x.Unit)
-                .FirstOrDefault(x => x.Id == newDepartment.Id);
-
-            department.Should().NotBeNull();
-            department.Should().BeEquivalentTo(new DepartmentVM()
+            Id = newDepartment.Id,
+            Name = newDepartment.Name,
+            UnitId = newDepartment.UnitId,
+            Unit = new UnitVM()
             {
-                Id = newDepartment.Id,
-                Name = newDepartment.Name,
-                UnitId = newDepartment.UnitId,
-                Unit = new UnitVM()
-                {
-                    Id = newDepartment.Unit.Id,
-                    Name = newDepartment.Unit.Name,
-                    Code = newDepartment.Unit.Code,
-                    Description = newDepartment.Unit.Description,
-                    FullName = newDepartment.Unit.FullName
-                }
-            });
-        }
+                Id = newDepartment.Unit.Id,
+                Name = newDepartment.Unit.Name,
+                Code = newDepartment.Unit.Code,
+                Description = newDepartment.Unit.Description,
+                FullName = newDepartment.Unit.FullName
+            }
+        });
     }
 }

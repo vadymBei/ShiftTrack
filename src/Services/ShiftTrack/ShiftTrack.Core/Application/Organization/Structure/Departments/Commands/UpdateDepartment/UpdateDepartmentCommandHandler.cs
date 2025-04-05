@@ -6,34 +6,24 @@ using ShiftTrack.Core.Application.Organization.Structure.Common.ViewModels;
 using ShiftTrack.Core.Domain.Organization.Structure.Entities;
 using ShiftTrack.Kernel.Exceptions;
 
-namespace ShiftTrack.Core.Application.Organization.Structure.Departments.Commands.UpdateDepartment
+namespace ShiftTrack.Core.Application.Organization.Structure.Departments.Commands.UpdateDepartment;
+
+public class UpdateDepartmentCommandHandler(
+    IMapper mapper,
+    IApplicationDbContext dbContext) : IRequestHandler<UpdateDepartmentCommand, DepartmentVM>
 {
-    public class UpdateDepartmentCommandHandler : IRequestHandler<UpdateDepartmentCommand, DepartmentVM>
+    public async Task<DepartmentVM> Handle(UpdateDepartmentCommand request, CancellationToken cancellationToken)
     {
-        private readonly IMapper _mapper;
-        private readonly IApplicationDbContext _dbContext;
+        var department = await dbContext.Departments
+            .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
-        public UpdateDepartmentCommandHandler(
-            IMapper mapper,
-            IApplicationDbContext dbContext)
-        {
-            _mapper = mapper;
-            _dbContext = dbContext;
-        }
+        if (department == null)
+            throw new EntityNotFoundException(typeof(Department), request.Id);
 
-        public async Task<DepartmentVM> Handle(UpdateDepartmentCommand request, CancellationToken cancellationToken)
-        {
-            var department = await _dbContext.Departments
-                .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
+        department.Name = request.Name;
 
-            if (department == null)
-                throw new EntityNotFoundException(typeof(Department), request.Id);
+        await dbContext.SaveChangesAsync(cancellationToken);
 
-            department.Name = request.Name;
-
-            await _dbContext.SaveChangesAsync(cancellationToken);
-
-            return _mapper.Map<DepartmentVM>(department);
-        }
+        return mapper.Map<DepartmentVM>(department);
     }
 }

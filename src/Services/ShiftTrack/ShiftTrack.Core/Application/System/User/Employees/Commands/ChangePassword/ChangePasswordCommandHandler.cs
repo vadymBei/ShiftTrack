@@ -3,27 +3,17 @@ using MediatR;
 using ShiftTrack.Core.Application.System.Auth.Common.ViewModels;
 using ShiftTrack.Core.Application.System.User.Common.Interfaces;
 
-namespace ShiftTrack.Core.Application.System.User.Employees.Commands.ChangePassword
+namespace ShiftTrack.Core.Application.System.User.Employees.Commands.ChangePassword;
+
+public class ChangePasswordCommandHandler(
+    IMapper mapper,
+    IEmployeeService employeeService) : IRequestHandler<ChangePasswordCommand, TokenVM>
 {
-    public class ChangePasswordCommandHandler : IRequestHandler<ChangePasswordCommand, TokenVM>
+    public async Task<TokenVM> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
     {
-        private readonly IMapper _mapper;
-        private readonly IEmployeeService _employeeService;
+        var token = await employeeService
+            .ChangePassword(request.Data, cancellationToken);
 
-        public ChangePasswordCommandHandler(
-            IMapper mapper, 
-            IEmployeeService employeeService)
-        {
-            _mapper = mapper;
-            _employeeService = employeeService;
-        }
-
-        public async Task<TokenVM> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
-        {
-            var token = await _employeeService
-                .ChangePassword(request.Data, cancellationToken);
-
-            return _mapper.Map<TokenVM>(token);
-        }
+        return mapper.Map<TokenVM>(token);
     }
 }

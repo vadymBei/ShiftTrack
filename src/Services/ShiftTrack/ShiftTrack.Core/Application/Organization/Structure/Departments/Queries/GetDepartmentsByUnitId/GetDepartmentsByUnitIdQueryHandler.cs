@@ -5,35 +5,25 @@ using ShiftTrack.Core.Application.Data.Common.Interfaces;
 using ShiftTrack.Core.Application.Organization.Structure.Common.Interfaces;
 using ShiftTrack.Core.Application.Organization.Structure.Common.ViewModels;
 
-namespace ShiftTrack.Core.Application.Organization.Structure.Departments.Queries.GetDepartmentsByUnitId
+namespace ShiftTrack.Core.Application.Organization.Structure.Departments.Queries.GetDepartmentsByUnitId;
+
+public class GetDepartmentsByUnitIdQueryHandler(
+    IMapper mapper,
+    IUnitService unitService,
+    IApplicationDbContext dbContext)
+    : IRequestHandler<GetDepartmentsByUnitIdQuery, IEnumerable<DepartmentVM>>
 {
-    public class GetDepartmentsByUnitIdQueryHandler : IRequestHandler<GetDepartmentsByUnitIdQuery, IEnumerable<DepartmentVM>>
+    public async Task<IEnumerable<DepartmentVM>> Handle(GetDepartmentsByUnitIdQuery request, CancellationToken cancellationToken)
     {
-        private readonly IMapper _mapper;
-        private readonly IUnitService _unitService;
-        private readonly IApplicationDbContext _dbContext;
+        await unitService
+            .GetById(request.UnitId, cancellationToken);
 
-        public GetDepartmentsByUnitIdQueryHandler(
-            IMapper mapper,
-            IUnitService unitService,
-            IApplicationDbContext dbContext)
-        {
-            _mapper = mapper;
-            _unitService = unitService;
-            _dbContext = dbContext;
-        }
+        var departments = await dbContext.Departments
+            .Include(x => x.Unit)
+            .Where(x => x.UnitId == request.UnitId)
+            .OrderBy(x => x.Name)
+            .ToListAsync(cancellationToken);
 
-        public async Task<IEnumerable<DepartmentVM>> Handle(GetDepartmentsByUnitIdQuery request, CancellationToken cancellationToken)
-        {
-            await _unitService
-                .GetById(request.UnitId, cancellationToken);
-
-            var departments = await _dbContext.Departments
-                .Include(x => x.Unit)
-                .Where(x => x.UnitId == request.UnitId)
-                .ToArrayAsync(cancellationToken);
-
-            return _mapper.Map<IEnumerable<DepartmentVM>>(departments);
-        }
+        return mapper.Map<IEnumerable<DepartmentVM>>(departments);
     }
 }

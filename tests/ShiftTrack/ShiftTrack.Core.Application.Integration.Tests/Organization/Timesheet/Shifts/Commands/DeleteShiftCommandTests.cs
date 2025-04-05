@@ -5,50 +5,47 @@ using ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Commands.DeleteS
 using ShiftTrack.Core.Domain.Organization.Timesheet.Shifts.Enums;
 using ShiftTrack.Kernel.Exceptions;
 
-namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Timesheet.Shifts.Commands
+namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Timesheet.Shifts.Commands;
+
+public class DeleteShiftCommandTests(
+    IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory)
 {
-    public class DeleteShiftCommandTests : BaseIntegrationTest
+    [Fact]
+    public async Task Delete_ShouldReturnEntityNotFoundException_WhenShiftNotFound()
     {
-        public DeleteShiftCommandTests(
-            IntegrationTestWebAppFactory factory) : base(factory)
-        {
-        }
+        // Arrange
+        var deleteShiftCommand = new DeleteShiftCommand(1000);
 
-        [Fact]
-        public async Task Delete_ShouldReturnEntityNotFoundException_WhenShiftNotFound()
-        {
-            // Arrange
-            var deleteShiftCommand = new DeleteShiftCommand(1000);
+        // Act
+        Func<Task> act = async () => await Sender.Send(deleteShiftCommand);
 
-            // Act
-            Func<Task> act = async () => await Sender.Send(deleteShiftCommand);
+        // Assert
+        await act.Should()
+            .ThrowAsync<EntityNotFoundException>();
+    }
 
-            // Assert
-            await act.Should()
-                .ThrowAsync<EntityNotFoundException>();
-        }
+    [Fact]
+    public async Task Delete_ShouldDelete_WhenShiftExists()
+    {
+        // Arrange
+        var createShiftCommand = new CreateShiftCommand(
+            "ВХ",
+            "Вихідний",
+            "#FFFFF",
+            ShiftType.DayOff,
+            new TimeSpan(09, 30, 00),
+            new TimeSpan(21, 00, 00));
 
-        [Fact]
-        public async Task Delete_ShouldDelete_WhenShiftExists()
-        {
-            // Arrange
-            var createShiftCommand = new CreateShiftCommand(
-                "ВХ",
-                "Вихідний",
-                "#FFFFF",
-                ShiftType.DayOff);
+        var shift = await Sender.Send(createShiftCommand);
 
-            var shift = await Sender.Send(createShiftCommand);
+        var deleteShiftCommand = new DeleteShiftCommand(shift.Id);
 
-            var deleteShiftCommand = new DeleteShiftCommand(shift.Id);
+        // Act
+        await Sender.Send(deleteShiftCommand);
 
-            // Act
-            await Sender.Send(deleteShiftCommand);
+        // Assert
+        var deletedShift = DbContext.Shifts.FirstOrDefault(x => x.Id == shift.Id);
 
-            // Assert
-            var deletedShift = DbContext.Shifts.FirstOrDefault(x => x.Id == shift.Id);
-
-            deletedShift.Should().BeNull();
-        }
+        deletedShift.Should().BeNull();
     }
 }

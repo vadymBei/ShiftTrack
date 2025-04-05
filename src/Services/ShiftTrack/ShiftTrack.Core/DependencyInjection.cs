@@ -18,51 +18,50 @@ using ShiftTrack.Core.Infrastructure.Repositories.System.User;
 using ShiftTrack.Kernel;
 using ShiftTrack.Kernel.Attributes;
 
-namespace ShiftTrack.Core
+namespace ShiftTrack.Core;
+
+[ShiftTrackMember]
+public static class DependencyInjection
 {
-    [ShiftTrackMember]
-    public static class DependencyInjection
+    public static IServiceCollection AddCoreServices(this IServiceCollection services, IConfiguration configuration)
     {
-        public static IServiceCollection AddCoreServices(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddKernel();
+        services.AddKernel();
 
-            services.AddClientHttp(configuration);
+        services.AddClientHttp(configuration);
 
-            services.AddCurrentUserService();
+        services.AddCurrentUserService();
 
-            services.AddDbContext<ApplicationDbContext>(options =>
-                   options.UseNpgsql(
-                       configuration.GetConnectionString("DefaultConnection"),
-                       b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+        services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseNpgsql(
+                configuration.GetConnectionString("DefaultConnection"),
+                b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
 
-            services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
+        services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
 
-            //Organization structure services
-            services.AddTransient<IUnitService, UnitService>();
-            services.AddTransient<IDepartmentService, DepartmentService>();
-            services.AddTransient<IPositionService, PositionService>();
+        //Organization structure services
+        services.AddTransient<IUnitService, UnitService>();
+        services.AddTransient<IDepartmentService, DepartmentService>();
+        services.AddTransient<IPositionService, PositionService>();
 
-            //Organization timesheet services
-            services.AddTransient<IShiftService, ShiftService>();
+        //Organization timesheet services
+        services.AddTransient<IShiftService, ShiftService>();
 
-            //System user services
-            services.AddTransient<IEmployeeService, EmployeeService>();
-            services.AddTransient<IRoleService, RoleService>();
-            services.AddTransient<IEmployeeRoleService, EmployeeRoleService>();
+        //System user services
+        services.AddTransient<IEmployeeService, EmployeeService>();
+        services.AddTransient<IRoleService, RoleService>();
+        services.AddTransient<IEmployeeRoleService, EmployeeRoleService>();
 
-            //System user repositories
-            services.AddTransient<IUserRepository, UserRepository>();
-            services.AddTransient<IRoleRepository, RoleRepository>();
-            services.AddTransient<IUserRoleRepository, UserRoleRepository>();
+        //System user repositories
+        services.AddTransient<IUserRepository, UserRepository>();
+        services.AddTransient<IRoleRepository, RoleRepository>();
+        services.AddTransient<IUserRoleRepository, UserRoleRepository>();
 
-            //Tokens services
-            services.AddTransient<ITokenService, TokenService>();
+        //Tokens services
+        services.AddTransient<ITokenService, TokenService>();
 
-            //Tokens repositories
-            services.AddTransient<ITokenRepository, TokenRepository>();
+        //Tokens repositories
+        services.AddTransient<ITokenRepository, TokenRepository>();
 
-            return services;
-        }
+        return services;
     }
 }

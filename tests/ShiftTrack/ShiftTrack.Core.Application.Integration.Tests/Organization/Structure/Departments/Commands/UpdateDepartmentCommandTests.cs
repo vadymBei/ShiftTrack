@@ -6,72 +6,67 @@ using ShiftTrack.Core.Application.Organization.Structure.Departments.Commands.Up
 using ShiftTrack.Core.Application.Organization.Structure.Units.Commands.CreateUnit;
 using ShiftTrack.Kernel.Exceptions;
 
-namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.Departments.Commands
+namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.Departments.Commands;
+
+public class UpdateDepartmentCommandTests(
+    IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory)
 {
-    public class UpdateDepartmentCommandTests : BaseIntegrationTest
+    [Fact]
+    public async Task Update_ShouldReturnEntityNotFoundException_WhenDepartmentNotFound()
     {
-        public UpdateDepartmentCommandTests(
-            IntegrationTestWebAppFactory factory) : base(factory)
-        {
-        }
+        // Arrange
+        var updateDepartmentCommand = new UpdateDepartmentCommand(
+            1000,
+            "ТЦ Либідь плаза оновлений");
 
-        [Fact]
-        public async Task Update_ShouldReturnEntityNotFoundException_WhenDepartmentNotFound()
-        {
-            // Arrange
-            var updateDepartmentCommand = new UpdateDepartmentCommand(
-                1000,
-                "ТЦ Либідь плаза оновлений");
+        // Act
+        Func<Task> act = async () => await Sender.Send(updateDepartmentCommand);
 
-            // Act
-            Func<Task> act = async () => await Sender.Send(updateDepartmentCommand);
+        // Assert
+        await act.Should()
+            .ThrowAsync<EntityNotFoundException>();
+    }
 
-            // Assert
-            await act.Should()
-                .ThrowAsync<EntityNotFoundException>();
-        }
+    [Fact]
+    public async Task Update_ShouldReturnUpdatedDepartment_WhenDepartmentExists()
+    {
+        // Arrange
+        var createUnitCommand = new CreateUnitCommand(
+            "Хмельницький",
+            "Хмельницький регіон",
+            "Хм");
 
-        [Fact]
-        public async Task Update_ShouldReturnUpdatedDepartment_WhenDepartmentExists()
-        {
-            // Arrange
-            var createUnitCommand = new CreateUnitCommand(
-                "Хмельницький",
-                "Хмельницький регіон",
-                "Хм");
+        var unit = await Sender.Send(createUnitCommand);
 
-            var unit = await Sender.Send(createUnitCommand);
+        var createDepartmentCommand = new CreateDepartmentCommand(
+            "ТЦ Либіль Плаза", 
+            unit.Id);
 
-            var createDepartmentCommand = new CreateDepartmentCommand(
-                "ТЦ Либіль Плаза", 
-                unit.Id);
+        var newDepartment = await Sender.Send(createDepartmentCommand);
 
-            var newDepartment = await Sender.Send(createDepartmentCommand);
+        var updateDepartmentCommand = new UpdateDepartmentCommand(
+            newDepartment.Id,
+            "Либіль Плаза");
 
-            var updateDepartmentCommand = new UpdateDepartmentCommand(
-                newDepartment.Id,
-                "Либіль Плаза");
+        // Act
+        var updatedDepartment = await Sender.Send(updateDepartmentCommand);
 
-            // Act
-            var updatedDepartment = await Sender.Send(updateDepartmentCommand);
-
-            // Assert
-            updatedDepartment.Should().NotBeNull();
-            updatedDepartment.Should().BeEquivalentTo(
-                new DepartmentVM()
+        // Assert
+        updatedDepartment.Should().NotBeNull();
+        updatedDepartment.Should().BeEquivalentTo(
+            new DepartmentVM()
+            {
+                Id = updateDepartmentCommand.Id,
+                Name = updateDepartmentCommand.Name,
+                UnitId = newDepartment.UnitId,
+                Unit = new UnitVM()
                 {
-                    Id = updateDepartmentCommand.Id,
-                    Name = updateDepartmentCommand.Name,
-                    UnitId = newDepartment.UnitId,
-                    Unit = new UnitVM()
-                    {
-                        Id = newDepartment.Unit.Id,
-                        Name = newDepartment.Unit.Name,
-                        Code = newDepartment.Unit.Code,
-                        Description = newDepartment.Unit.Description,
-                        FullName = newDepartment.Unit.FullName
-                    }
-                });
-        }
+                    Id = newDepartment.Unit.Id,
+                    Name = newDepartment.Unit.Name,
+                    Code = newDepartment.Unit.Code,
+                    Description = newDepartment.Unit.Description,
+                    FullName = newDepartment.Unit.FullName
+                }
+            });
     }
 }

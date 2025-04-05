@@ -5,52 +5,41 @@ using ShiftTrack.Core.Application.System.User.Common.Interfaces;
 using ShiftTrack.Core.Domain.System.User.Roles.Constants;
 using ShiftTrack.Kernel.Exceptions;
 
-namespace ShiftTrack.Core.Application.System.User.EmployeeRoles.Commands.CreateEmployeeRole
+namespace ShiftTrack.Core.Application.System.User.EmployeeRoles.Commands.CreateEmployeeRole;
+
+public class CreateEmployeeRoleCommandHandler(
+    IEmployeeService employeeService,
+    ICurrentUserService currentUserService,
+    IEmployeeRoleService employeeRoleService)
+    : IRequestHandler<CreateEmployeeRoleCommand>
 {
-    public class CreateEmployeeRoleCommandHandler : IRequestHandler<CreateEmployeeRoleCommand>
+    public async Task<Unit> Handle(CreateEmployeeRoleCommand request, CancellationToken cancellationToken)
     {
-        private readonly IEmployeeService _employeeService;
-        private readonly ICurrentUserService _currentUserService;
-        private readonly IEmployeeRoleService _employeeRoleService;
+        var canUse = currentUserService.User.Roles
+            .Any(x => x == DefaultRolesCatalog.Sys_Admin
+                      || x == DefaultRolesCatalog.Regional_Director
+                      || x == DefaultRolesCatalog.Department_Director);
 
-        public CreateEmployeeRoleCommandHandler(
-            IEmployeeService employeeService,
-            ICurrentUserService currentUserService,
-            IEmployeeRoleService employeeRoleService)
+        if (!canUse)
         {
-            _employeeService = employeeService;
-            _currentUserService = currentUserService;
-            _employeeRoleService = employeeRoleService;
+            throw new AccessDeniedException(
+                new List<string>
+                {
+                    DefaultRolesCatalog.Sys_Admin,
+                    DefaultRolesCatalog.Regional_Director,
+                    DefaultRolesCatalog.Department_Director
+                });
         }
 
-        public async Task<Unit> Handle(CreateEmployeeRoleCommand request, CancellationToken cancellationToken)
-        {
-            var canUse = _currentUserService.User.Roles
-                .Any(x => x == DefaultRolesCatalog.Sys_Admin
-                       || x == DefaultRolesCatalog.Regional_Director
-                       || x == DefaultRolesCatalog.Department_Director);
+        var employee = await employeeService
+            .GetById(request.EmployeeId, cancellationToken);
 
-            if (!canUse)
-            {
-                throw new AccessDeniedException(
-                    new List<string>
-                    {
-                        DefaultRolesCatalog.Sys_Admin,
-                        DefaultRolesCatalog.Regional_Director,
-                        DefaultRolesCatalog.Department_Director
-                    });
-            }
+        await employeeRoleService.CreateEmployeeRole(
+            new EmployeeRoleToCreateDto(
+                employee.IntegrationId,
+                request.RoleId)
+            , cancellationToken);
 
-            var employee = await _employeeService
-                .GetById(request.EmployeeId, cancellationToken);
-
-            await _employeeRoleService.CreateEmployeeRole(
-                new EmployeeRoleToCreateDto(
-                    employee.IntegrationId,
-                    request.RoleId)
-                , cancellationToken);
-
-            return Unit.Value;
-        }
+        return Unit.Value;
     }
 }

@@ -6,19 +6,12 @@ using ShiftTrack.Core.Application.System.User.Common.Interfaces;
 
 namespace ShiftTrack.Core.Infrastructure.Repositories.System.User;
 
-public class UserRoleRepository : IUserRoleRepository
+public class UserRoleRepository(
+    IClient client) : IUserRoleRepository
 {
-    private readonly IClient _client;
-
-    public UserRoleRepository(
-        IClient client)
-    {
-        _client = client;
-    }
-
     public async Task CreateUserRole(UserRoleToCreateDto dto, CancellationToken cancellationToken)
     {
-        await _client
+        await client
             .Path("user-authentication-api/request-authentication-service")
             .Auth(AuthProvider.Basic)
             .Body(dto)

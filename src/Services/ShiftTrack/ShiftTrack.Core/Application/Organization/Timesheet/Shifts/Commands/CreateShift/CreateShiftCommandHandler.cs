@@ -1,38 +1,47 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Core.Application.Data.Common.Interfaces;
 using ShiftTrack.Core.Application.Organization.Timesheet.Common.ViewModels.Shifts;
 using ShiftTrack.Core.Domain.Organization.Timesheet.Shifts.Entities;
 
-namespace ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Commands.CreateShift
+namespace ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Commands.CreateShift;
+
+public class CreateShiftCommandHandler(
+    IMapper mapper,
+    IApplicationDbContext applicationDbContext)
+    : IRequestHandler<CreateShiftCommand, ShiftVM>
 {
-    public class CreateShiftCommandHandler : IRequestHandler<CreateShiftCommand, ShiftVM>
+    public async Task<ShiftVM> Handle(CreateShiftCommand request, CancellationToken cancellationToken)
     {
-        private readonly IMapper _mapper;
-        private readonly IApplicationDbContext _applicationDbContext;
+        var isShiftExist = await applicationDbContext.Shifts
+            .AsTracking()
+            .AnyAsync(x => x.Code == request.Code, cancellationToken);
 
-        public CreateShiftCommandHandler(
-            IMapper mapper,
-            IApplicationDbContext applicationDbContext)
+        if (isShiftExist)
         {
-            _mapper = mapper;
-            _applicationDbContext = applicationDbContext;
+            throw new Exception("Shift already exist.");
         }
-
-        public async Task<ShiftVM> Handle(CreateShiftCommand request, CancellationToken cancellationToken)
+        
+        var shift = new Shift()
         {
-            var shift = new Shift()
-            {
-                Code = request.Code,
-                Dercription = request.Dercription,
-                Type = request.Type,
-                Color = request.Color
-            };
+            Code = request.Code,
+            Description = request.Description,
+            Type = request.Type,
+            Color = request.Color
+        };
 
-            await _applicationDbContext.Shifts.AddAsync(shift, cancellationToken);
-            await _applicationDbContext.SaveChangesAsync(cancellationToken);
-
-            return _mapper.Map<ShiftVM>(shift);
+        if (request.StartTime.HasValue 
+            && request.EndTime.HasValue)
+        {
+            shift.StartTime = request.StartTime;
+            shift.EndTime = request.EndTime;
+            shift.WorkHours = request.EndTime.Value - request.StartTime.Value;
         }
+        
+        await applicationDbContext.Shifts.AddAsync(shift, cancellationToken);
+        await applicationDbContext.SaveChangesAsync(cancellationToken);
+
+        return mapper.Map<ShiftVM>(shift);
     }
 }

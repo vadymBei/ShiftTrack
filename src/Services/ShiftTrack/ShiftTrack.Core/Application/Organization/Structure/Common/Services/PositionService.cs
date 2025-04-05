@@ -4,32 +4,24 @@ using ShiftTrack.Core.Application.Organization.Structure.Common.Interfaces;
 using ShiftTrack.Core.Domain.Organization.Structure.Entities;
 using ShiftTrack.Kernel.Exceptions;
 
-namespace ShiftTrack.Core.Application.Organization.Structure.Common.Services
+namespace ShiftTrack.Core.Application.Organization.Structure.Common.Services;
+
+public class PositionService(
+    IApplicationDbContext applicationDbContext) : IPositionService
 {
-    public class PositionService : IPositionService
+    public async Task<Position> GetById(object id, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _applicationDbContext;
+        var positionId = (long)id;
 
-        public PositionService(
-            IApplicationDbContext applicationDbContext)
+        var position = await applicationDbContext.Positions
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == positionId, cancellationToken);
+
+        if (position is null)
         {
-            _applicationDbContext = applicationDbContext;
+            throw new EntityNotFoundException(typeof(Position), positionId);
         }
 
-        public async Task<Position> GetById(object id, CancellationToken cancellationToken)
-        {
-            var positionId = (long)id;
-
-            var position = await _applicationDbContext.Positions
-                .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == positionId, cancellationToken);
-
-            if (position is null)
-            {
-                throw new EntityNotFoundException(typeof(Position), positionId);
-            }
-
-            return position;
-        }
+        return position;
     }
 }

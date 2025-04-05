@@ -1,14 +1,13 @@
 ﻿using FluentValidation;
 
-namespace ShiftTrack.Core.Application.Organization.Structure.Positions.Queries.GetPositionById
+namespace ShiftTrack.Core.Application.Organization.Structure.Positions.Queries.GetPositionById;
+
+public class GetPositionByIdQueryValidator : AbstractValidator<GetPositionByIdQuery>
 {
-    public class GetPositionByIdQueryValidator : AbstractValidator<GetPositionByIdQuery>
+    public GetPositionByIdQueryValidator()
     {
-        public GetPositionByIdQueryValidator()
-        {
-            RuleFor(x => x.Id)
-                .NotNull()
-                    .WithMessage("Id is required");
-        }
+        RuleFor(x => x.Id)
+            .NotNull()
+            .WithMessage("Id is required");
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ShiftTrack.Core.Infrastructure;
@@ -11,9 +12,11 @@ using ShiftTrack.Core.Infrastructure;
 namespace ShiftTrack.Core.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250402162933_ORG_TSH_Shifts_Rename_Description")]
+    partial class ORG_TSH_Shifts_Rename_Description
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -128,20 +131,11 @@ namespace ShiftTrack.Core.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<TimeSpan?>("EndTime")
-                        .HasColumnType("interval");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<TimeSpan?>("StartTime")
-                        .HasColumnType("interval");
-
                     b.Property<int>("Type")
                         .HasColumnType("integer");
-
-                    b.Property<TimeSpan?>("WorkHours")
-                        .HasColumnType("interval");
 
                     b.HasKey("Id");
 

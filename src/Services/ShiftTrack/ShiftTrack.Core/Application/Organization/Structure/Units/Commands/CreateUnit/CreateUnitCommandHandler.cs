@@ -4,34 +4,25 @@ using ShiftTrack.Core.Application.Data.Common.Interfaces;
 using ShiftTrack.Core.Application.Organization.Structure.Common.ViewModels;
 using UnitEntity = ShiftTrack.Core.Domain.Organization.Structure.Entities.Unit;
 
-namespace ShiftTrack.Core.Application.Organization.Structure.Units.Commands.CreateUnit
+namespace ShiftTrack.Core.Application.Organization.Structure.Units.Commands.CreateUnit;
+
+public class CreateUnitCommandHandler(
+    IMapper mapper,
+    IApplicationDbContext dbContext)
+    : IRequestHandler<CreateUnitCommand, UnitVM>
 {
-    public class CreateUnitCommandHandler : IRequestHandler<CreateUnitCommand, UnitVM>
+    public async Task<UnitVM> Handle(CreateUnitCommand request, CancellationToken cancellationToken)
     {
-        private readonly IMapper _mapper;
-        private readonly IApplicationDbContext _dbContext;
-
-        public CreateUnitCommandHandler(
-            IMapper mapper,
-            IApplicationDbContext dbContext)
+        var unit = new UnitEntity()
         {
-            _mapper = mapper;
-            _dbContext = dbContext;
-        }
+            Name = request.Name,
+            Description = request.Description,
+            Code = request.Code
+        };
 
-        public async Task<UnitVM> Handle(CreateUnitCommand request, CancellationToken cancellationToken)
-        {
-            var unit = new UnitEntity()
-            {
-                Name = request.Name,
-                Description = request.Description,
-                Code = request.Code
-            };
+        await dbContext.Units.AddAsync(unit, cancellationToken);
+        await dbContext.SaveChangesAsync(cancellationToken);
 
-            await _dbContext.Units.AddAsync(unit, cancellationToken);
-            await _dbContext.SaveChangesAsync(cancellationToken);
-
-            return _mapper.Map<UnitVM>(unit);
-        }
+        return mapper.Map<UnitVM>(unit);
     }
 }

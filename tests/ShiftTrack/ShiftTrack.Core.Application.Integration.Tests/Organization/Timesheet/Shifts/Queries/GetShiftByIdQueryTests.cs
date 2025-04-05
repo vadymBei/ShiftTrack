@@ -6,59 +6,58 @@ using ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Queries.GetShift
 using ShiftTrack.Core.Domain.Organization.Timesheet.Shifts.Enums;
 using ShiftTrack.Kernel.Exceptions;
 
-namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Timesheet.Shifts.Queries
+namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Timesheet.Shifts.Queries;
+
+public class GetShiftByIdQueryTests(
+    IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory)
 {
-    public class GetShiftByIdQueryTests : BaseIntegrationTest
+    [Fact]
+    public async Task GetById_ShouldReturnEntityNotFoundException_WhenShiftNotFound()
     {
-        public GetShiftByIdQueryTests(
-            IntegrationTestWebAppFactory factory) : base(factory)
-        {
-        }
+        // Arrange
+        var getByIdQuery = new GetShiftByIdQuery(1000);
 
-        [Fact]
-        public async Task GetById_ShouldReturnEntityNotFoundException_WhenShiftNotFound()
-        {
-            // Arrange
-            var getByIdQuery = new GetShiftByIdQuery(1000);
+        // Act
+        Func<Task> act = async () => await Sender.Send(getByIdQuery);
 
-            // Act
-            Func<Task> act = async () => await Sender.Send(getByIdQuery);
+        // Assert
+        await act.Should()
+            .ThrowAsync<EntityNotFoundException>();
+    }
 
-            // Assert
-            await act.Should()
-                .ThrowAsync<EntityNotFoundException>();
-        }
+    [Fact]
+    public async Task GetById_ShouldReturnShift_WhenShiftExists()
+    {
+        // Arrange
+        var createShiftCommand = new CreateShiftCommand(
+            "ВХ",
+            "Вихідний",
+            "#FFFFF",
+            ShiftType.DayOff,
+            new TimeSpan(09, 30, 00),
+            new TimeSpan(21, 00, 00));
 
-        [Fact]
-        public async Task GetById_ShouldReturnShift_WhenShiftExists()
-        {
-            // Arrange
-            var createShiftCommand = new CreateShiftCommand(
-                "ВХ",
-                "Вихідний",
-                "#FFFFF",
-                ShiftType.DayOff);
+        var newShift = await Sender.Send(createShiftCommand);
 
-            var newShift = await Sender.Send(createShiftCommand);
+        var getByIdQuery = new GetShiftByIdQuery(newShift.Id);
 
-            var getByIdQuery = new GetShiftByIdQuery(newShift.Id);
+        // Act
+        var shift = await Sender.Send(getByIdQuery);
 
-            // Act
-            var shift = await Sender.Send(getByIdQuery);
+        // Assert
+        shift.Should().NotBeNull();
 
-            // Assert
-            shift.Should().NotBeNull();
-
-            shift.Should().BeEquivalentTo(
-                new ShiftVM()
-                {
-                    Id = newShift.Id,
-                    Code = newShift.Code,
-                    Dercription = newShift.Dercription,
-                    Color = newShift.Color,
-                    Type = newShift.Type
-                });
-
-        }
+        shift.Should().BeEquivalentTo(
+            new ShiftVM()
+            {
+                Id = newShift.Id,
+                Code = newShift.Code,
+                Description = newShift.Description,
+                Color = newShift.Color,
+                Type = newShift.Type,
+                StartTime = newShift.StartTime,
+                EndTime = newShift.EndTime,
+                WorkHours = newShift.EndTime - newShift.StartTime
+            });
     }
 }

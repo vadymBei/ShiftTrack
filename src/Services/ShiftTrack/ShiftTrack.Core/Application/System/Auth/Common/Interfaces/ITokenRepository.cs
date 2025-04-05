@@ -1,12 +1,10 @@
 ﻿using ShiftTrack.Core.Application.System.Auth.Common.Dtos;
 using ShiftTrack.Core.Domain.System.Tokens.Models;
 
-namespace ShiftTrack.Core.Application.System.Auth.Common.Interfaces
-{
-    public interface ITokenRepository
-    {
-        Task<Token> GenerateToken(GenerateTokenDto dto, CancellationToken cancellationToken);
+namespace ShiftTrack.Core.Application.System.Auth.Common.Interfaces;
 
-        Task<Token> RefreshToken(RefreshTokenDto dto, CancellationToken cancellationToken);
-    }
+public interface ITokenRepository
+{
+    Task<Token> GenerateToken(GenerateTokenDto dto, CancellationToken cancellationToken);
+    Task<Token> RefreshToken(RefreshTokenDto dto, CancellationToken cancellationToken);
 }
