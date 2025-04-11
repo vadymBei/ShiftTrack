@@ -53,8 +53,6 @@ public static class DependencyInjection
 
         //System user repositories
         services.AddTransient<IUserRepository, UserRepository>();
-        services.AddTransient<IRoleRepository, RoleRepository>();
-        services.AddTransient<IUserRoleRepository, UserRoleRepository>();
 
         //Tokens services
         services.AddTransient<ITokenService, TokenService>();

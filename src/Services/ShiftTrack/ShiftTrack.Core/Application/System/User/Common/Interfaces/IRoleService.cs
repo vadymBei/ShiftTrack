@@ -1,4 +1,4 @@
-﻿using ShiftTrack.Core.Domain.System.User.Roles.Models;
+﻿using ShiftTrack.Core.Domain.System.User.Roles.Entities;
 
 namespace ShiftTrack.Core.Application.System.User.Common.Interfaces;
 

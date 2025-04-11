@@ -1,13 +1,20 @@
-﻿using ShiftTrack.Core.Application.System.User.Common.Interfaces;
-using ShiftTrack.Core.Domain.System.User.Roles.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using ShiftTrack.Core.Application.Data.Common.Interfaces;
+using ShiftTrack.Core.Application.System.User.Common.Interfaces;
+using ShiftTrack.Core.Domain.System.User.Roles.Entities;
 
 namespace ShiftTrack.Core.Application.System.User.Common.Services;
 
 public class RoleService(
-    IRoleRepository roleRepository) : IRoleService
+    IApplicationDbContext applicationDbContext) : IRoleService
 {
-    public Task<IEnumerable<Role>> GetRoles(CancellationToken cancellationToken)
+    public async Task<IEnumerable<Role>> GetRoles(CancellationToken cancellationToken)
     {
-        return roleRepository.GetRoles(cancellationToken);
+        var roles = await applicationDbContext.Roles
+            .AsNoTracking()
+            .OrderBy(x => x.Name)
+            .ToListAsync(cancellationToken);
+        
+        return roles;
     }
 }

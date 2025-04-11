@@ -17,12 +17,8 @@ public class GetRolesQueryHandler(
     {
         var roles = await memoryCache.GetOrCreateAsync(
             "roles",
-            async () =>
-            {
-                return await roleService
-                    .GetRoles(cancellationToken);
-            });
-
+            async () => await roleService
+                .GetRoles(cancellationToken));
 
         return mapper.Map<List<RoleVM>>(roles);
     }

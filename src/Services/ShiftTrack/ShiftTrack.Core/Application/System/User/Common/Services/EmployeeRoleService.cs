@@ -3,15 +3,10 @@ using ShiftTrack.Core.Application.System.User.Common.Interfaces;
 
 namespace ShiftTrack.Core.Application.System.User.Common.Services;
 
-public class EmployeeRoleService(
-    IUserRoleRepository userRoleRepository) : IEmployeeRoleService
+public class EmployeeRoleService() : IEmployeeRoleService
 {
-    public async Task CreateEmployeeRole(EmployeeRoleToCreateDto dto, CancellationToken cancellationToken)
+    public Task CreateEmployeeRole(EmployeeRoleToCreateDto dto, CancellationToken cancellationToken)
     {
-        await userRoleRepository.CreateUserRole(
-            new UserRoleToCreateDto(
-                dto.EmployeeIntegrationId,
-                dto.RoleId)
-            , cancellationToken);
+        throw new NotImplementedException();
     }
 }
