@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using ShiftTrack.Authentication.Interfaces;
 using ShiftTrack.Core.Application.System.User.Common.Constants;
 using ShiftTrack.Core.Application.System.User.Common.Dtos;
 using ShiftTrack.Core.Application.System.User.Common.Interfaces;
@@ -22,9 +21,9 @@ public class CreateEmployeeRoleCommandHandler(
             DefaultRolesCatalog.DEPARTMENT_DIRECTOR
         };
         
-        var canUse = currentUserService.User.Roles
+        var canUse = currentUserService.Roles
             .Any(x => allowedRoles.Contains(x));
-
+        
         if (!canUse)
         {
             throw new AccessDeniedException(

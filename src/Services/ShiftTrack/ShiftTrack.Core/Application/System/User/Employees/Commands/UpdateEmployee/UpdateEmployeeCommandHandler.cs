@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using ShiftTrack.Authentication.Interfaces;
 using ShiftTrack.Core.Application.Data.Common.Interfaces;
 using ShiftTrack.Core.Application.Organization.Structure.Common.Interfaces;
 using ShiftTrack.Core.Application.System.User.Common.Dtos;
@@ -36,7 +35,7 @@ public class UpdateEmployeeCommandHandler(
         {
             var updatedUser = await employeeService.UpdateAuthUser(
                 new UserToUpdateDto(
-                    currentUserService.User.Id,
+                    currentUserService.Employee.IntegrationId,
                     request.Email,
                     request.PhoneNumber)
                 , cancellationToken);

@@ -38,6 +38,8 @@ public static class DependencyInjection
 
         services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
 
+        services.AddTransient<ICurrentUserService, CurrentUserService>();
+        
         //Organization structure services
         services.AddTransient<IUnitService, UnitService>();
         services.AddTransient<IDepartmentService, DepartmentService>();
