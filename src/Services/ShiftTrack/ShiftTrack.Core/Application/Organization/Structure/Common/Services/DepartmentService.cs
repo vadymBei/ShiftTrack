@@ -23,4 +23,15 @@ public class DepartmentService(
 
         return department;
     }
+
+    public async Task<IEnumerable<Department>> GetDepartmentsByIds(IEnumerable<long> departmentIds, CancellationToken cancellationToken)
+    {
+        var departments = await dbContext.Departments
+            .AsNoTracking()
+            .Include(x => x.Unit)
+            .Where(x => departmentIds.Contains(x.Id))
+            .ToListAsync(cancellationToken);
+        
+        return departments;
+    }
 }

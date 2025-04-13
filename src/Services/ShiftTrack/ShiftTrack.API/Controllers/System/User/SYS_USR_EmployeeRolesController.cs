@@ -1,6 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ShiftTrack.Core.Application.System.User.Common.Dtos;
+using ShiftTrack.Core.Application.System.User.Common.ViewModels;
 using ShiftTrack.Core.Application.System.User.EmployeeRoles.Commands.CreateEmployeeRole;
+using ShiftTrack.Core.Application.System.User.EmployeeRoles.Commands.DeleteEmployeeRole;
+using ShiftTrack.Core.Application.System.User.EmployeeRoles.Queries.GetEmployeeRoleById;
+using ShiftTrack.Core.Application.System.User.EmployeeRoles.Queries.GetEmployeeRolesByEmployeeId;
 using ShiftTrack.Kernel.Controllers;
 
 namespace ShiftTrack.API.Controllers.System.User;
@@ -10,10 +15,22 @@ namespace ShiftTrack.API.Controllers.System.User;
 public class SYS_USR_EmployeeRolesController : ApiController
 {
     [HttpPost]
-    public async Task<IActionResult> CreateEmployeeRole(CreateEmployeeRoleCommand command)
-    {
-        await Mediator.Send(command);
+    public async Task<EmployeeRoleVm> CreateEmployeeRole([FromBody] EmployeeRoleToCreateDto dto)
+        => await Mediator.Send(new CreateEmployeeRoleCommand(dto));
 
+    [HttpDelete]
+    public async Task<IActionResult> DeleteEmployeeRole([FromQuery] long id)
+    {
+        await Mediator.Send(new DeleteEmployeeRoleCommand(id));
+        
         return Ok();
     }
+
+    [HttpGet]
+    public Task<EmployeeRoleVm> GetEmployeeRoleById([FromQuery] long id)
+        => Mediator.Send(new GetEmployeeRoleByIdQuery(id));
+
+    [HttpGet("by-employee")]
+    public Task<IEnumerable<EmployeeRoleVm>> GetEmployeeRolesByEmployeeId([FromQuery] long employeeId)
+        => Mediator.Send(new GetEmployeeRolesByEmployeeIdQuery(employeeId));
 }
