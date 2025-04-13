@@ -12,7 +12,7 @@ public class RoleService(
     {
         var roles = await applicationDbContext.Roles
             .AsNoTracking()
-            .OrderBy(x => x.Name)
+            .OrderBy(x => x.Title)
             .ToListAsync(cancellationToken);
         
         return roles;

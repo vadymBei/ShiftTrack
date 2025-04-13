@@ -24,7 +24,7 @@ builder.Services.AddControllers()
 
 builder.Services.AddJWTAuthenticationSwagger(
     builder.Environment.ApplicationName,
-    Assembly.GetEntryAssembly().GetName().Version.ToString());
+    Assembly.GetEntryAssembly()?.GetName().Version?.ToString());
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -32,8 +32,10 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    var dataContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    dataContext.Database.Migrate();
+    var applicationDbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    applicationDbContext.Database.Migrate();
+
+    await ApplicationDbContextSeed.SeedAsync(applicationDbContext);
 }
 
 app.UseSwagger();
