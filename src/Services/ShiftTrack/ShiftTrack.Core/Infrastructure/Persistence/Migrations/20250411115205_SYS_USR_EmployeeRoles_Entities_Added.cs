@@ -3,7 +3,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace ShiftTrack.Core.Infrastructure.Migrations
+namespace ShiftTrack.Core.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
     public partial class SYS_USR_EmployeeRoles_Entities_Added : Migration

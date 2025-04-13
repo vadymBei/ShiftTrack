@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace ShiftTrack.Core.Infrastructure.Migrations
+namespace ShiftTrack.Core.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
     public partial class ORG_TSH_Shifts_Added_StartTime_EndTime_WorkHours : Migration

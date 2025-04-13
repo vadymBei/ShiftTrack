@@ -1,14 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Reflection;
+using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Core.Application.Data.Common.Interfaces;
 using ShiftTrack.Core.Domain.Organization.Structure.Entities;
 using ShiftTrack.Core.Domain.Organization.Timesheet.Shifts.Entities;
-using ShiftTrack.Core.Domain.System.User.Employees.Entities;
-using ShiftTrack.Core.Infrastructure.Interceptors;
-using System.Reflection;
 using ShiftTrack.Core.Domain.System.User.EmployeeRoles.Entities;
+using ShiftTrack.Core.Domain.System.User.Employees.Entities;
 using ShiftTrack.Core.Domain.System.User.Roles.Entities;
+using ShiftTrack.Core.Infrastructure.Interceptors;
 
-namespace ShiftTrack.Core.Infrastructure;
+namespace ShiftTrack.Core.Infrastructure.Persistence;
 
 public class ApplicationDbContext : DbContext, IApplicationDbContext
 {

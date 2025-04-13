@@ -5,6 +5,7 @@ using ShiftTrack.Core;
 using ShiftTrack.Core.Infrastructure;
 using System.Reflection;
 using System.Text.Json.Serialization;
+using ShiftTrack.Core.Infrastructure.Persistence;
 using ShiftTrack.Kernel.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);

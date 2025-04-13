@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace ShiftTrack.Core.Infrastructure.Migrations
+namespace ShiftTrack.Core.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
     public partial class Relations_Was_Updated_Between_Employee_Department_Unit : Migration

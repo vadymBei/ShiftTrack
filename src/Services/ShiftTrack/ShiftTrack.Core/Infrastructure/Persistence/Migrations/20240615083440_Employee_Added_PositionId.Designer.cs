@@ -6,14 +6,15 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ShiftTrack.Core.Infrastructure;
+using ShiftTrack.Core.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace ShiftTrack.Core.Infrastructure.Migrations
+namespace ShiftTrack.Core.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240918091430_Relations_Was_Updated_Between_Employee_Department_Unit")]
-    partial class Relations_Was_Updated_Between_Employee_Department_Unit
+    [Migration("20240615083440_Employee_Added_PositionId")]
+    partial class Employee_Added_PositionId
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -169,9 +170,6 @@ namespace ShiftTrack.Core.Infrastructure.Migrations
                     b.Property<int>("Gender")
                         .HasColumnType("integer");
 
-                    b.Property<string>("IntegrationId")
-                        .HasColumnType("text");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
@@ -223,7 +221,7 @@ namespace ShiftTrack.Core.Infrastructure.Migrations
             modelBuilder.Entity("ShiftTrack.Core.Domain.System.User.Employees.Entities.Employee", b =>
                 {
                     b.HasOne("ShiftTrack.Core.Domain.Organization.Structure.Entities.Department", "Department")
-                        .WithMany()
+                        .WithMany("Employees")
                         .HasForeignKey("DepartmentId");
 
                     b.HasOne("ShiftTrack.Core.Domain.Organization.Structure.Entities.Position", "Position")
@@ -233,6 +231,11 @@ namespace ShiftTrack.Core.Infrastructure.Migrations
                     b.Navigation("Department");
 
                     b.Navigation("Position");
+                });
+
+            modelBuilder.Entity("ShiftTrack.Core.Domain.Organization.Structure.Entities.Department", b =>
+                {
+                    b.Navigation("Employees");
                 });
 
             modelBuilder.Entity("ShiftTrack.Core.Domain.Organization.Structure.Entities.Unit", b =>

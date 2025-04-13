@@ -6,14 +6,15 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ShiftTrack.Core.Infrastructure;
+using ShiftTrack.Core.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace ShiftTrack.Core.Infrastructure.Migrations
+namespace ShiftTrack.Core.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240530114253_Employee_Entity_Added")]
-    partial class Employee_Entity_Added
+    [Migration("20240910110453_Employee_UnitId_Prop_Added")]
+    partial class Employee_UnitId_Prop_Added
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -42,14 +43,9 @@ namespace ShiftTrack.Core.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<long?>("UnitId")
-                        .HasColumnType("bigint");
-
                     b.HasKey("Id");
 
                     b.HasIndex("IsDeleted");
-
-                    b.HasIndex("UnitId");
 
                     b.ToTable("Departments", (string)null);
                 });
@@ -169,6 +165,9 @@ namespace ShiftTrack.Core.Infrastructure.Migrations
                     b.Property<int>("Gender")
                         .HasColumnType("integer");
 
+                    b.Property<string>("IntegrationId")
+                        .HasColumnType("text");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
@@ -184,9 +183,15 @@ namespace ShiftTrack.Core.Infrastructure.Migrations
                         .HasMaxLength(13)
                         .HasColumnType("character varying(13)");
 
+                    b.Property<long?>("PositionId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Surname")
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)");
+
+                    b.Property<long?>("UnitId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -197,35 +202,35 @@ namespace ShiftTrack.Core.Infrastructure.Migrations
 
                     b.HasIndex("IsDeleted");
 
+                    b.HasIndex("PhoneNumber")
+                        .IsUnique();
+
+                    b.HasIndex("PositionId");
+
+                    b.HasIndex("UnitId");
+
                     b.ToTable("Profiles", (string)null);
-                });
-
-            modelBuilder.Entity("ShiftTrack.Core.Domain.Organization.Structure.Entities.Department", b =>
-                {
-                    b.HasOne("ShiftTrack.Core.Domain.Organization.Structure.Entities.Unit", "Unit")
-                        .WithMany("Departments")
-                        .HasForeignKey("UnitId");
-
-                    b.Navigation("Unit");
                 });
 
             modelBuilder.Entity("ShiftTrack.Core.Domain.System.User.Employees.Entities.Employee", b =>
                 {
                     b.HasOne("ShiftTrack.Core.Domain.Organization.Structure.Entities.Department", "Department")
-                        .WithMany("Employees")
+                        .WithMany()
                         .HasForeignKey("DepartmentId");
 
+                    b.HasOne("ShiftTrack.Core.Domain.Organization.Structure.Entities.Position", "Position")
+                        .WithMany()
+                        .HasForeignKey("PositionId");
+
+                    b.HasOne("ShiftTrack.Core.Domain.Organization.Structure.Entities.Unit", "Unit")
+                        .WithMany()
+                        .HasForeignKey("UnitId");
+
                     b.Navigation("Department");
-                });
 
-            modelBuilder.Entity("ShiftTrack.Core.Domain.Organization.Structure.Entities.Department", b =>
-                {
-                    b.Navigation("Employees");
-                });
+                    b.Navigation("Position");
 
-            modelBuilder.Entity("ShiftTrack.Core.Domain.Organization.Structure.Entities.Unit", b =>
-                {
-                    b.Navigation("Departments");
+                    b.Navigation("Unit");
                 });
 #pragma warning restore 612, 618
         }

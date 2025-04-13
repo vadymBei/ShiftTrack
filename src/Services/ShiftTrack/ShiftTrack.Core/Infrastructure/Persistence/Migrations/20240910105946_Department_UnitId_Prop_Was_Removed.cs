@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace ShiftTrack.Core.Infrastructure.Migrations
+namespace ShiftTrack.Core.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
     public partial class Department_UnitId_Prop_Was_Removed : Migration

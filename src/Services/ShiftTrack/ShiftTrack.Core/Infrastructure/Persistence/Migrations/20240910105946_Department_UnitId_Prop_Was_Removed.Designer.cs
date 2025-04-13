@@ -6,14 +6,15 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ShiftTrack.Core.Infrastructure;
+using ShiftTrack.Core.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace ShiftTrack.Core.Infrastructure.Migrations
+namespace ShiftTrack.Core.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250403145657_ORG_TSH_Shifts_Added_StartTime_EndTime_WorkHours")]
-    partial class ORG_TSH_Shifts_Added_StartTime_EndTime_WorkHours
+    [Migration("20240910105946_Department_UnitId_Prop_Was_Removed")]
+    partial class Department_UnitId_Prop_Was_Removed
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -42,14 +43,9 @@ namespace ShiftTrack.Core.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<long?>("UnitId")
-                        .HasColumnType("bigint");
-
                     b.HasKey("Id");
 
                     b.HasIndex("IsDeleted");
-
-                    b.HasIndex("UnitId");
 
                     b.ToTable("Departments", (string)null);
                 });
@@ -128,23 +124,14 @@ namespace ShiftTrack.Core.Infrastructure.Migrations
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("Description")
+                    b.Property<string>("Dercription")
                         .HasColumnType("text");
-
-                    b.Property<TimeSpan?>("EndTime")
-                        .HasColumnType("interval");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<TimeSpan?>("StartTime")
-                        .HasColumnType("interval");
-
                     b.Property<int>("Type")
                         .HasColumnType("integer");
-
-                    b.Property<TimeSpan?>("WorkHours")
-                        .HasColumnType("interval");
 
                     b.HasKey("Id");
 
@@ -217,16 +204,7 @@ namespace ShiftTrack.Core.Infrastructure.Migrations
 
                     b.HasIndex("PositionId");
 
-                    b.ToTable("Employees", (string)null);
-                });
-
-            modelBuilder.Entity("ShiftTrack.Core.Domain.Organization.Structure.Entities.Department", b =>
-                {
-                    b.HasOne("ShiftTrack.Core.Domain.Organization.Structure.Entities.Unit", "Unit")
-                        .WithMany("Departments")
-                        .HasForeignKey("UnitId");
-
-                    b.Navigation("Unit");
+                    b.ToTable("Profiles", (string)null);
                 });
 
             modelBuilder.Entity("ShiftTrack.Core.Domain.System.User.Employees.Entities.Employee", b =>
@@ -242,11 +220,6 @@ namespace ShiftTrack.Core.Infrastructure.Migrations
                     b.Navigation("Department");
 
                     b.Navigation("Position");
-                });
-
-            modelBuilder.Entity("ShiftTrack.Core.Domain.Organization.Structure.Entities.Unit", b =>
-                {
-                    b.Navigation("Departments");
                 });
 #pragma warning restore 612, 618
         }

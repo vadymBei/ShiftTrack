@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace ShiftTrack.Core.Infrastructure.Migrations
+namespace ShiftTrack.Core.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
     public partial class ORG_TSH_Shifts_Rename_Description : Migration

@@ -6,21 +6,22 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ShiftTrack.Core.Infrastructure;
+using ShiftTrack.Core.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace ShiftTrack.Core.Infrastructure.Migrations
+namespace ShiftTrack.Core.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250411115205_SYS_USR_EmployeeRoles_Entities_Added")]
-    partial class SYS_USR_EmployeeRoles_Entities_Added
+    [Migration("20250403145657_ORG_TSH_Shifts_Added_StartTime_EndTime_WorkHours")]
+    partial class ORG_TSH_Shifts_Added_StartTime_EndTime_WorkHours
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.11")
+                .HasAnnotation("ProductVersion", "8.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -153,81 +154,6 @@ namespace ShiftTrack.Core.Infrastructure.Migrations
                     b.ToTable("Shifts", (string)null);
                 });
 
-            modelBuilder.Entity("ShiftTrack.Core.Domain.System.User.EmployeeRoles.Entities.EmployeeRole", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<long?>("EmployeeId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("RoleId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("Scope")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EmployeeId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("EmployeeRoles", (string)null);
-                });
-
-            modelBuilder.Entity("ShiftTrack.Core.Domain.System.User.EmployeeRoles.Entities.EmployeeRoleUnit", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<long?>("EmployeeRoleId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("Scope")
-                        .HasColumnType("integer");
-
-                    b.Property<long?>("UnitId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EmployeeRoleId");
-
-                    b.HasIndex("UnitId");
-
-                    b.ToTable("EmployeeRoleUnits", (string)null);
-                });
-
-            modelBuilder.Entity("ShiftTrack.Core.Domain.System.User.EmployeeRoles.Entities.EmployeeRoleUnitDepartment", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<long?>("DepartmentId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("EmployeeRoleUnitId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DepartmentId");
-
-                    b.HasIndex("EmployeeRoleUnitId");
-
-                    b.ToTable("EmployeeRoleUnitDepartments");
-                });
-
             modelBuilder.Entity("ShiftTrack.Core.Domain.System.User.Employees.Entities.Employee", b =>
                 {
                     b.Property<long>("Id")
@@ -295,25 +221,6 @@ namespace ShiftTrack.Core.Infrastructure.Migrations
                     b.ToTable("Employees", (string)null);
                 });
 
-            modelBuilder.Entity("ShiftTrack.Core.Domain.System.User.Roles.Entities.Role", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("Roles", (string)null);
-                });
-
             modelBuilder.Entity("ShiftTrack.Core.Domain.Organization.Structure.Entities.Department", b =>
                 {
                     b.HasOne("ShiftTrack.Core.Domain.Organization.Structure.Entities.Unit", "Unit")
@@ -321,51 +228,6 @@ namespace ShiftTrack.Core.Infrastructure.Migrations
                         .HasForeignKey("UnitId");
 
                     b.Navigation("Unit");
-                });
-
-            modelBuilder.Entity("ShiftTrack.Core.Domain.System.User.EmployeeRoles.Entities.EmployeeRole", b =>
-                {
-                    b.HasOne("ShiftTrack.Core.Domain.System.User.Employees.Entities.Employee", "Employee")
-                        .WithMany("EmployeeRoles")
-                        .HasForeignKey("EmployeeId");
-
-                    b.HasOne("ShiftTrack.Core.Domain.System.User.Roles.Entities.Role", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId");
-
-                    b.Navigation("Employee");
-
-                    b.Navigation("Role");
-                });
-
-            modelBuilder.Entity("ShiftTrack.Core.Domain.System.User.EmployeeRoles.Entities.EmployeeRoleUnit", b =>
-                {
-                    b.HasOne("ShiftTrack.Core.Domain.System.User.EmployeeRoles.Entities.EmployeeRole", "EmployeeRole")
-                        .WithMany("Units")
-                        .HasForeignKey("EmployeeRoleId");
-
-                    b.HasOne("ShiftTrack.Core.Domain.Organization.Structure.Entities.Unit", "Unit")
-                        .WithMany()
-                        .HasForeignKey("UnitId");
-
-                    b.Navigation("EmployeeRole");
-
-                    b.Navigation("Unit");
-                });
-
-            modelBuilder.Entity("ShiftTrack.Core.Domain.System.User.EmployeeRoles.Entities.EmployeeRoleUnitDepartment", b =>
-                {
-                    b.HasOne("ShiftTrack.Core.Domain.Organization.Structure.Entities.Department", "Department")
-                        .WithMany()
-                        .HasForeignKey("DepartmentId");
-
-                    b.HasOne("ShiftTrack.Core.Domain.System.User.EmployeeRoles.Entities.EmployeeRoleUnit", "EmployeeRoleUnit")
-                        .WithMany("Departments")
-                        .HasForeignKey("EmployeeRoleUnitId");
-
-                    b.Navigation("Department");
-
-                    b.Navigation("EmployeeRoleUnit");
                 });
 
             modelBuilder.Entity("ShiftTrack.Core.Domain.System.User.Employees.Entities.Employee", b =>
@@ -386,21 +248,6 @@ namespace ShiftTrack.Core.Infrastructure.Migrations
             modelBuilder.Entity("ShiftTrack.Core.Domain.Organization.Structure.Entities.Unit", b =>
                 {
                     b.Navigation("Departments");
-                });
-
-            modelBuilder.Entity("ShiftTrack.Core.Domain.System.User.EmployeeRoles.Entities.EmployeeRole", b =>
-                {
-                    b.Navigation("Units");
-                });
-
-            modelBuilder.Entity("ShiftTrack.Core.Domain.System.User.EmployeeRoles.Entities.EmployeeRoleUnit", b =>
-                {
-                    b.Navigation("Departments");
-                });
-
-            modelBuilder.Entity("ShiftTrack.Core.Domain.System.User.Employees.Entities.Employee", b =>
-                {
-                    b.Navigation("EmployeeRoles");
                 });
 #pragma warning restore 612, 618
         }

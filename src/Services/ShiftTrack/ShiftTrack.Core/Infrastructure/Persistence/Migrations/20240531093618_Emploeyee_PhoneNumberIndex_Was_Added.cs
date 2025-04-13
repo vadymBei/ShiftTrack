@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace ShiftTrack.Core.Infrastructure.Migrations
+namespace ShiftTrack.Core.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
     public partial class Emploeyee_PhoneNumberIndex_Was_Added : Migration

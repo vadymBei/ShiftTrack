@@ -6,14 +6,15 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ShiftTrack.Core.Infrastructure;
+using ShiftTrack.Core.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace ShiftTrack.Core.Infrastructure.Migrations
+namespace ShiftTrack.Core.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250402162933_ORG_TSH_Shifts_Rename_Description")]
-    partial class ORG_TSH_Shifts_Rename_Description
+    [Migration("20240531093618_Emploeyee_PhoneNumberIndex_Was_Added")]
+    partial class Emploeyee_PhoneNumberIndex_Was_Added
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -128,7 +129,7 @@ namespace ShiftTrack.Core.Infrastructure.Migrations
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("Description")
+                    b.Property<string>("Dercription")
                         .HasColumnType("text");
 
                     b.Property<bool>("IsDeleted")
@@ -169,9 +170,6 @@ namespace ShiftTrack.Core.Infrastructure.Migrations
                     b.Property<int>("Gender")
                         .HasColumnType("integer");
 
-                    b.Property<string>("IntegrationId")
-                        .HasColumnType("text");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
@@ -186,9 +184,6 @@ namespace ShiftTrack.Core.Infrastructure.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasMaxLength(13)
                         .HasColumnType("character varying(13)");
-
-                    b.Property<long?>("PositionId")
-                        .HasColumnType("bigint");
 
                     b.Property<string>("Surname")
                         .HasMaxLength(64)
@@ -206,9 +201,7 @@ namespace ShiftTrack.Core.Infrastructure.Migrations
                     b.HasIndex("PhoneNumber")
                         .IsUnique();
 
-                    b.HasIndex("PositionId");
-
-                    b.ToTable("Employees", (string)null);
+                    b.ToTable("Profiles", (string)null);
                 });
 
             modelBuilder.Entity("ShiftTrack.Core.Domain.Organization.Structure.Entities.Department", b =>
@@ -223,16 +216,15 @@ namespace ShiftTrack.Core.Infrastructure.Migrations
             modelBuilder.Entity("ShiftTrack.Core.Domain.System.User.Employees.Entities.Employee", b =>
                 {
                     b.HasOne("ShiftTrack.Core.Domain.Organization.Structure.Entities.Department", "Department")
-                        .WithMany()
+                        .WithMany("Employees")
                         .HasForeignKey("DepartmentId");
 
-                    b.HasOne("ShiftTrack.Core.Domain.Organization.Structure.Entities.Position", "Position")
-                        .WithMany()
-                        .HasForeignKey("PositionId");
-
                     b.Navigation("Department");
+                });
 
-                    b.Navigation("Position");
+            modelBuilder.Entity("ShiftTrack.Core.Domain.Organization.Structure.Entities.Department", b =>
+                {
+                    b.Navigation("Employees");
                 });
 
             modelBuilder.Entity("ShiftTrack.Core.Domain.Organization.Structure.Entities.Unit", b =>
