@@ -2,8 +2,9 @@
 
 public static class DefaultRolesCatalog
 {
-    public const string SYS_ADMIN = "sysAdmin";
-    public const string STYLIST = "stylist";
-    public const string UNIT_DIRECTOR = "unitDirector";
-    public const string DEPARTMENT_DIRECTOR = "departmentDirector";
+    public const string SYS_ADMIN = "sys.admin";
+    
+    public const string UNIT_DIRECTOR = "unit.director";
+    public const string DEPARTMENT_DIRECTOR = "department.director";
+    public const string DEPARTMENT_STYLIST = "department.stylist";
 }
