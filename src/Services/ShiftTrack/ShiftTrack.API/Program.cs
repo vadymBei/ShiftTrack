@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text.Json.Serialization;
 using ShiftTrack.Core.Infrastructure.Persistence;
 using ShiftTrack.Kernel.Extensions;
+using Swashbuckle.AspNetCore.SwaggerUI;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,7 +41,22 @@ using (var scope = app.Services.CreateScope())
 
 app.UseSwagger();
 
-app.UseSwaggerUI();
+app.UseSwaggerUI(x =>
+{
+    x.SwaggerEndpoint("/swagger/v1/swagger.json", app.Environment.ApplicationName);
+    x.DocExpansion(DocExpansion.None);
+});
+
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path == "/")
+    {
+        context.Response.Redirect("/swagger/index.html", permanent: false);
+        return;
+    }
+
+    await next();
+});
 
 app.UseHttpsRedirection();
 
