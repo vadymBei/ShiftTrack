@@ -43,6 +43,17 @@ public sealed class EmployeeRoleUnitDirectorStrategy(
         throw new NotImplementedException();
     }
 
+    public Task<EmployeeRoleUnit> GetEmployeeRoleUnitById(long employeeRoleUnitId, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+    
+    public Task<IEnumerable<EmployeeRoleUnit>> GetEmployeeRoleUnitsByEmployeeRoleId(long employeeRoleId,
+        CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+    
     public Task DeleteEmployeeRoleUnit(long employeeUnitId, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
@@ -58,6 +69,13 @@ public sealed class EmployeeRoleUnitDirectorStrategy(
         throw new NotImplementedException();
     }
 
+    public Task<IEnumerable<EmployeeRoleUnitDepartment>> GetEmployeeRoleUnitDepartmentsByEmployeeRoleUnitId(
+        long employeeRoleUnitId,
+        CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+    
     public Task DeleteEmployeeRoleUnitDepartment(long employeeRoleUnitDepartmentId, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();

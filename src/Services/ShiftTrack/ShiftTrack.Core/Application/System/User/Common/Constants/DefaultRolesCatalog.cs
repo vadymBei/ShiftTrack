@@ -7,4 +7,5 @@ public static class DefaultRolesCatalog
     public const string UNIT_DIRECTOR = "unit.director";
     public const string DEPARTMENT_DIRECTOR = "department.director";
     public const string DEPARTMENT_STYLIST = "department.stylist";
+    public const string DEPARTMENT_ADMIN = "department.admin";
 }

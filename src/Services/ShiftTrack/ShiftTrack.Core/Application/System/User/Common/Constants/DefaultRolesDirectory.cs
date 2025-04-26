@@ -7,4 +7,5 @@ public static class DefaultRolesDirectory
     public const string UNIT_DIRECTOR = "Регіональний директор";
     public const string DEPARTMENT_DIRECTOR = "Директор магазину";
     public const string DEPARTMENT_STYLIST = "Стиліст магазину";
+    public const string DEPARTMENT_ADMIN = "Адміністратор магазину";
 }

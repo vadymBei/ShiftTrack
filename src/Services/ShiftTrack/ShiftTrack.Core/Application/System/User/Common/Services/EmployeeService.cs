@@ -11,7 +11,6 @@ namespace ShiftTrack.Core.Application.System.User.Common.Services;
 
 public class EmployeeService(
     IUserRepository userRepository,
-    ICurrentUserService currentUserService,
     IApplicationDbContext applicationDbContext)
     : IEmployeeService
 {

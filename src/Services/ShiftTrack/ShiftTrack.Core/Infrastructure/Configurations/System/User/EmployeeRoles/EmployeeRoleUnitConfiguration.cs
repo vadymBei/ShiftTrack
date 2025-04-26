@@ -9,5 +9,11 @@ public class EmployeeRoleUnitConfiguration : IEntityTypeConfiguration<EmployeeRo
     public void Configure(EntityTypeBuilder<EmployeeRoleUnit> builder)
     {
         builder.ToTable("EmployeeRoleUnits");
+        
+        builder
+            .HasOne(e => e.EmployeeRole)
+            .WithMany(e => e.Units)
+            .HasForeignKey(e => e.EmployeeRoleId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

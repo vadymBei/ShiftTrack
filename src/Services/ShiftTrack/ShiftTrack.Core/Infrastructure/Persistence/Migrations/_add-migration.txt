@@ -8,7 +8,8 @@ update-database -p ShiftTrack.Core
 
 For terminal execution:
 
-dotnet ef migrations add --project src/Services/ShiftTrack/ShiftTrack.Core  --startup-project src/Services/ShiftTrack/ShiftTrack.Api --context ApplicationDbContext SYS_USR_EmployeeRoles_Entities_Added
+dotnet ef migrations add --project src/Services/ShiftTrack/ShiftTrack.Core  --startup-project src/Services/ShiftTrack/ShiftTrack.Api --context ApplicationDbContext SYS_USR_EmployeeRoles_AddCascadeDeleteToEmployeeRoleRelations
+
 
 dotnet ef migrations remove --project src/Services/ShiftTrack/ShiftTrack.Core --startup-project src/Services/ShiftTrack/ShiftTrack.Api --context ApplicationDbContext
 
