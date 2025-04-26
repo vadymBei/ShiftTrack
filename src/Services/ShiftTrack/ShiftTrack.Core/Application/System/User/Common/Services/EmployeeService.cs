@@ -11,6 +11,7 @@ namespace ShiftTrack.Core.Application.System.User.Common.Services;
 
 public class EmployeeService(
     IUserRepository userRepository,
+    ICurrentUserService currentUserService,
     IApplicationDbContext applicationDbContext)
     : IEmployeeService
 {
@@ -50,14 +51,14 @@ public class EmployeeService(
 
     public async Task<CurrentUser> GetCurrentUser(CancellationToken cancellationToken)
     {
-        // var currentUser = currentUserService.User;
+        var currentUser = currentUserService.Employee;
 
         var employee = await applicationDbContext.Employees
             .AsNoTracking()
             .Include(x => x.Department)
             .ThenInclude(x => x.Unit)
             .Include(x => x.Position)
-            .FirstOrDefaultAsync(x => x.IntegrationId == "", cancellationToken);
+            .FirstOrDefaultAsync(x => x.IntegrationId == currentUser.IntegrationId, cancellationToken);
 
         if (employee == null)
         {
@@ -67,7 +68,9 @@ public class EmployeeService(
         return new CurrentUser
         {
             Employee = employee,
-            // Roles = currentUser.Roles
+            Roles = currentUser.EmployeeRoles
+                .Select(x => x.Role.Name)
+                .ToList()
         };
     }
 
