@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ShiftTrack.Authentication.Interfaces;
 using ShiftTrack.Core.Application.Data.Common.Interfaces;
 using ShiftTrack.Core.Application.System.User.Common.Dtos;
 using ShiftTrack.Core.Application.System.User.Common.Interfaces;
@@ -12,7 +11,6 @@ namespace ShiftTrack.Core.Application.System.User.Common.Services;
 
 public class EmployeeService(
     IUserRepository userRepository,
-    ICurrentUserService currentUserService,
     IApplicationDbContext applicationDbContext)
     : IEmployeeService
 {
@@ -52,14 +50,14 @@ public class EmployeeService(
 
     public async Task<CurrentUser> GetCurrentUser(CancellationToken cancellationToken)
     {
-        var currentUser = currentUserService.User;
+        // var currentUser = currentUserService.User;
 
         var employee = await applicationDbContext.Employees
             .AsNoTracking()
             .Include(x => x.Department)
             .ThenInclude(x => x.Unit)
             .Include(x => x.Position)
-            .FirstOrDefaultAsync(x => x.IntegrationId == currentUser.Id, cancellationToken);
+            .FirstOrDefaultAsync(x => x.IntegrationId == "", cancellationToken);
 
         if (employee == null)
         {
@@ -69,7 +67,7 @@ public class EmployeeService(
         return new CurrentUser
         {
             Employee = employee,
-            Roles = currentUser.Roles
+            // Roles = currentUser.Roles
         };
     }
 

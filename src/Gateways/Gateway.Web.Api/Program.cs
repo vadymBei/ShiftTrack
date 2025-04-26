@@ -3,6 +3,9 @@ using Microsoft.IdentityModel.Tokens;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 using Ocelot.Provider.Polly;
+using MMLib.SwaggerForOcelot;          // Простір для SwaggerForOcelot
+using Swashbuckle.AspNetCore.SwaggerUI; // Простір імен для Swagger UI
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +38,10 @@ builder.Services
     .AddOcelot(builder.Configuration)
     .AddPolly();
 
+// Add Swagger documentation for standard Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 builder.Services
     .AddSwaggerForOcelot(builder.Configuration);
 
@@ -43,6 +50,7 @@ var app = builder.Build();
 app.UseSwaggerForOcelotUI(x =>
 {
     x.PathToSwaggerGenerator = "/swagger/docs";
+    
     x.DownstreamSwaggerHeaders = new Dictionary<string, string>
     {
         {
@@ -52,11 +60,23 @@ app.UseSwaggerForOcelotUI(x =>
         {
             DefaultHeaders.Authorization,
             "Bearer "
-        },
+        }
     };
 });
 
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path == "/")
+    {
+        context.Response.Redirect("/swagger/index.html", permanent: false);
+        return;
+    }
+
+    await next();
+});
+
 app.UseHttpsRedirection();
+
 app.UseAuthentication();
 
 app.UseCors(x => x

@@ -13,7 +13,7 @@ namespace ShiftTrack.Data.Extensions
             this IMemoryCache memoryCache,
             string key,
             Func<Task<T>> factory,
-            MemoryCacheEntryOptions? memoryCacheEntryOptions = null)
+            MemoryCacheEntryOptions memoryCacheEntryOptions = null)
         {
             if (memoryCache.TryGetValue(key, out T cachedData))
             {

@@ -1,7 +1,8 @@
 ﻿using MediatR;
+using ShiftTrack.Core.Application.System.User.Common.Dtos;
+using ShiftTrack.Core.Application.System.User.Common.ViewModels;
 
 namespace ShiftTrack.Core.Application.System.User.EmployeeRoles.Commands.CreateEmployeeRole;
 
 public record CreateEmployeeRoleCommand(
-    long EmployeeId,
-    string RoleId) : IRequest;
+    EmployeeRoleToCreateDto Dto) : IRequest<EmployeeRoleVm>;

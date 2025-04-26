@@ -1,45 +1,24 @@
-﻿using MediatR;
-using ShiftTrack.Authentication.Interfaces;
-using ShiftTrack.Core.Application.System.User.Common.Dtos;
+﻿using AutoMapper;
+using MediatR;
 using ShiftTrack.Core.Application.System.User.Common.Interfaces;
-using ShiftTrack.Core.Domain.System.User.Roles.Constants;
-using ShiftTrack.Kernel.Exceptions;
+using ShiftTrack.Core.Application.System.User.Common.ViewModels;
 
 namespace ShiftTrack.Core.Application.System.User.EmployeeRoles.Commands.CreateEmployeeRole;
 
 public class CreateEmployeeRoleCommandHandler(
-    IEmployeeService employeeService,
-    ICurrentUserService currentUserService,
-    IEmployeeRoleService employeeRoleService)
-    : IRequestHandler<CreateEmployeeRoleCommand>
+    IMapper mapper,
+    IEmployeeRoleService employeeRoleService) : IRequestHandler<CreateEmployeeRoleCommand, EmployeeRoleVm>
 {
-    public async Task<Unit> Handle(CreateEmployeeRoleCommand request, CancellationToken cancellationToken)
+    public async Task<EmployeeRoleVm> Handle(CreateEmployeeRoleCommand request, CancellationToken cancellationToken)
     {
-        var canUse = currentUserService.User.Roles
-            .Any(x => x == DefaultRolesCatalog.Sys_Admin
-                      || x == DefaultRolesCatalog.Regional_Director
-                      || x == DefaultRolesCatalog.Department_Director);
-
-        if (!canUse)
-        {
-            throw new AccessDeniedException(
-                new List<string>
-                {
-                    DefaultRolesCatalog.Sys_Admin,
-                    DefaultRolesCatalog.Regional_Director,
-                    DefaultRolesCatalog.Department_Director
-                });
-        }
-
-        var employee = await employeeService
-            .GetById(request.EmployeeId, cancellationToken);
-
-        await employeeRoleService.CreateEmployeeRole(
-            new EmployeeRoleToCreateDto(
-                employee.IntegrationId,
-                request.RoleId)
-            , cancellationToken);
-
-        return Unit.Value;
+        var employeeRole = await employeeRoleService.CreateEmployeeRole(
+            request.Dto,
+            cancellationToken);
+        
+        employeeRole = await employeeRoleService.GetEmployeeRoleById(
+            employeeRole.Id,
+            cancellationToken);
+        
+        return mapper.Map<EmployeeRoleVm>(employeeRole);
     }
 }

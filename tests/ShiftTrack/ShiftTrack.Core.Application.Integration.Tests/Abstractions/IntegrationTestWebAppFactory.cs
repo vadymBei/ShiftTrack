@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using ShiftTrack.Core.Infrastructure;
+using ShiftTrack.Core.Infrastructure.Persistence;
 using Testcontainers.PostgreSql;
 
 namespace ShiftTrack.Core.Application.Integration.Tests.Abstractions;

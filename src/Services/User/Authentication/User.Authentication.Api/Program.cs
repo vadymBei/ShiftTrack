@@ -3,6 +3,7 @@ using ShiftTrack.Authentication.Basic.Extensions;
 using ShiftTrack.Authentication.Identity;
 using ShiftTrack.Kernel.Extensions;
 using System.Reflection;
+using Swashbuckle.AspNetCore.SwaggerUI;
 using User.Authentication.Core;
 using User.Authentication.Core.Infrastructure;
 
@@ -26,7 +27,22 @@ app.UseKernelExceptionHandler();
 
 app.UseSwagger();
 
-app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", app.Environment.ApplicationName));
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", app.Environment.ApplicationName);
+    c.DocExpansion(DocExpansion.None);
+});
+
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path == "/")
+    {
+        context.Response.Redirect("/swagger/index.html", permanent: false);
+        return;
+    }
+
+    await next();
+});
 
 app.UseRouting();
 
