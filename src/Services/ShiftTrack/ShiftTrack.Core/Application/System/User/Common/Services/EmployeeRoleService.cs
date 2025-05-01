@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Core.Application.Data.Common.Interfaces;
+using ShiftTrack.Core.Application.System.User.Common.Constants;
 using ShiftTrack.Core.Application.System.User.Common.Dtos;
+using ShiftTrack.Core.Application.System.User.Common.Exceptions;
 using ShiftTrack.Core.Application.System.User.Common.Interfaces;
 using ShiftTrack.Core.Domain.System.User.EmployeeRoles.Entities;
 using ShiftTrack.Core.Domain.System.User.EmployeeRoles.Enums;
@@ -17,9 +19,20 @@ public class EmployeeRoleService(
 
     #region EmployeeRole
 
-    public Task<EmployeeRole> CreateEmployeeRole(EmployeeRoleToCreateDto dto, CancellationToken cancellationToken)
+    public async Task<EmployeeRole> CreateEmployeeRole(EmployeeRoleToCreateDto dto, CancellationToken cancellationToken)
     {
-        return EmployeeRoleStrategy.CreateEmployeeRole(dto, cancellationToken);
+        var isEmployeeRoleExists = await applicationDbContext.EmployeeRoles
+            .AnyAsync(x => x.RoleId == dto.RoleId
+                           && x.EmployeeId == dto.EmployeeId, cancellationToken);
+
+        if (isEmployeeRoleExists)
+        {
+            throw new EmployeeRoleAlreadyExistException(
+                UserExceptionsLocalization.EMPLOYEE_ROLE_ALREADY_EXISTS,
+                nameof(UserExceptionsLocalization.EMPLOYEE_ROLE_ALREADY_EXISTS));
+        }
+
+        return await EmployeeRoleStrategy.CreateEmployeeRole(dto, cancellationToken);
     }
 
     public Task DeleteEmployeeRole(long employeeRoleId, CancellationToken cancellationToken)
@@ -63,6 +76,17 @@ public class EmployeeRoleService(
     public async Task<EmployeeRoleUnit> CreateEmployeeRoleUnit(EmployeeRoleUnitToCreateDto dto,
         CancellationToken cancellationToken)
     {
+        var isAlreadyEmployeeRoleUnitExists = await applicationDbContext.EmployeeRoleUnits
+            .AnyAsync(x => x.EmployeeRoleId == dto.EmployeeRoleId
+                           && x.UnitId == dto.UnitId, cancellationToken);
+
+        if (isAlreadyEmployeeRoleUnitExists)
+        {
+            throw new EmployeeRoleAlreadyExistException(
+                UserExceptionsLocalization.EMPLOYEE_ROLE_UNIT_ALREADY_EXISTS,
+                nameof(UserExceptionsLocalization.EMPLOYEE_ROLE_UNIT_ALREADY_EXISTS));
+        }
+
         var employeeRole = await EmployeeRoleStrategy.GetEmployeeRoleById(dto.EmployeeRoleId, cancellationToken);
 
         var employeeRoleUnit = await EmployeeRoleStrategy.CreateEmployeeRoleUnit(dto, cancellationToken);
@@ -76,7 +100,7 @@ public class EmployeeRoleService(
     {
         return EmployeeRoleStrategy.GetEmployeeRoleUnitById(employeeRoleUnitId, cancellationToken);
     }
-    
+
     public Task<IEnumerable<EmployeeRoleUnit>> GetEmployeeRoleUnitsByEmployeeRoleId(
         long employeeRoleId,
         CancellationToken cancellationToken)
@@ -119,14 +143,26 @@ public class EmployeeRoleService(
         EmployeeRoleUnitDepartmentsToCreateDto dto,
         CancellationToken cancellationToken)
     {
+        var isAlreadyEmployeeRoleUnitDepartmentExists = await applicationDbContext.EmployeeRoleUnitDepartments
+            .AnyAsync(x => x.EmployeeRoleUnitId == dto.EmployeeRoleUnitId
+                           && dto.DepartmentIds.Contains((long)x.DepartmentId),
+                cancellationToken);
+
+        if (isAlreadyEmployeeRoleUnitDepartmentExists)
+        {
+            throw new EmployeeRoleAlreadyExistException(
+                UserExceptionsLocalization.EMPLOYEE_ROLE_UNIT_DEPARTMENT_ALREADY_EXISTS,
+                nameof(UserExceptionsLocalization.EMPLOYEE_ROLE_UNIT_DEPARTMENT_ALREADY_EXISTS));
+        }
+
         var employeeRoleUnitDepartments = await EmployeeRoleStrategy
             .CreateEmployeeRoleUnitDepartments(dto, cancellationToken);
-        
+
         await RecalculateEmployeeRoleUnitScope(dto.EmployeeRoleUnitId, cancellationToken);
-        
+
         return employeeRoleUnitDepartments.FirstOrDefault();
     }
-    
+
     public Task<IEnumerable<EmployeeRoleUnitDepartment>> GetEmployeeRoleUnitDepartmentsByEmployeeRoleUnitId(
         long employeeRoleUnitId,
         CancellationToken cancellationToken)
