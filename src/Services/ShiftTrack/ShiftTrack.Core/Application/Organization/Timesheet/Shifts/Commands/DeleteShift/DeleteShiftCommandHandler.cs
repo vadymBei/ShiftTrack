@@ -1,7 +1,7 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Core.Application.Data.Common.Interfaces;
 using ShiftTrack.Core.Domain.Organization.Timesheet.Shifts.Entities;
+using ShiftTrack.Kernel.CQRS.Interfaces;
 using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Commands.DeleteShift;
@@ -9,7 +9,7 @@ namespace ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Commands.Del
 public class DeleteShiftCommandHandler(
     IApplicationDbContext applicationDbContext) : IRequestHandler<DeleteShiftCommand>
 {
-    public async Task<Unit> Handle(DeleteShiftCommand request, CancellationToken cancellationToken)
+    public async Task Handle(DeleteShiftCommand request, CancellationToken cancellationToken)
     {
         var shift = await applicationDbContext.Shifts
             .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
@@ -21,7 +21,5 @@ public class DeleteShiftCommandHandler(
 
         applicationDbContext.Shifts.Remove(shift);
         await applicationDbContext.SaveChangesAsync(cancellationToken);
-
-        return Unit.Value;
     }
 }

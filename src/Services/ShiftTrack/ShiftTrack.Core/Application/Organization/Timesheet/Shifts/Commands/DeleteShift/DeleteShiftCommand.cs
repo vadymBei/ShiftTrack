@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿
+using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Commands.DeleteShift;
 

@@ -19,6 +19,7 @@
 	  <ProjectReference Include="..\..\..\Common\Client\ShiftTrack.Client.Http\ShiftTrack.Client.Http.csproj" />
 	  <ProjectReference Include="..\..\..\Common\Client\ShiftTrack.Client\ShiftTrack.Client.csproj" />
 	  <ProjectReference Include="..\..\..\Common\Data\ShiftTrack.Data\ShiftTrack.Data.csproj" />
+	  <ProjectReference Include="..\..\..\Common\Kernel\ShiftTrack.Kernel.CQRS\ShiftTrack.Kernel.CQRS.csproj" />
 	  <ProjectReference Include="..\..\..\Common\Kernel\ShiftTrack.Kernel\ShiftTrack.Kernel.csproj" />
 	</ItemGroup>
 
