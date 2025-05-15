@@ -19,11 +19,11 @@ public class UpdatePositionCommandTests(
             "Адміністратор",
             "Адміністратор магазину");
 
-        var newPosition = await Sender.Send(createPositionCommand);
+        var newPosition = await Mediator.Invoke(createPositionCommand);
 
         var getPositionByIdQuery = new GetPositionByIdQuery(newPosition.Id);
 
-        var position = await Sender.Send(getPositionByIdQuery);
+        var position = await Mediator.Invoke(getPositionByIdQuery);
 
         var updatePositionCommand = new UpdatePositionCommand(
             position.Id,
@@ -31,7 +31,7 @@ public class UpdatePositionCommandTests(
             "Адміністратор магазину оновлений");
 
         // Act
-        var updatedPosition = await Sender.Send(updatePositionCommand);
+        var updatedPosition = await Mediator.Invoke(updatePositionCommand);
 
         // Assert
         updatedPosition.Should().NotBeNull();
@@ -55,7 +55,7 @@ public class UpdatePositionCommandTests(
             "Тест оновлення посади з помилкою");
 
         // Act
-        Func<Task> act = async () => await Sender.Send(updatePositionCommand);
+        Func<Task> act = async () => await Mediator.Invoke(updatePositionCommand);
 
         // Assert
         await act.Should()

@@ -19,12 +19,12 @@ public class GetPositionsQueryTests(
             "Адміністратор",
             "Адміністратор магазину");
 
-        var newPosition = await Sender.Send(createPositionCommand);
+        var newPosition = await Mediator.Invoke(createPositionCommand);
 
         var getPositionsQuery = new GetPositionsQuery();
 
         // Act
-        var positions = await Sender.Send(getPositionsQuery);
+        var positions = await Mediator.Invoke(getPositionsQuery);
 
         // Assert
         positions.Should().NotBeNull();

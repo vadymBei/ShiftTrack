@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
-using MediatR;
 using ShiftTrack.Core.Application.Data.Common.Interfaces;
 using ShiftTrack.Core.Application.Organization.Structure.Common.ViewModels;
 using ShiftTrack.Core.Domain.Organization.Structure.Entities;
+using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Core.Application.Organization.Structure.Positions.Commands.CreatePosition;
 
-internal class CreatePositionCommandHandler(
+public class CreatePositionCommandHandler(
     IMapper mapper,
     IApplicationDbContext applicationDbContext)
     : IRequestHandler<CreatePositionCommand, PositionVM>

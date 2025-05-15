@@ -17,12 +17,12 @@ public class GetPositionByIdQueryTests(
             "Адміністратор",
             "Адміністратор магазину");
 
-        var newPosition = await Sender.Send(createPositionCommand);
+        var newPosition = await Mediator.Invoke(createPositionCommand);
 
         var getPositionByIdQuery = new GetPositionByIdQuery(newPosition.Id);
 
         // Act
-        var position = await Sender.Send(getPositionByIdQuery);
+        var position = await Mediator.Invoke(getPositionByIdQuery);
 
         // Assert
         position.Should().NotBeNull();
@@ -35,7 +35,7 @@ public class GetPositionByIdQueryTests(
         var getPositionByIdQuery = new GetPositionByIdQuery(1000);
 
         // Act
-        Func<Task> act = async () => await Sender.Send(getPositionByIdQuery);
+        Func<Task> act = async () => await Mediator.Invoke(getPositionByIdQuery);
 
         // Assert
         await act.Should()
