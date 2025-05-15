@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using MediatR;
 using Microsoft.Extensions.Caching.Memory;
 using ShiftTrack.Core.Application.System.User.Common.Interfaces;
 using ShiftTrack.Core.Application.System.User.Common.ViewModels;
 using ShiftTrack.Data.Extensions;
+using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Core.Application.System.User.Roles.Queries.GetRoles;
 
