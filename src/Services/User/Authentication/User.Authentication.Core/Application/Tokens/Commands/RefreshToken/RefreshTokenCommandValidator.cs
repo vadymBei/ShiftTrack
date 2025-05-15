@@ -1,14 +1,13 @@
 ﻿using FluentValidation;
 
-namespace User.Authentication.Core.Application.Tokens.Commands.RefreshToken
+namespace User.Authentication.Core.Application.Tokens.Commands.RefreshToken;
+
+public class RefreshTokenCommandValidator : AbstractValidator<RefreshTokenCommand>
 {
-    public class RefreshTokenCommandValidator : AbstractValidator<RefreshTokenCommand>
+    public RefreshTokenCommandValidator()
     {
-        public RefreshTokenCommandValidator()
-        {
-            RuleFor(v => v.RefreshToken)
-                .NotEmpty()
-                    .WithMessage("RefreshToken is required.");
-        }
+        RuleFor(v => v.RefreshToken)
+            .NotEmpty()
+            .WithMessage("RefreshToken is required.");
     }
 }
