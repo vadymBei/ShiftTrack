@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using MediatR;
 using ShiftTrack.Core.Application.System.Auth.Common.Interfaces;
 using ShiftTrack.Core.Application.System.Auth.Common.ViewModels;
+using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Core.Application.System.Auth.Tokens.Commands.RefreshToken;
 

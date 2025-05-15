@@ -1,34 +1,24 @@
 ﻿using AutoMapper;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Core.Application.Data.Common.Interfaces;
 using ShiftTrack.Core.Application.System.User.Common.Dtos;
 using ShiftTrack.Core.Application.System.User.Common.Interfaces;
 using ShiftTrack.Core.Application.System.User.Common.ViewModels;
 using ShiftTrack.Core.Domain.System.User.Employees.Entities;
+using ShiftTrack.Kernel.CQRS.Interfaces;
 using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Core.Application.System.User.Employees.Commands.CreateEmployee;
 
-public class CreateEmployeeCommandHandler : IRequestHandler<CreateEmployeeCommand, EmployeeVM>
+public class CreateEmployeeCommandHandler(
+    IMapper mapper,
+    IEmployeeService userService,
+    IApplicationDbContext applicationDbContext)
+    : IRequestHandler<CreateEmployeeCommand, EmployeeVM>
 {
-    private readonly IMapper _mapper;
-    private readonly IEmployeeService _userService;
-    private readonly IApplicationDbContext _applicationDbContext;
-
-    public CreateEmployeeCommandHandler(
-        IMapper mapper,
-        IEmployeeService userService,
-        IApplicationDbContext applicationDbContext)
-    {
-        _mapper = mapper;
-        _userService = userService;
-        _applicationDbContext = applicationDbContext;
-    }
-
     public async Task<EmployeeVM> Handle(CreateEmployeeCommand request, CancellationToken cancellationToken)
     {
-        var employeeAlreadyExist = await _applicationDbContext.Employees
+        var employeeAlreadyExist = await applicationDbContext.Employees
             .AnyAsync(x => x.PhoneNumber == request.PhoneNumber, cancellationToken);
 
         if (employeeAlreadyExist)
@@ -46,7 +36,7 @@ public class CreateEmployeeCommandHandler : IRequestHandler<CreateEmployeeComman
             Gender = request.Gender
         };
 
-        var user = await _userService.RegisterAuthUser(
+        var user = await userService.RegisterAuthUser(
             new UserToRegisterDto(
                 employee.PhoneNumber,
                 employee.Email,
@@ -55,9 +45,9 @@ public class CreateEmployeeCommandHandler : IRequestHandler<CreateEmployeeComman
 
         employee.IntegrationId = user.Id;
 
-        _applicationDbContext.Employees.Add(employee);
-        await _applicationDbContext.SaveChangesAsync(cancellationToken);
+        applicationDbContext.Employees.Add(employee);
+        await applicationDbContext.SaveChangesAsync(cancellationToken);
 
-        return _mapper.Map<EmployeeVM>(employee);
+        return mapper.Map<EmployeeVM>(employee);
     }
 }
