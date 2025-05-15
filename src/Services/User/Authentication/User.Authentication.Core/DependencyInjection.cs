@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ShiftTrack.Kernel;
 using ShiftTrack.Kernel.Attributes;
+using ShiftTrack.Kernel.CQRS;
 using User.Authentication.Core.Application.Common.Interfaces;
 using User.Authentication.Core.Application.Common.Services;
 using User.Authentication.Core.Domain.Options;
@@ -18,6 +19,8 @@ namespace User.Authentication.Core
         {
             services.AddKernel();
 
+            services.AddCqrs();
+            
             services.Configure<AuthClientOptions>(configuration.GetSection("AuthClientOptions"));
 
             services.AddDbContext<ApplicationDbContext>(options =>
