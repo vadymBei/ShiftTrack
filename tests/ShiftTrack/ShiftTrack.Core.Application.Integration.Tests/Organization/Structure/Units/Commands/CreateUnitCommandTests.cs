@@ -18,7 +18,7 @@ public class CreateUnitCommandTests(
             "Хм");
 
         // Act
-        var newUnit = await Sender.Send(createUnitCommand);
+        var newUnit = await Mediator.Invoke(createUnitCommand);
 
         // Assert
         var unit = DbContext.Units

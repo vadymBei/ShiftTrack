@@ -1,6 +1,6 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Core.Application.Data.Common.Interfaces;
+using ShiftTrack.Kernel.CQRS.Interfaces;
 using ShiftTrack.Kernel.Exceptions;
 
 using UnitEntity = ShiftTrack.Core.Domain.Organization.Structure.Entities.Unit;
@@ -10,7 +10,7 @@ namespace ShiftTrack.Core.Application.Organization.Structure.Units.Commands.Dele
 public class DeleteUnitCommandHandler(
     IApplicationDbContext dbContext) : IRequestHandler<DeleteUnitCommand>
 {
-    public async Task<Unit> Handle(DeleteUnitCommand request, CancellationToken cancellationToken)
+    public async Task Handle(DeleteUnitCommand request, CancellationToken cancellationToken)
     {
         var unit = await dbContext.Units
             .Include(x => x.Departments)
@@ -22,7 +22,5 @@ public class DeleteUnitCommandHandler(
         dbContext.Departments.RemoveRange(unit.Departments);
         dbContext.Units.Remove(unit);
         await dbContext.SaveChangesAsync(cancellationToken);
-
-        return Unit.Value;
     }
 }

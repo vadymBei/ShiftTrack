@@ -19,7 +19,7 @@ public class CreateDepartmentCommandTests(
             "Хмельницький регіон",
             "Хм");
 
-        var unit = await Sender.Send(createUnitCommand);
+        var unit = await Mediator.Invoke(createUnitCommand);
 
         var createDepartmentCommand = new CreateDepartmentCommand(
             "ТЦ Либіль Плаза",

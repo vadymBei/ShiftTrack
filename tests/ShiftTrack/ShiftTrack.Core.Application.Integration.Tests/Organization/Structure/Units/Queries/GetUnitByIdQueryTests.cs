@@ -17,7 +17,7 @@ public class GetUnitByIdQueryTests(
         var getUnitByIdQuery = new GetUnitByIdQuery(100);
 
         // Act
-        Func<Task> act = async () => await Sender.Send(getUnitByIdQuery);
+        Func<Task> act = async () => await Mediator.Invoke(getUnitByIdQuery);
 
         // Assert
         await act.Should()
@@ -33,12 +33,12 @@ public class GetUnitByIdQueryTests(
             "Хмельницький регіон",
             "Хм");
 
-        var newUnit = await Sender.Send(createUnitCommand);
+        var newUnit = await Mediator.Invoke(createUnitCommand);
 
         var getUnitByIdQuery = new GetUnitByIdQuery(newUnit.Id);
 
         // Act
-        var unit = await Sender.Send(getUnitByIdQuery);
+        var unit = await Mediator.Invoke(getUnitByIdQuery);
 
         // Assert
         unit.Should().NotBeNull();

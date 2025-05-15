@@ -16,7 +16,7 @@ public class DeleteUnitCommandTests(
         var deleteUnitCommand = new DeleteUnitCommand(1000);
 
         // Act
-        Func<Task> act = async () => await Sender.Send(deleteUnitCommand);
+        Func<Task> act = async () => await Mediator.Invoke(deleteUnitCommand);
 
         // Assert
         await act.Should()
@@ -32,12 +32,12 @@ public class DeleteUnitCommandTests(
             "Хмельницький регіон",
             "Хм");
 
-        var newUnit = await Sender.Send(createUnitCommand);
+        var newUnit = await Mediator.Invoke(createUnitCommand);
 
         var deleteUnitCommand = new DeleteUnitCommand(newUnit.Id);
 
         // Act 
-        await Sender.Send(deleteUnitCommand);
+        await Mediator.Invoke(deleteUnitCommand);
 
         // Assert
         var deletedUnit = DbContext.Units.FirstOrDefault(x => x.Id == newUnit.Id);
