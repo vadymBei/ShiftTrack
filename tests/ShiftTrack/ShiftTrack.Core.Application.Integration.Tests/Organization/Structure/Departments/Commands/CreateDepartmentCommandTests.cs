@@ -26,7 +26,7 @@ public class CreateDepartmentCommandTests(
             unit.Id);
 
         // Act
-        var newDepartment = await Sender.Send(createDepartmentCommand);
+        var newDepartment = await Mediator.Invoke(createDepartmentCommand);
 
         // Assert
         var department = DbContext.Departments

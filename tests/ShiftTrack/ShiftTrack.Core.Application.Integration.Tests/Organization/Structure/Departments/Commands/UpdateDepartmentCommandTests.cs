@@ -20,7 +20,7 @@ public class UpdateDepartmentCommandTests(
             "ТЦ Либідь плаза оновлений");
 
         // Act
-        Func<Task> act = async () => await Sender.Send(updateDepartmentCommand);
+        Func<Task> act = async () => await Mediator.Invoke(updateDepartmentCommand);
 
         // Assert
         await act.Should()
@@ -42,14 +42,14 @@ public class UpdateDepartmentCommandTests(
             "ТЦ Либіль Плаза", 
             unit.Id);
 
-        var newDepartment = await Sender.Send(createDepartmentCommand);
+        var newDepartment = await Mediator.Invoke(createDepartmentCommand);
 
         var updateDepartmentCommand = new UpdateDepartmentCommand(
             newDepartment.Id,
             "Либіль Плаза");
 
         // Act
-        var updatedDepartment = await Sender.Send(updateDepartmentCommand);
+        var updatedDepartment = await Mediator.Invoke(updateDepartmentCommand);
 
         // Assert
         updatedDepartment.Should().NotBeNull();

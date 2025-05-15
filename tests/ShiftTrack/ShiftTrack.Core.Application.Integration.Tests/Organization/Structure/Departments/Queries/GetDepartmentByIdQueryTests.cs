@@ -18,7 +18,7 @@ public class GetDepartmentByIdQueryTests(
         var getDepartmentByIdQuery = new GetDepartmentByIdQuery(1000);
 
         // Act
-        Func<Task> act = async () => await Sender.Send(getDepartmentByIdQuery);
+        Func<Task> act = async () => await Mediator.Invoke(getDepartmentByIdQuery);
 
         // Assert
         await act.Should()
@@ -40,12 +40,12 @@ public class GetDepartmentByIdQueryTests(
             "ТЦ Либіль Плаза", 
             unit.Id);
 
-        var newDepartment = await Sender.Send(createDepartmentCommand);
+        var newDepartment = await Mediator.Invoke(createDepartmentCommand);
 
         var getDepartmentByIdQuery = new GetDepartmentByIdQuery(newDepartment.Id);
 
         // Act
-        var department = await Sender.Send(getDepartmentByIdQuery);
+        var department = await Mediator.Invoke(getDepartmentByIdQuery);
 
         // Assert
         department.Should().NotBeNull();
