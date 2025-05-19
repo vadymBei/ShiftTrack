@@ -1,29 +1,19 @@
 ﻿using AutoMapper;
-using MediatR;
+using ShiftTrack.Kernel.CQRS.Interfaces;
 using User.Authentication.Core.Application.Common.Interfaces;
 using User.Authentication.Core.Application.Common.ViewModels;
 
-namespace User.Authentication.Core.Application.Users.Commands.ChangePassword
+namespace User.Authentication.Core.Application.Users.Commands.ChangePassword;
+
+public class ChangePasswordCommandHandler(
+    IMapper mapper,
+    IUserService userService) : IRequestHandler<ChangePasswordCommand, TokenVM>
 {
-    public class ChangePasswordCommandHandler : IRequestHandler<ChangePasswordCommand, TokenVM>
+    public async Task<TokenVM> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
     {
-        private readonly IMapper _mapper;
-        private readonly IUserService _userService;
+        var token = await userService
+            .ChangePassword(request.Data, cancellationToken);
 
-        public ChangePasswordCommandHandler(
-            IMapper mapper,
-            IUserService userService)
-        {
-            _mapper = mapper;
-            _userService = userService;
-        }
-
-        public async Task<TokenVM> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
-        {
-            var token = await _userService
-                .ChangePassword(request.Data, cancellationToken);
-
-            return _mapper.Map<TokenVM>(token);
-        }
+        return mapper.Map<TokenVM>(token);
     }
 }

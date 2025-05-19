@@ -1,35 +1,25 @@
 ﻿using AutoMapper;
-using MediatR;
+using ShiftTrack.Kernel.CQRS.Interfaces;
 using User.Authentication.Core.Application.Common.Dto;
 using User.Authentication.Core.Application.Common.Interfaces;
 using User.Authentication.Core.Application.Common.ViewModels;
 
-namespace User.Authentication.Core.Application.Users.Commands.CreateUser
+namespace User.Authentication.Core.Application.Users.Commands.CreateUser;
+
+public class CreateUserCommandHandler(
+    IMapper mapper,
+    IUserService userService) : IRequestHandler<CreateUserCommand, UserVM>
 {
-    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserVM>
+    public async Task<UserVM> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
-        private readonly IMapper _mapper;
-        private readonly IUserService _userService;
+        var result = await userService.CreateUser(
+            new UserToCreateDto
+            (
+                request.Email,
+                request.PhoneNumber,
+                request.Password
+            ));
 
-        public CreateUserCommandHandler(
-            IMapper mapper,
-            IUserService userService)
-        {
-            _mapper = mapper;
-            _userService = userService;
-        }
-
-        public async Task<UserVM> Handle(CreateUserCommand request, CancellationToken cancellationToken)
-        {
-            var result = await _userService.CreateUser(
-                new UserToCreateDto
-                (
-                    request.Email,
-                    request.PhoneNumber,
-                    request.Password
-                ));
-
-            return _mapper.Map<UserVM>(result);
-        }
+        return mapper.Map<UserVM>(result);
     }
 }
