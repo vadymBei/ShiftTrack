@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 
-namespace ShiftTrack.Core.Application.System.User.Employees.Commands.UpdateEmployee;
+namespace ShiftTrack.Core.Application.System.User.Employees.Commands.UpdateAccount;
 
-public class UpdateEmployeeCommandValidator : AbstractValidator<UpdateEmployeeCommand>
+public class UpdateAccountCommandValidator : AbstractValidator<UpdateAccountCommand>
 {
-    public UpdateEmployeeCommandValidator()
+    public UpdateAccountCommandValidator()
     {
         RuleFor(x => x.Id)
             .NotNull()
@@ -35,7 +35,13 @@ public class UpdateEmployeeCommandValidator : AbstractValidator<UpdateEmployeeCo
             .WithMessage("Email lenght min 5, max 64")
             .EmailAddress()
             .WithMessage("Email is not valid");
-        
+
+        RuleFor(x => x.PhoneNumber)
+            .NotEmpty()
+            .WithMessage("PhoneNumber is required.")
+            .Matches(@"^\+\d{1,3}\s?\d{1,14}(\s?\d{1,13})?$")
+            .WithMessage("PhoneNumber must be a valid international phone number.");
+
         RuleFor(x => x.DateOfBirth)
             .LessThan(DateTime.Now)
             .When(x => x.DateOfBirth.HasValue)
