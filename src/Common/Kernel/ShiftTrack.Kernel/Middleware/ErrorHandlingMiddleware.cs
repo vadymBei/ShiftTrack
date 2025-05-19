@@ -51,6 +51,26 @@ namespace ShiftTrack.Kernel.Middleware
                         break;
                     }
 
+                case KernelException httpClientException when (httpClientException is HttpClientException):
+                {
+                    var errorMessage = httpClientException.ErrorMessage;
+                    var jsonStart = errorMessage.IndexOf('{');
+                    var jsonPart = errorMessage.Substring(jsonStart);
+    
+                    var errorObject = JsonConvert.DeserializeObject<dynamic>(jsonPart);
+    
+                    result = JsonConvert.SerializeObject(new KernelExceptionModel
+                    {
+                        Code = (HttpStatusCode)errorObject.Code,
+                        ErrorMessage = errorObject.ErrorMessage.ToString(),
+                        ErrorType = errorObject.ErrorType.ToString()
+                    });
+
+                    statusCode = (HttpStatusCode)errorObject.Code;
+                    
+                    break;
+                }
+                
                 case KernelException userAlreadyExistException when (userAlreadyExistException is UserAlreadyExistException):
                     {
                         result = JsonConvert.SerializeObject(new KernelExceptionModel
