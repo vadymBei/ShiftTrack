@@ -1,4 +1,4 @@
-﻿using MediatR;
+﻿using ShiftTrack.Kernel.CQRS.Interfaces;
 using User.Authentication.Core.Application.Common.Dto;
 
 namespace User.Authentication.Core.Application.UserRoles.Commands.CreateUserRole
