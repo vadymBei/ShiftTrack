@@ -1,21 +1,14 @@
 ﻿using ShiftTrack.Kernel.Constants;
 using System.Net;
 
-namespace ShiftTrack.Kernel.Exceptions
+namespace ShiftTrack.Kernel.Exceptions;
+
+public class KernelException(
+    HttpStatusCode code,
+    string errorMessage,
+    string errorType = BaseErrorType.KernelError) : Exception
 {
-    public class KernelException : Exception
-    {
-        public HttpStatusCode Code { get; private set; }
-
-        public string ErrorMessage { get; private set; }
-        
-        public string ErrorType { get; private set; }
-
-        public KernelException(HttpStatusCode code, string errorMessage, string errorType = BaseErrorType.KernelError)
-        {
-            Code = code;
-            ErrorMessage = errorMessage;
-            ErrorType = errorType;
-        }
-    }
+    public HttpStatusCode Code { get; private set; } = code;
+    public string ErrorMessage { get; private set; } = errorMessage;
+    public string ErrorType { get; private set; } = errorType;
 }

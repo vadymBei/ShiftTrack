@@ -17,7 +17,7 @@ public class DeleteShiftCommandTests(
         var deleteShiftCommand = new DeleteShiftCommand(1000);
 
         // Act
-        Func<Task> act = async () => await Sender.Send(deleteShiftCommand);
+        Func<Task> act = async () => await Mediator.Invoke(deleteShiftCommand);
 
         // Assert
         await act.Should()
@@ -36,12 +36,12 @@ public class DeleteShiftCommandTests(
             new TimeSpan(09, 30, 00),
             new TimeSpan(21, 00, 00));
 
-        var shift = await Sender.Send(createShiftCommand);
+        var shift = await Mediator.Invoke(createShiftCommand);
 
         var deleteShiftCommand = new DeleteShiftCommand(shift.Id);
 
         // Act
-        await Sender.Send(deleteShiftCommand);
+        await Mediator.Invoke(deleteShiftCommand);
 
         // Assert
         var deletedShift = DbContext.Shifts.FirstOrDefault(x => x.Id == shift.Id);

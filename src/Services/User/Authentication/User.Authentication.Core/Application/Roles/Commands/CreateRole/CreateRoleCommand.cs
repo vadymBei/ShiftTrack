@@ -1,9 +1,8 @@
-﻿using MediatR;
+﻿using ShiftTrack.Kernel.CQRS.Interfaces;
 using User.Authentication.Core.Application.Common.Dto;
 using User.Authentication.Core.Application.Common.ViewModels;
 
-namespace User.Authentication.Core.Application.Roles.Commands.CreateRole
-{
-    public record CreateRoleCommand(
-        RoleToCreateDto Data) : IRequest<RoleVM>;
-}
+namespace User.Authentication.Core.Application.Roles.Commands.CreateRole;
+
+public record CreateRoleCommand(
+    RoleToCreateDto Data) : IRequest<RoleVM>;

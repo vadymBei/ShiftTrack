@@ -20,19 +20,19 @@ public class GetUnitsQueryTests(
             "Хмельницький регіон",
             "Хм");
 
-        await Sender.Send(firstUnitCreateCommand);
+        await Mediator.Invoke(firstUnitCreateCommand);
 
         var secondUnitCreateCommand = new CreateUnitCommand(
             "Львів",
             "Львівський регіон",
             "Лв");
 
-        await Sender.Send(secondUnitCreateCommand);
+        await Mediator.Invoke(secondUnitCreateCommand);
             
         var getUnitsQuery = new GetUnitsQuery();
 
         // Act
-        var units = await Sender.Send(getUnitsQuery);
+        var units = await Mediator.Invoke(getUnitsQuery);
 
         // Assert
         units.Should().NotBeNull();

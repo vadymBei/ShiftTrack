@@ -16,7 +16,7 @@ public class CreatePositionCommandTests(
             "Адміністратор магазину");
 
         // Act
-        var newPosition = await Sender.Send(createPositionCommand);
+        var newPosition = await Mediator.Invoke(createPositionCommand);
 
         // Assert
         var position = DbContext.Positions

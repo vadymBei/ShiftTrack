@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Core.Application.Data.Common.Interfaces;
 using ShiftTrack.Core.Application.Organization.Timesheet.Common.ViewModels.Shifts;
 using ShiftTrack.Core.Domain.Organization.Timesheet.Shifts.Entities;
+using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Commands.CreateShift;
 

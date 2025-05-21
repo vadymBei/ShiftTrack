@@ -4,16 +4,13 @@ using User.Authentication.Core.Domain.Models.OAuth;
 
 using EntityUser = ShiftTrack.Authentication.Models.User;
 
-namespace User.Authentication.Core.Application.Common.Interfaces
+namespace User.Authentication.Core.Application.Common.Interfaces;
+
+public interface IUserService : IEntityServiceBase<EntityUser>
 {
-    public interface IUserService : IEntityServiceBase<EntityUser>
-    {
-        Task<EntityUser> CreateUser(UserToCreateDto dto);
-
-        Task<EntityUser> UpdateUser(UserToUpdateDto dto);
-
-        Task<bool> CheckUserExist(string phoneNumber);
-
-        Task<Token> ChangePassword(ChangePasswordDto dto, CancellationToken cancellationToken);
-    }
+    Task<EntityUser> CreateUser(UserToCreateDto dto);
+    Task<EntityUser> UpdateUser(UserToUpdateDto dto);
+    Task<bool> CheckUserExist(string phoneNumber);
+    Task<Token> ChangePassword(ChangePasswordDto dto, CancellationToken cancellationToken);
+    Task<IEnumerable<EntityUser>> GetUsers(CancellationToken cancellationToken);
 }

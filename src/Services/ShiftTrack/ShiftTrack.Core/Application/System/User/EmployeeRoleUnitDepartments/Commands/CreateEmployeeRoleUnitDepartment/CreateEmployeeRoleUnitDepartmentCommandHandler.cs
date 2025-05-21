@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using MediatR;
 using ShiftTrack.Core.Application.System.User.Common.Dtos;
 using ShiftTrack.Core.Application.System.User.Common.Interfaces;
 using ShiftTrack.Core.Application.System.User.Common.ViewModels;
+using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Core.Application.System.User.EmployeeRoleUnitDepartments.Commands.CreateEmployeeRoleUnitDepartment;
 

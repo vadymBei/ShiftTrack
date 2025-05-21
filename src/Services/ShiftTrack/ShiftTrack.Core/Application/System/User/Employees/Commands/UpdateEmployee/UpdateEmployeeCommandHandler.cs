@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Core.Application.Data.Common.Interfaces;
 using ShiftTrack.Core.Application.Organization.Structure.Common.Interfaces;
-using ShiftTrack.Core.Application.System.User.Common.Dtos;
 using ShiftTrack.Core.Application.System.User.Common.Interfaces;
 using ShiftTrack.Core.Application.System.User.Common.ViewModels;
 using ShiftTrack.Core.Domain.System.User.Employees.Entities;
+using ShiftTrack.Kernel.CQRS.Interfaces;
 using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Core.Application.System.User.Employees.Commands.UpdateEmployee;
@@ -16,7 +15,6 @@ public class UpdateEmployeeCommandHandler(
     IPositionService positionService,
     IEmployeeService employeeService,
     IDepartmentService departmentService,
-    ICurrentUserService currentUserService,
     IApplicationDbContext applicationDbContext)
     : IRequestHandler<UpdateEmployeeCommand, EmployeeVM>
 {
@@ -30,22 +28,10 @@ public class UpdateEmployeeCommandHandler(
             throw new EntityNotFoundException(typeof(Employee), request.Id);
         }
 
-        if (employee.PhoneNumber != request.PhoneNumber
-            || employee.Email != request.Email)
-        {
-            var updatedUser = await employeeService.UpdateAuthUser(
-                new UserToUpdateDto(
-                    currentUserService.Employee.IntegrationId,
-                    request.Email,
-                    request.PhoneNumber)
-                , cancellationToken);
-        }
-
         employee.Name = request.Name;
         employee.Surname = request.Surname;
         employee.Patronymic = request.Patronymic;
         employee.Email = request.Email;
-        employee.PhoneNumber = request.PhoneNumber;
         employee.DateOfBirth = request.DateOfBirth;
         employee.Gender = request.Gender;
 

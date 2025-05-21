@@ -6,7 +6,7 @@ using ShiftTrack.Core.Application.Organization.Structure.Units.Commands.DeleteUn
 using ShiftTrack.Core.Application.Organization.Structure.Units.Commands.UpdateUnit;
 using ShiftTrack.Core.Application.Organization.Structure.Units.Queries.GetUnitById;
 using ShiftTrack.Core.Application.Organization.Structure.Units.Queries.GetUnits;
-using ShiftTrack.Kernel.Controllers;
+using ShiftTrack.Kernel.CQRS.Controllers;
 
 namespace ShiftTrack.API.Controllers.Organization.Structure;
 
@@ -16,25 +16,25 @@ public class ORG_STR_UnitsController : ApiController
 {
     [HttpPost]
     public async Task<UnitVM> CreateUnit(CreateUnitCommand command)
-        => await Mediator.Send(command);
+        => await Mediator.Invoke(command);
 
     [HttpPut]
     public async Task<UnitVM> UpdateUnit(UpdateUnitCommand command)
-        => await Mediator.Send(command);
+        => await Mediator.Invoke(command);
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUnit(long id)
     {
-        await Mediator.Send(new DeleteUnitCommand(id));
+        await Mediator.Invoke(new DeleteUnitCommand(id));
 
         return Ok();
     }
 
     [HttpGet]
     public async Task<IEnumerable<UnitVM>> GetUnits()
-        => await Mediator.Send(new GetUnitsQuery());
+        => await Mediator.Invoke(new GetUnitsQuery());
 
     [HttpGet("{id}")]
     public async Task<UnitVM> GetUnitById(long id)
-        => await Mediator.Send(new GetUnitByIdQuery(id));
+        => await Mediator.Invoke(new GetUnitByIdQuery(id));
 }

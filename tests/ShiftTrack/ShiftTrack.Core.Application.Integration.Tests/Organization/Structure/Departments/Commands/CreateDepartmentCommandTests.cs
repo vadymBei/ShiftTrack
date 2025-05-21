@@ -19,14 +19,14 @@ public class CreateDepartmentCommandTests(
             "Хмельницький регіон",
             "Хм");
 
-        var unit = await Sender.Send(createUnitCommand);
+        var unit = await Mediator.Invoke(createUnitCommand);
 
         var createDepartmentCommand = new CreateDepartmentCommand(
             "ТЦ Либіль Плаза",
             unit.Id);
 
         // Act
-        var newDepartment = await Sender.Send(createDepartmentCommand);
+        var newDepartment = await Mediator.Invoke(createDepartmentCommand);
 
         // Assert
         var department = DbContext.Departments

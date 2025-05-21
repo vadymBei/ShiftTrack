@@ -16,12 +16,12 @@ public class DeletePositionCommandTests(IntegrationTestWebAppFactory factory) : 
             "Адміністратор",
             "Адміністратор магазину");
 
-        var newPosition = await Sender.Send(createPositionCommand);
+        var newPosition = await Mediator.Invoke(createPositionCommand);
 
         var deletePositionCommand = new DeletePositionCommand(newPosition.Id);
 
         // Act
-        await Sender.Send(deletePositionCommand);
+        await Mediator.Invoke(deletePositionCommand);
 
         // Assert
         var deletedPosition = DbContext.Positions.FirstOrDefault(x => x.Id == newPosition.Id);
@@ -36,7 +36,7 @@ public class DeletePositionCommandTests(IntegrationTestWebAppFactory factory) : 
         var deletePositionCommand = new DeletePositionCommand(1000);
 
         // Act
-        Func<Task> act = async () =>  await Sender.Send(deletePositionCommand);
+        Func<Task> act = async () =>  await Mediator.Invoke(deletePositionCommand);
 
         // Assert
         await act.Should()

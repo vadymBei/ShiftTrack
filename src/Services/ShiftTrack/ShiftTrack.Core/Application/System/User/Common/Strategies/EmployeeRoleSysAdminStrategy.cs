@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Core.Application.Data.Common.Interfaces;
 using ShiftTrack.Core.Application.Organization.Structure.Common.Interfaces;
+using ShiftTrack.Core.Application.System.User.Common.Constants;
 using ShiftTrack.Core.Application.System.User.Common.Dtos;
+using ShiftTrack.Core.Application.System.User.Common.Exceptions;
 using ShiftTrack.Core.Application.System.User.Common.Interfaces;
 using ShiftTrack.Core.Domain.Organization.Structure.Entities;
 using ShiftTrack.Core.Domain.System.User.EmployeeRoles.Entities;
@@ -41,17 +43,6 @@ public sealed class EmployeeRoleSysAdminStrategy(
 
     public async Task<EmployeeRole> CreateEmployeeRole(EmployeeRoleToCreateDto dto, CancellationToken cancellationToken)
     {
-        var existEmployeeRole = await applicationDbContext.EmployeeRoles
-            .AsNoTracking()
-            .Include(x => x.Role)
-            .FirstOrDefaultAsync(x => x.RoleId == dto.RoleId
-                                      && x.EmployeeId == dto.EmployeeId, cancellationToken);
-
-        if (existEmployeeRole is not null)
-        {
-            throw new RoleAlreadyExistException(existEmployeeRole.Role.Name);
-        }
-
         var role = await roleService.GetById(dto.RoleId, cancellationToken);
 
         var employee = await employeeService.GetById(dto.EmployeeId, cancellationToken);

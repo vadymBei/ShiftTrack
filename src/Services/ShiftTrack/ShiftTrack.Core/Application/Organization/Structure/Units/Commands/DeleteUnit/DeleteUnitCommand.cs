@@ -1,4 +1,4 @@
-﻿using MediatR;
+﻿using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Core.Application.Organization.Structure.Units.Commands.DeleteUnit;
 

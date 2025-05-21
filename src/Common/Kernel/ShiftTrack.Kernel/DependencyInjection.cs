@@ -1,33 +1,25 @@
-﻿using FluentValidation;
-using MediatR;
+﻿using System.Reflection;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using ShiftTrack.Kernel.Attributes;
-using ShiftTrack.Kernel.Behaviours;
-using System.Reflection;
 
-namespace ShiftTrack.Kernel
+namespace ShiftTrack.Kernel;
+
+[ShiftTrackMember]
+public static class DependencyInjection
 {
-    [ShiftTrackMember]
-    public static class DependencyInjection
+    public static IServiceCollection AddKernel(this IServiceCollection services)
     {
-        public static IServiceCollection AddKernel(this IServiceCollection services)
-        {
-            var shiftTrackAssemblies = AppDomain.CurrentDomain
-                .GetAssemblies()
-                .Where(assembly => assembly.GetTypes().Any(t => t.IsDefined(typeof(ShiftTrackMemberAttribute))))
-                .ToArray();
+        var shiftTrackAssemblies = AppDomain.CurrentDomain
+            .GetAssemblies()
+            .Where(assembly => assembly.GetTypes().Any(t => t.IsDefined(typeof(ShiftTrackMemberAttribute))))
+            .ToArray();
 
-            // register common components
-            services.AddAutoMapper(shiftTrackAssemblies);
-
-            services.AddMediatR(shiftTrackAssemblies);
-
-            services.AddValidatorsFromAssemblies(shiftTrackAssemblies);
-
-            // register behaviours
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
-
-            return services;
-        }
+        // register common components
+        services.AddAutoMapper(shiftTrackAssemblies);
+        
+        services.AddValidatorsFromAssemblies(shiftTrackAssemblies);
+        
+        return services;
     }
 }

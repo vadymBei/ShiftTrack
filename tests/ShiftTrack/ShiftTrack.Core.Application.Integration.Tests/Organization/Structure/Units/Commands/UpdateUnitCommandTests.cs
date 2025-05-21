@@ -19,7 +19,7 @@ public class UpdateUnitCommandTests(
             "Хмельницький регіон",
             "Хм");
 
-        var newUnit = await Sender.Send(createUnitCommand);
+        var newUnit = await Mediator.Invoke(createUnitCommand);
 
         var updateUnitCommand = new UpdateUnitCommand(
             newUnit.Id,
@@ -28,7 +28,7 @@ public class UpdateUnitCommandTests(
             "Хмо");
 
         // Act
-        var updatedUnit = await Sender.Send(updateUnitCommand);
+        var updatedUnit = await Mediator.Invoke(updateUnitCommand);
 
         // Assert
         updatedUnit.Should().NotBeNull();
@@ -55,7 +55,7 @@ public class UpdateUnitCommandTests(
             "Хмо");
 
         // Act
-        Func<Task> act = async () => await Sender.Send(updateUnitCommand);
+        Func<Task> act = async () => await Mediator.Invoke(updateUnitCommand);
 
         // Assert
         await act.Should()

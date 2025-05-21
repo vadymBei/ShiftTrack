@@ -6,7 +6,7 @@ using ShiftTrack.Core.Application.Organization.Structure.Positions.Commands.Dele
 using ShiftTrack.Core.Application.Organization.Structure.Positions.Commands.UpdatePosition;
 using ShiftTrack.Core.Application.Organization.Structure.Positions.Queries.GetPositionById;
 using ShiftTrack.Core.Application.Organization.Structure.Positions.Queries.GetPositions;
-using ShiftTrack.Kernel.Controllers;
+using ShiftTrack.Kernel.CQRS.Controllers;
 
 namespace ShiftTrack.API.Controllers.Organization.Structure;
 
@@ -16,25 +16,25 @@ public class ORG_STR_PositionsController : ApiController
 {
     [HttpPost]
     public async Task<PositionVM> CreatePosition(CreatePositionCommand command)
-        => await Mediator.Send(command);
+        => await Mediator.Invoke(command);
 
     [HttpPut]
     public async Task<PositionVM> UpdatePosition(UpdatePositionCommand command)
-        => await Mediator.Send(command);
+        => await Mediator.Invoke(command);
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeletePosition(long id)
     {
-        await Mediator.Send(new DeletePositionCommand(id));
+        await Mediator.Invoke(new DeletePositionCommand(id));
 
         return Ok();
     }
 
     [HttpGet]
     public async Task<IEnumerable<PositionVM>> GetPositions()
-        => await Mediator.Send(new GetPositionsQuery());
+        => await Mediator.Invoke(new GetPositionsQuery());
 
     [HttpGet("{id}")]
     public async Task<PositionVM> GetPositionById(long id)
-        => await Mediator.Send(new GetPositionByIdQuery(id));
+        => await Mediator.Invoke(new GetPositionByIdQuery(id));
 }

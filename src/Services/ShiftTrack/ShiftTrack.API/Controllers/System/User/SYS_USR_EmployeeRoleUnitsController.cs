@@ -5,7 +5,7 @@ using ShiftTrack.Core.Application.System.User.EmployeeRoleUnits.Commands.CreateE
 using ShiftTrack.Core.Application.System.User.EmployeeRoleUnits.Commands.DeleteEmployeeRoleUnit;
 using ShiftTrack.Core.Application.System.User.EmployeeRoleUnits.Queries.GetEmployeeRoleUnitById;
 using ShiftTrack.Core.Application.System.User.EmployeeRoleUnits.Queries.GetEmployeeRoleUnitsByEmployeeRoleId;
-using ShiftTrack.Kernel.Controllers;
+using ShiftTrack.Kernel.CQRS.Controllers;
 
 namespace ShiftTrack.API.Controllers.System.User;
 
@@ -15,20 +15,20 @@ public class SYS_USR_EmployeeRoleUnitsController: ApiController
 {
     [HttpPost]
     public Task<EmployeeRoleUnitVm> CreateEmployeeRoleUnit([FromBody] CreateEmployeeRoleUnitCommand command)
-        => Mediator.Send(command);
+        => Mediator.Invoke(command);
 
     [HttpGet("{id}")]
     public Task<EmployeeRoleUnitVm> GetEmployeeRoleUnitById(long id)
-        => Mediator.Send(new GetEmployeeRoleUnitByIdQuery(id)); 
+        => Mediator.Invoke(new GetEmployeeRoleUnitByIdQuery(id)); 
     
     [HttpGet("by-employeeRoleId/{employeeRoleId}")]
     public Task<IEnumerable<EmployeeRoleUnitVm>> GetEmployeeRoleUnitsByEmployeeRoleId(long employeeRoleId)
-        => Mediator.Send(new GetEmployeeRoleUnitsByEmployeeRoleIdQuery(employeeRoleId));
+        => Mediator.Invoke(new GetEmployeeRoleUnitsByEmployeeRoleIdQuery(employeeRoleId));
     
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteEmployeeRoleUnit(long id)
     {
-        await Mediator.Send(new DeleteEmployeeRoleUnitCommand(id));
+        await Mediator.Invoke(new DeleteEmployeeRoleUnitCommand(id));
         
         return Ok();
     }

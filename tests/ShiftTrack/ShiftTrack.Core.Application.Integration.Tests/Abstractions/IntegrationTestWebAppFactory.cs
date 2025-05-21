@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using ShiftTrack.Core.Infrastructure;
 using ShiftTrack.Core.Infrastructure.Persistence;
+using ShiftTrack.Kernel.CQRS;
 using Testcontainers.PostgreSql;
 
 namespace ShiftTrack.Core.Application.Integration.Tests.Abstractions;
@@ -22,9 +23,14 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
     {
         return _dbContainer.StartAsync();
     }
-
+    
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        builder.ConfigureServices(services =>
+        {
+            services.AddCqrs();
+        }); 
+        
         builder.ConfigureTestServices(services =>
         {
             var descriptor = services

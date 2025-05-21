@@ -1,14 +1,13 @@
 ﻿using FluentValidation;
 
-namespace ShiftTrack.Core.Application.Organization.Structure.Positions.Commands.DeletePosition
+namespace ShiftTrack.Core.Application.Organization.Structure.Positions.Commands.DeletePosition;
+
+public class DeletePositionCommandValidator : AbstractValidator<DeletePositionCommand>
 {
-    public class DeletePositionCommandValidator : AbstractValidator<DeletePositionCommand>
+    public DeletePositionCommandValidator()
     {
-        public DeletePositionCommandValidator()
-        {
-            RuleFor(x => x.Id)
-                .NotNull()
-                    .WithMessage("Id is required");
-        }
+        RuleFor(x => x.Id)
+            .NotNull()
+            .WithMessage("Id is required");
     }
 }

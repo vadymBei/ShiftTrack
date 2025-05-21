@@ -5,112 +5,116 @@ using User.Authentication.Core.Application.Common.Dto;
 using User.Authentication.Core.Application.Common.Exceptions;
 using User.Authentication.Core.Application.Common.Interfaces;
 using User.Authentication.Core.Domain.Models.OAuth;
-
 using EntityUser = ShiftTrack.Authentication.Models.User;
 
-namespace User.Authentication.Core.Application.Common.Services
+namespace User.Authentication.Core.Application.Common.Services;
+
+public class UserService(
+    ITokenService tokenService,
+    UserManager<EntityUser> userManager)
+    : IUserService
 {
-    public class UserService : IUserService
+    public async Task<Token> ChangePassword(ChangePasswordDto dto, CancellationToken cancellationToken)
     {
-        private readonly ITokenService _tokenService;
-        private readonly UserManager<EntityUser> _userManager;
+        var user = await GetById(dto.UserId, cancellationToken);
 
-        public UserService(
-            ITokenService tokenService,
-            UserManager<EntityUser> userManager)
+        var result = await userManager
+            .ChangePasswordAsync(user, dto.OldPassword, dto.NewPassword);
+
+        if (!result.Succeeded)
         {
-            _tokenService = tokenService;
-            _userManager = userManager;
+            throw new ChangePasswordException(result.Errors?.FirstOrDefault()?.Description);
         }
 
-        public async Task<Token> ChangePassword(ChangePasswordDto dto, CancellationToken cancellationToken)
+        var token = await tokenService
+            .GenerateToken(user.PhoneNumber, dto.NewPassword, cancellationToken);
+
+        return token;
+    }
+
+    public async Task<IEnumerable<EntityUser>> GetUsers(CancellationToken cancellationToken)
+    {
+        var users = await userManager.Users
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+
+        return users;
+
+    }
+
+    public async Task<bool> CheckUserExist(string phoneNumber)
+    {
+        return await userManager.Users
+            .AnyAsync(x => x.PhoneNumber == phoneNumber);
+    }
+
+    public async Task<EntityUser> CreateUser(UserToCreateDto dto)
+    {
+        var userExist = await CheckUserExist(dto.PhoneNumber);
+
+        if (userExist)
         {
-            var user = await GetById(dto.UserId, cancellationToken);
-
-            var result = await _userManager
-                .ChangePasswordAsync(user, dto.OldPassword, dto.NewPassword);
-
-            if (!result.Succeeded)
-            {
-                throw new ChangePasswordException(result.Errors?.FirstOrDefault()?.Description);
-            }
-
-            var token = await _tokenService
-                .GenerateToken(user.PhoneNumber, dto.NewPassword, cancellationToken);
-
-            return token;
+            throw new UserAlreadyExistException(dto.PhoneNumber);
         }
 
-        public async Task<bool> CheckUserExist(string phoneNumber)
+        var user = new EntityUser()
         {
-            return await _userManager.Users
-                .AnyAsync(x => x.PhoneNumber == phoneNumber);
+            UserName = dto.PhoneNumber,
+            PhoneNumber = dto.PhoneNumber,
+            Email = dto.Email
+        };
+
+        var result = await userManager
+            .CreateAsync(user, dto.Password);
+
+        if (!result.Succeeded)
+        {
+            throw new CreateUserException(result.Errors?.FirstOrDefault()?.Description);
         }
 
-        public async Task<EntityUser> CreateUser(UserToCreateDto dto)
+        return user;
+    }
+
+    public async Task<EntityUser> GetById(object id, CancellationToken cancellationToken)
+    {
+        var user = await userManager
+            .FindByIdAsync((string)id);
+
+        if (user == null)
         {
-            var userExist = await CheckUserExist(dto.PhoneNumber);
-
-            if (userExist)
-            {
-                throw new UserAlreadyExistException(dto.PhoneNumber);
-            }
-
-            var user = new EntityUser()
-            {
-                UserName = dto.PhoneNumber,
-                PhoneNumber = dto.PhoneNumber,
-                Email = dto.Email
-            };
-
-            var result = await _userManager
-                .CreateAsync(user, dto.Password);
-
-            if (!result.Succeeded)
-            {
-                throw new CreateUserException(result.Errors?.FirstOrDefault()?.Description);
-            }
-
-            return user;
+            throw new EntityNotFoundException(typeof(EntityUser), (string)id);
         }
 
-        public async Task<EntityUser> GetById(object id, CancellationToken cancellationToken)
+        return user;
+    }
+
+    public async Task<EntityUser> UpdateUser(UserToUpdateDto dto)
+    {
+        var user = await userManager
+            .FindByIdAsync(dto.Id);
+
+        if (user == null)
         {
-            var user = await _userManager
-                .FindByIdAsync((string)id);
-
-            if (user == null)
-            {
-                throw new EntityNotFoundException(typeof(EntityUser), (string)id);
-            }
-
-            return user;
+            throw new EntityNotFoundException(typeof(EntityUser), dto.Id);
         }
 
-        public async Task<EntityUser> UpdateUser(UserToUpdateDto dto)
+        if (user.UserName != dto.PhoneNumber)
         {
-            var user = await _userManager
-                .FindByIdAsync(dto.Id);
-
-            if (user == null)
-            {
-                throw new EntityNotFoundException(typeof(EntityUser), dto.Id);
-            }
-
             user.UserName = dto.PhoneNumber;
             user.PhoneNumber = dto.PhoneNumber;
-            user.Email = dto.Email;
-
-            var result = await _userManager
-                .UpdateAsync(user);
-
-            if (!result.Succeeded)
-            {
-                throw new UpdateUserException(result.Errors?.FirstOrDefault()?.Description);
-            }
-
-            return await _userManager
-                .FindByIdAsync(dto.Id);
         }
+
+        user.Email = dto.Email;
+
+        var result = await userManager
+            .UpdateAsync(user);
+
+        if (!result.Succeeded)
+        {
+            throw new UpdateUserException(result.Errors?.FirstOrDefault()?.Description);
+        }
+
+        return await userManager
+            .FindByIdAsync(dto.Id);
     }
 }

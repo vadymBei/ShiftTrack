@@ -1,29 +1,19 @@
 ﻿using AutoMapper;
-using MediatR;
+using ShiftTrack.Kernel.CQRS.Interfaces;
 using User.Authentication.Core.Application.Common.Interfaces;
 using User.Authentication.Core.Application.Common.ViewModels;
 
-namespace User.Authentication.Core.Application.Roles.Queries.GetRoles
+namespace User.Authentication.Core.Application.Roles.Queries.GetRoles;
+
+public class GetRolesQueryHandler(
+    IMapper mapper,
+    IRoleService roleService) : IRequestHandler<GetRolesQuery, IEnumerable<RoleVM>>
 {
-    public class GetRolesQueryHandler : IRequestHandler<GetRolesQuery, IEnumerable<RoleVM>>
+    public async Task<IEnumerable<RoleVM>> Handle(GetRolesQuery request, CancellationToken cancellationToken)
     {
-        private readonly IMapper _mapper;
-        private readonly IRoleService _roleService;
+        var roles = await roleService
+            .GetRoles(cancellationToken);
 
-        public GetRolesQueryHandler(
-            IMapper mapper,
-            IRoleService roleService)
-        {
-            _mapper = mapper;
-            _roleService = roleService;
-        }
-
-        public async Task<IEnumerable<RoleVM>> Handle(GetRolesQuery request, CancellationToken cancellationToken)
-        {
-            var roles = await _roleService
-                .GetRoles(cancellationToken);
-
-            return _mapper.Map<List<RoleVM>>(roles);
-        }
+        return mapper.Map<List<RoleVM>>(roles);
     }
 }

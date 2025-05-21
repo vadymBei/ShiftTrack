@@ -9,6 +9,7 @@ using ShiftTrack.Core.Application.System;
 using ShiftTrack.Core.Infrastructure.Persistence;
 using ShiftTrack.Kernel;
 using ShiftTrack.Kernel.Attributes;
+using ShiftTrack.Kernel.CQRS;
 
 namespace ShiftTrack.Core;
 
@@ -18,6 +19,8 @@ public static class DependencyInjection
     public static IServiceCollection AddCoreServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddKernel();
+
+        services.AddCqrs();
 
         services.AddClientHttp(configuration);
 

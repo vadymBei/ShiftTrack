@@ -6,7 +6,7 @@ using ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Commands.DeleteS
 using ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Commands.UpdateShift;
 using ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Queries.GetShiftById;
 using ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Queries.GetShifts;
-using ShiftTrack.Kernel.Controllers;
+using ShiftTrack.Kernel.CQRS.Controllers;
 
 namespace ShiftTrack.API.Controllers.Organization.Timesheet;
 
@@ -16,25 +16,25 @@ public class ORG_TSH_ShiftsController : ApiController
 {
     [HttpPost]
     public async Task<ShiftVM> CreateShift(CreateShiftCommand command)
-        => await Mediator.Send(command);
+        => await Mediator.Invoke(command);
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteShift(long id)
     {
-        await Mediator.Send(new DeleteShiftCommand(id));
+        await Mediator.Invoke(new DeleteShiftCommand(id));
 
         return Ok();
     }
 
     [HttpPut]
     public async Task<ShiftVM> UpdateShift(UpdateShiftCommand command)
-        => await Mediator.Send(command);
+        => await Mediator.Invoke(command);
 
     [HttpGet]
     public async Task<IEnumerable<ShiftVM>> GetShifts()
-        => await Mediator.Send(new GetShiftsQuery());
+        => await Mediator.Invoke(new GetShiftsQuery());
 
     [HttpGet("{id}")]
     public async Task<ShiftVM> GetShiftById(long id)
-        => await Mediator.Send(new GetShiftByIdQuery(id));
+        => await Mediator.Invoke(new GetShiftByIdQuery(id));
 }

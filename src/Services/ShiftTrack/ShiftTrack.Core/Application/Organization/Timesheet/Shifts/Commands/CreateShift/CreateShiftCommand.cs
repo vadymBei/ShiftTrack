@@ -1,6 +1,6 @@
-﻿using MediatR;
-using ShiftTrack.Core.Application.Organization.Timesheet.Common.ViewModels.Shifts;
+﻿using ShiftTrack.Core.Application.Organization.Timesheet.Common.ViewModels.Shifts;
 using ShiftTrack.Core.Domain.Organization.Timesheet.Shifts.Enums;
+using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Commands.CreateShift;
 

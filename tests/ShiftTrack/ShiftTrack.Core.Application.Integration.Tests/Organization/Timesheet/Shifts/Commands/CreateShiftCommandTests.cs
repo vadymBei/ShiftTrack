@@ -22,7 +22,7 @@ public class CreateShiftCommandTests(
             new TimeSpan(21, 00, 00));
 
         // Act
-        var newShift = await Sender.Send(createShiftCommand);
+        var newShift = await Mediator.Invoke(createShiftCommand);
 
         // Assert
         var shift = DbContext.Shifts.FirstOrDefault(x => x.Id == newShift.Id);
@@ -43,6 +43,5 @@ public class CreateShiftCommandTests(
                 DeletedAt = null,
                 WorkHours = newShift.EndTime - newShift.StartTime
             });
-
     }
 }

@@ -1,29 +1,19 @@
 ﻿using AutoMapper;
-using MediatR;
+using ShiftTrack.Kernel.CQRS.Interfaces;
 using User.Authentication.Core.Application.Common.Interfaces;
 using User.Authentication.Core.Application.Common.ViewModels;
 
-namespace User.Authentication.Core.Application.Tokens.Commands.RefreshToken
+namespace User.Authentication.Core.Application.Tokens.Commands.RefreshToken;
+
+public class RefreshTokenCommandHandler(
+    IMapper mapper,
+    ITokenService tokenService) : IRequestHandler<RefreshTokenCommand, TokenVM>
 {
-    public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, TokenVM>
+    public async Task<TokenVM> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
     {
-        private readonly IMapper _mapper;
-        private readonly ITokenService _tokenService;
+        var token = await tokenService
+            .RefreshToken(request.RefreshToken, cancellationToken);
 
-        public RefreshTokenCommandHandler(
-            IMapper mapper,
-            ITokenService tokenService)
-        {
-            _mapper = mapper;
-            _tokenService = tokenService;
-        }
-
-        public async Task<TokenVM> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
-        {
-            var token = await _tokenService
-                .RefreshToken(request.RefreshToken, cancellationToken);
-
-            return _mapper.Map<TokenVM>(token);
-        }
+        return mapper.Map<TokenVM>(token);
     }
 }
