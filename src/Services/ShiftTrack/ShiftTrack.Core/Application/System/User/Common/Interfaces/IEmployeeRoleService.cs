@@ -11,7 +11,8 @@ public interface IEmployeeRoleService
     Task DeleteEmployeeRole(long employeeRoleId, CancellationToken cancellationToken);
     Task<EmployeeRole> GetEmployeeRoleById(long employeeRoleId, CancellationToken cancellationToken);
     Task<IEnumerable<EmployeeRole>> GetEmployeeRolesByEmployeeId(long employeeId, CancellationToken cancellationToken);
-
+    Task<EmployeeRole>CreateSysAdminEmployeeRole(EmployeeRoleToCreateDto dto, CancellationToken cancellationToken);
+    
     #endregion
 
     #region EmployeeRoleUnit

@@ -4,6 +4,7 @@ using ShiftTrack.Core.Application.System.User.Common.Constants;
 using ShiftTrack.Core.Application.System.User.Common.Dtos;
 using ShiftTrack.Core.Application.System.User.Common.Exceptions;
 using ShiftTrack.Core.Application.System.User.Common.Interfaces;
+using ShiftTrack.Core.Application.System.User.Common.Strategies;
 using ShiftTrack.Core.Domain.System.User.EmployeeRoles.Entities;
 using ShiftTrack.Core.Domain.System.User.EmployeeRoles.Enums;
 using ShiftTrack.Kernel.Exceptions;
@@ -12,6 +13,7 @@ namespace ShiftTrack.Core.Application.System.User.Common.Services;
 
 public class EmployeeRoleService(
     IApplicationDbContext applicationDbContext,
+    IEnumerable<IEmployeeRoleStrategy> strategies,
     IEmployeeRoleStrategyFactory employeeRoleStrategyFactory) : IEmployeeRoleService
 {
     private IEmployeeRoleStrategy EmployeeRoleStrategy
@@ -69,6 +71,14 @@ public class EmployeeRoleService(
         await applicationDbContext.SaveChangesAsync(cancellationToken);
     }
 
+    public Task<EmployeeRole> CreateSysAdminEmployeeRole(EmployeeRoleToCreateDto dto,
+        CancellationToken cancellationToken)
+    {
+        var sysAdminStrategy = strategies.OfType<EmployeeRoleSysAdminStrategy>().First();
+        
+        return sysAdminStrategy.CreateEmployeeRole(dto, cancellationToken);
+    }
+    
     #endregion
 
     #region EmployeeRoleUnit
