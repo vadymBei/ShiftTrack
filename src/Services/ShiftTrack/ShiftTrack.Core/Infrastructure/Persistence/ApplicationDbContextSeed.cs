@@ -205,6 +205,7 @@ public static class ApplicationDbContextSeed
         };
 
         var exitedUnits = await context.Units
+            .AsNoTracking()
             .ToListAsync(CancellationToken.None);
 
         var newUnits = (
@@ -237,8 +238,18 @@ public static class ApplicationDbContextSeed
                 UnitId = unit.Id
             };
 
-            context.Departments.Add(department);
-            await context.SaveChangesAsync(CancellationToken.None);
+            var existedDepartments = await context.Departments
+                .AsNoTracking()
+                .ToListAsync(CancellationToken.None);
+
+            var existedDepartment = existedDepartments
+                .FirstOrDefault(x => x.Name == department.Name);
+
+            if (existedDepartment is null)
+            {
+                context.Departments.Add(department);
+                await context.SaveChangesAsync(CancellationToken.None);
+            }
         }
     }
 
