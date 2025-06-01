@@ -7,8 +7,6 @@ public interface IEmployeeRoleStrategy
 {
     #region EmployeeRole
 
-    Task<IEnumerable<EmployeeRole>> GetEmployeeRolesByEmployeeId(long employeeId, CancellationToken cancellationToken);
-    Task<EmployeeRole> GetEmployeeRoleById(long employeeRoleId, CancellationToken cancellationToken);
     Task<EmployeeRole> CreateEmployeeRole(EmployeeRoleToCreateDto dto, CancellationToken cancellationToken);
     Task DeleteEmployeeRole(long employeeRoleId, CancellationToken cancellationToken);
 
@@ -16,8 +14,6 @@ public interface IEmployeeRoleStrategy
 
     #region EmployeeRoleUnit
 
-    Task<EmployeeRoleUnit> GetEmployeeRoleUnitById(long employeeRoleUnitId, CancellationToken cancellationToken);
-    Task<IEnumerable<EmployeeRoleUnit>> GetEmployeeRoleUnitsByEmployeeRoleId(long employeeRoleId, CancellationToken cancellationToken);
     Task<EmployeeRoleUnit> CreateEmployeeRoleUnit(EmployeeRoleUnitToCreateDto dto, CancellationToken cancellationToken);
     Task DeleteEmployeeRoleUnit(long employeeUnitId, CancellationToken cancellationToken);
 
@@ -27,10 +23,6 @@ public interface IEmployeeRoleStrategy
     
     Task<IEnumerable<EmployeeRoleUnitDepartment>> CreateEmployeeRoleUnitDepartments(
         EmployeeRoleUnitDepartmentsToCreateDto dto, CancellationToken cancellationToken);
-
-    Task<IEnumerable<EmployeeRoleUnitDepartment>> GetEmployeeRoleUnitDepartmentsByEmployeeRoleUnitId(
-        long employeeRoleUnitId,
-        CancellationToken cancellationToken);
     
     Task DeleteEmployeeRoleUnitDepartment(long employeeRoleUnitDepartmentId, CancellationToken cancellationToken);
     

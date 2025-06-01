@@ -13,7 +13,7 @@ namespace ShiftTrack.API.Controllers.System.User;
 
 [Authorize]
 [Route("api/shift-track/system/account")]
-public class SYS_USR_AccountController: ApiController
+public class SYS_USR_AccountController : ApiController
 {
     [HttpGet("current-user")]
     public async Task<CurrentUserVM> GetCurrentUser()
@@ -29,8 +29,8 @@ public class SYS_USR_AccountController: ApiController
             new GenerateTokenCommand(
                 new GenerateTokenDto(command.PhoneNumber, command.Password)));
     }
-    
+
     [HttpPut]
-    public async Task<EmployeeVM> UpdateAccount (UpdateAccountCommand command)
+    public async Task<EmployeeVM> UpdateAccount(UpdateAccountCommand command)
         => await Mediator.Invoke(command);
 }
