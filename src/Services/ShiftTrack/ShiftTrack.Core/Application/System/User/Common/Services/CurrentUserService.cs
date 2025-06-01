@@ -28,6 +28,10 @@ public class CurrentUserService : ICurrentUserService
                 .ThenInclude(x => x.Unit)
                 .Include(x => x.EmployeeRoles)
                 .ThenInclude(x => x.Role)
+                .Include(x => x.EmployeeRoles)  
+                .ThenInclude(x => x.Units)
+                .ThenInclude(x => x.Departments)
+                .ThenInclude(x => x.Department)
                 .FirstOrDefault(x => x.IntegrationId == EmployeeIntegrationId);
 
             Roles = Employee?.EmployeeRoles

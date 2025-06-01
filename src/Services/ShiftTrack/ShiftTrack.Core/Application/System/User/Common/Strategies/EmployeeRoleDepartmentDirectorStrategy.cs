@@ -9,11 +9,6 @@ public sealed class EmployeeRoleDepartmentDirectorStrategy(
     IApplicationDbContext applicationDbContext) : IEmployeeRoleStrategy
 {
     #region EmployeeRole
-    
-    public Task<EmployeeRole> GetEmployeeRoleById(long employeeRoleId, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
 
     public Task<EmployeeRole> CreateEmployeeRole(EmployeeRoleToCreateDto dto, CancellationToken cancellationToken)
     {
@@ -25,28 +20,11 @@ public sealed class EmployeeRoleDepartmentDirectorStrategy(
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<EmployeeRole>> GetEmployeeRolesByEmployeeId(long employeeId,
-        CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
     #endregion
     
     #region EmployeeRoleUnit
     
     public Task<EmployeeRoleUnit> CreateEmployeeRoleUnit(EmployeeRoleUnitToCreateDto dto, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<EmployeeRoleUnit> GetEmployeeRoleUnitById(long employeeRoleUnitId, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-    
-    public Task<IEnumerable<EmployeeRoleUnit>> GetEmployeeRoleUnitsByEmployeeRoleId(long employeeRoleId,
-        CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
@@ -61,13 +39,6 @@ public sealed class EmployeeRoleDepartmentDirectorStrategy(
     #region EmployeeRoleUnitDepartment
     
     public Task<IEnumerable<EmployeeRoleUnitDepartment>> CreateEmployeeRoleUnitDepartments(EmployeeRoleUnitDepartmentsToCreateDto dto, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IEnumerable<EmployeeRoleUnitDepartment>> GetEmployeeRoleUnitDepartmentsByEmployeeRoleUnitId(
-        long employeeRoleUnitId,
-        CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }

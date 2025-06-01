@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Core.Application.Data.Common.Interfaces;
 using ShiftTrack.Core.Application.Organization.Structure.Common.Interfaces;
-using ShiftTrack.Core.Application.System.User.Common.Constants;
 using ShiftTrack.Core.Application.System.User.Common.Dtos;
-using ShiftTrack.Core.Application.System.User.Common.Exceptions;
 using ShiftTrack.Core.Application.System.User.Common.Interfaces;
 using ShiftTrack.Core.Domain.Organization.Structure.Entities;
 using ShiftTrack.Core.Domain.System.User.EmployeeRoles.Entities;
@@ -20,26 +18,6 @@ public sealed class EmployeeRoleSysAdminStrategy(
     IApplicationDbContext applicationDbContext) : IEmployeeRoleStrategy
 {
     #region EmployeeRole
-
-    public async Task<EmployeeRole> GetEmployeeRoleById(long employeeRoleId, CancellationToken cancellationToken)
-    {
-        var employeeRole = await applicationDbContext.EmployeeRoles
-            .AsNoTracking()
-            .Include(x => x.Role)
-            .Include(x => x.Units)
-            .ThenInclude(x => x.Unit)
-            .Include(x => x.Units)
-            .ThenInclude(x => x.Departments)
-            .ThenInclude(x => x.Department)
-            .FirstOrDefaultAsync(x => x.Id == employeeRoleId, cancellationToken);
-
-        if (employeeRole is null)
-        {
-            throw new EntityNotFoundException(typeof(EmployeeRole), employeeRoleId);
-        }
-
-        return employeeRole;
-    }
 
     public async Task<EmployeeRole> CreateEmployeeRole(EmployeeRoleToCreateDto dto, CancellationToken cancellationToken)
     {
@@ -109,23 +87,6 @@ public sealed class EmployeeRoleSysAdminStrategy(
         await applicationDbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<EmployeeRole>> GetEmployeeRolesByEmployeeId(long employeeId,
-        CancellationToken cancellationToken)
-    {
-        var employeeRoles = await applicationDbContext.EmployeeRoles
-            .AsNoTracking()
-            .Include(x => x.Role)
-            .Include(x => x.Units)
-            .ThenInclude(x => x.Unit)
-            .Include(x => x.Units)
-            .ThenInclude(x => x.Departments)
-            .ThenInclude(x => x.Department)
-            .Where(x => x.EmployeeId == employeeId)
-            .ToListAsync(cancellationToken);
-
-        return employeeRoles;
-    }
-
     #endregion
 
     #region EmployeeRoleUnit
@@ -145,41 +106,8 @@ public sealed class EmployeeRoleSysAdminStrategy(
 
         applicationDbContext.EmployeeRoleUnits.Add(employeeRoleUnit);
         await applicationDbContext.SaveChangesAsync(cancellationToken);
-
-
+        
         return employeeRoleUnit;
-    }
-
-    public async Task<EmployeeRoleUnit> GetEmployeeRoleUnitById(long employeeRoleUnitId,
-        CancellationToken cancellationToken)
-    {
-        var employeeRoleUnit = await applicationDbContext.EmployeeRoleUnits
-            .AsNoTracking()
-            .Include(x => x.Unit)
-            .Include(x => x.Departments)
-            .ThenInclude(x => x.Department)
-            .FirstOrDefaultAsync(x => x.Id == employeeRoleUnitId, cancellationToken);
-
-        if (employeeRoleUnit is null)
-        {
-            throw new EntityNotFoundException(typeof(EmployeeRoleUnit), employeeRoleUnitId);
-        }
-
-        return employeeRoleUnit;
-    }
-
-    public async Task<IEnumerable<EmployeeRoleUnit>> GetEmployeeRoleUnitsByEmployeeRoleId(long employeeRoleId,
-        CancellationToken cancellationToken)
-    {
-        var employeeRoleUnits = await applicationDbContext.EmployeeRoleUnits
-            .AsNoTracking()
-            .Include(x => x.Unit)
-            .Include(x => x.Departments)
-            .ThenInclude(x => x.Department)
-            .Where(x => x.EmployeeRoleId == employeeRoleId)
-            .ToListAsync(cancellationToken);
-
-        return employeeRoleUnits;
     }
 
     public async Task DeleteEmployeeRoleUnit(long employeeUnitId, CancellationToken cancellationToken)
@@ -214,19 +142,6 @@ public sealed class EmployeeRoleSysAdminStrategy(
 
         applicationDbContext.EmployeeRoleUnitDepartments.AddRange(employeeRoleUnitDepartments);
         await applicationDbContext.SaveChangesAsync(cancellationToken);
-
-        return employeeRoleUnitDepartments;
-    }
-
-    public async Task<IEnumerable<EmployeeRoleUnitDepartment>> GetEmployeeRoleUnitDepartmentsByEmployeeRoleUnitId(
-        long employeeRoleUnitId,
-        CancellationToken cancellationToken)
-    {
-        var employeeRoleUnitDepartments = await applicationDbContext.EmployeeRoleUnitDepartments
-            .AsNoTracking()
-            .Include(x => x.Department)
-            .Where(x => x.EmployeeRoleUnitId == employeeRoleUnitId)
-            .ToListAsync(cancellationToken);
 
         return employeeRoleUnitDepartments;
     }

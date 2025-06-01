@@ -42,16 +42,42 @@ public class EmployeeRoleService(
         return EmployeeRoleStrategy.DeleteEmployeeRole(employeeRoleId, cancellationToken);
     }
 
-    public Task<EmployeeRole> GetEmployeeRoleById(long employeeRoleId, CancellationToken cancellationToken)
+    public async Task<EmployeeRole> GetEmployeeRoleById(long employeeRoleId, CancellationToken cancellationToken)
     {
-        return EmployeeRoleStrategy.GetEmployeeRoleById(employeeRoleId, cancellationToken);
+        var employeeRole = await applicationDbContext.EmployeeRoles
+            .AsNoTracking()
+            .Include(x => x.Employee)
+            .ThenInclude(x => x.Department)
+            .Include(x => x.Role)
+            .Include(x => x.Units)
+            .ThenInclude(x => x.Unit)
+            .Include(x => x.Units)
+            .ThenInclude(x => x.Departments)
+            .ThenInclude(x => x.Department)
+            .FirstOrDefaultAsync(x => x.Id == employeeRoleId, cancellationToken);
+
+        if (employeeRole is null)
+        {
+            throw new EntityNotFoundException(typeof(EmployeeRole), employeeRoleId);
+        }
+
+        return employeeRole;
     }
 
-    public Task<IEnumerable<EmployeeRole>> GetEmployeeRolesByEmployeeId(
+    public async Task<IEnumerable<EmployeeRole>> GetEmployeeRolesByEmployeeId(
         long employeeId,
         CancellationToken cancellationToken)
     {
-        return EmployeeRoleStrategy.GetEmployeeRolesByEmployeeId(employeeId, cancellationToken);
+        return await applicationDbContext.EmployeeRoles
+            .AsNoTracking()
+            .Include(x => x.Role)
+            .Include(x => x.Units)
+            .ThenInclude(x => x.Unit)
+            .Include(x => x.Units)
+            .ThenInclude(x => x.Departments)
+            .ThenInclude(x => x.Department)
+            .Where(x => x.EmployeeId == employeeId)
+            .ToListAsync(cancellationToken);
     }
 
     private async Task RecalculateEmployeeRoleScope(long employeeRoleId, CancellationToken cancellationToken)
@@ -97,7 +123,7 @@ public class EmployeeRoleService(
                 nameof(UserExceptionsLocalization.EMPLOYEE_ROLE_UNIT_ALREADY_EXISTS));
         }
 
-        var employeeRole = await EmployeeRoleStrategy.GetEmployeeRoleById(dto.EmployeeRoleId, cancellationToken);
+        var employeeRole = await GetEmployeeRoleById(dto.EmployeeRoleId, cancellationToken);
 
         var employeeRoleUnit = await EmployeeRoleStrategy.CreateEmployeeRoleUnit(dto, cancellationToken);
 
@@ -106,22 +132,41 @@ public class EmployeeRoleService(
         return employeeRoleUnit;
     }
 
-    public Task<EmployeeRoleUnit> GetEmployeeRoleUnitById(long employeeRoleUnitId, CancellationToken cancellationToken)
+    public async Task<EmployeeRoleUnit> GetEmployeeRoleUnitById(long employeeRoleUnitId, CancellationToken cancellationToken)
     {
-        return EmployeeRoleStrategy.GetEmployeeRoleUnitById(employeeRoleUnitId, cancellationToken);
+        var employeeRoleUnit = await applicationDbContext.EmployeeRoleUnits
+            .AsNoTracking()
+            .Include(x => x.Unit)
+            .Include(x => x.Departments)
+            .ThenInclude(x => x.Department)
+            .FirstOrDefaultAsync(x => x.Id == employeeRoleUnitId, cancellationToken);
+
+        if (employeeRoleUnit is null)
+        {
+            throw new EntityNotFoundException(typeof(EmployeeRoleUnit), employeeRoleUnitId);
+        }
+
+        return employeeRoleUnit;
     }
 
-    public Task<IEnumerable<EmployeeRoleUnit>> GetEmployeeRoleUnitsByEmployeeRoleId(
+    public async Task<IEnumerable<EmployeeRoleUnit>> GetEmployeeRoleUnitsByEmployeeRoleId(
         long employeeRoleId,
         CancellationToken cancellationToken)
     {
-        return EmployeeRoleStrategy.GetEmployeeRoleUnitsByEmployeeRoleId(employeeRoleId, cancellationToken);
+        var employeeRoleUnits = await applicationDbContext.EmployeeRoleUnits
+            .AsNoTracking()
+            .Include(x => x.Unit)
+            .Include(x => x.Departments)
+            .ThenInclude(x => x.Department)
+            .Where(x => x.EmployeeRoleId == employeeRoleId)
+            .ToListAsync(cancellationToken);
+
+        return employeeRoleUnits;
     }
 
     public async Task DeleteEmployeeRoleUnit(long employeeRoleUnitId, CancellationToken cancellationToken)
     {
-        var employeeRoleUnit =
-            await EmployeeRoleStrategy.GetEmployeeRoleUnitById(employeeRoleUnitId, cancellationToken);
+        var employeeRoleUnit = await GetEmployeeRoleUnitById(employeeRoleUnitId, cancellationToken);
 
         var employeeRoleId = employeeRoleUnit.EmployeeRoleId;
 
@@ -173,13 +218,17 @@ public class EmployeeRoleService(
         return employeeRoleUnitDepartments.FirstOrDefault();
     }
 
-    public Task<IEnumerable<EmployeeRoleUnitDepartment>> GetEmployeeRoleUnitDepartmentsByEmployeeRoleUnitId(
+    public async Task<IEnumerable<EmployeeRoleUnitDepartment>> GetEmployeeRoleUnitDepartmentsByEmployeeRoleUnitId(
         long employeeRoleUnitId,
         CancellationToken cancellationToken)
     {
-        return EmployeeRoleStrategy.GetEmployeeRoleUnitDepartmentsByEmployeeRoleUnitId(
-            employeeRoleUnitId,
-            cancellationToken);
+        var employeeRoleUnitDepartments = await applicationDbContext.EmployeeRoleUnitDepartments
+            .AsNoTracking()
+            .Include(x => x.Department)
+            .Where(x => x.EmployeeRoleUnitId == employeeRoleUnitId)
+            .ToListAsync(cancellationToken);
+
+        return employeeRoleUnitDepartments;
     }
 
     public async Task DeleteEmployeeRoleUnitDepartment(
