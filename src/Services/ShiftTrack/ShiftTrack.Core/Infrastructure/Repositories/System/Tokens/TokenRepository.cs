@@ -4,31 +4,49 @@ using ShiftTrack.Client.Http.Interfaces;
 using ShiftTrack.Core.Application.System.Auth.Common.Dtos;
 using ShiftTrack.Core.Application.System.Auth.Common.Interfaces;
 using ShiftTrack.Core.Domain.System.Tokens.Models;
+using Microsoft.Extensions.Logging;
 
 namespace ShiftTrack.Core.Infrastructure.Repositories.System.Tokens;
 
 public class TokenRepository(
-    IClient client) : ITokenRepository
+    IClient client,
+    ILogger<TokenRepository> logger) : ITokenRepository
 {
     public async Task<Token> GenerateToken(GenerateTokenDto dto, CancellationToken cancellationToken)
     {
-        var token = await client
-            .Path("user-authentication-api/request-authentication-service")
-            .Auth(AuthProvider.Basic)
-            .Body(dto)
-            .Post<Token>("tokens/generate", cancellationToken);
+        try
+        {
+            var token = await client
+                .Path("user-authentication-api/request-authentication-service")
+                .Auth(AuthProvider.Basic)
+                .Body(dto)
+                .Post<Token>("tokens/generate", cancellationToken);
 
-        return token;
+            return token;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error occurred while generating token");
+            throw;
+        }
     }
 
     public async Task<Token> RefreshToken(RefreshTokenDto dto, CancellationToken cancellationToken)
     {
-        var token = await client
-            .Path("user-authentication-api/request-authentication-service")
-            .Auth(AuthProvider.Basic)
-            .Body(dto)
-            .Post<Token>("tokens/refresh", cancellationToken);
+        try
+        {
+            var token = await client
+                .Path("user-authentication-api/request-authentication-service")
+                .Auth(AuthProvider.Basic)
+                .Body(dto)
+                .Post<Token>("tokens/refresh", cancellationToken);
 
-        return token;
+            return token;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error occurred while refreshing token");
+            throw;
+        }
     }
 }
