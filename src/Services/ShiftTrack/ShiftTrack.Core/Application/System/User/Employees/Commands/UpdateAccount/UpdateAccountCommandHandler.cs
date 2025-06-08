@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Core.Application.Data.Common.Interfaces;
-using ShiftTrack.Core.Application.System.User.Common.Dtos;
 using ShiftTrack.Core.Application.System.User.Common.Interfaces;
 using ShiftTrack.Core.Application.System.User.Common.ViewModels;
 using ShiftTrack.Core.Domain.System.User.Employees.Entities;
+using ShiftTrack.Core.Domain.System.User.Employees.Events;
 using ShiftTrack.Kernel.CQRS.Interfaces;
 using ShiftTrack.Kernel.Exceptions;
 
@@ -14,7 +14,8 @@ public class UpdateAccountCommandHandler(
     IMapper mapper,
     IEmployeeService employeeService,
     ICurrentUserService currentUserService,
-    IApplicationDbContext applicationDbContext) : IRequestHandler<UpdateAccountCommand, EmployeeVM>
+    IApplicationDbContext applicationDbContext,
+    IDomainEventsDispatcher domainEventsDispatcher) : IRequestHandler<UpdateAccountCommand, EmployeeVM>
 {
     public async Task<EmployeeVM> Handle(UpdateAccountCommand request, CancellationToken cancellationToken = default)
     {
@@ -30,12 +31,12 @@ public class UpdateAccountCommandHandler(
         if (employee.PhoneNumber != request.PhoneNumber
             || employee.Email != request.Email)
         {
-            var updatedUser = await employeeService.UpdateAuthUser(
-                new UserToUpdateDto(
-                    currentUserService.Employee.IntegrationId,
-                    request.Email,
-                    request.PhoneNumber)
-                , cancellationToken);
+            var employeeContactDetailsChangedEvent = new EmployeeContactDetailsChangedEvent(
+                currentUserService.Employee.IntegrationId,
+                request.Email,
+                request.PhoneNumber);
+
+            await domainEventsDispatcher.DispatchAsync([employeeContactDetailsChangedEvent], cancellationToken);
         }
         
         employee.Name = request.Name;

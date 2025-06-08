@@ -33,13 +33,20 @@ namespace ShiftTrack.Core.Infrastructure.Repositories.System.User
 
         public async Task<Authentication.Models.User> UpdateUser(UserToUpdateDto dto, CancellationToken cancellationToken)
         {
-            var user = await client
-                .Path("user-authentication-api/request-authentication-service")
-                .Auth(AuthProvider.Basic)
-                .Body(dto)
-                .Put<Authentication.Models.User>("users", cancellationToken);
+            try
+            {
+                var user = await client
+                    .Path("user-authentication-api/request-authentication-service")
+                    .Auth(AuthProvider.Basic)
+                    .Body(dto)
+                    .Put<Authentication.Models.User>("users", cancellationToken);
 
-            return user;
+                return user;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
     }
 }
