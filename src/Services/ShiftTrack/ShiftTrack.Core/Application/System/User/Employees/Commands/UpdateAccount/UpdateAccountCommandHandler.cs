@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Core.Application.Data.Common.Interfaces;
+using ShiftTrack.Core.Application.System.User.Common.Dtos;
 using ShiftTrack.Core.Application.System.User.Common.Interfaces;
 using ShiftTrack.Core.Application.System.User.Common.ViewModels;
 using ShiftTrack.Core.Domain.System.User.Employees.Entities;
-using ShiftTrack.Core.Domain.System.User.Employees.Events;
 using ShiftTrack.Kernel.CQRS.Interfaces;
 using ShiftTrack.Kernel.Exceptions;
 
@@ -14,8 +14,7 @@ public class UpdateAccountCommandHandler(
     IMapper mapper,
     IEmployeeService employeeService,
     ICurrentUserService currentUserService,
-    IApplicationDbContext applicationDbContext,
-    IDomainEventsDispatcher domainEventsDispatcher) : IRequestHandler<UpdateAccountCommand, EmployeeVM>
+    IApplicationDbContext applicationDbContext) : IRequestHandler<UpdateAccountCommand, EmployeeVM>
 {
     public async Task<EmployeeVM> Handle(UpdateAccountCommand request, CancellationToken cancellationToken = default)
     {
@@ -31,19 +30,20 @@ public class UpdateAccountCommandHandler(
         if (employee.PhoneNumber != request.PhoneNumber
             || employee.Email != request.Email)
         {
-            var employeeContactDetailsChangedEvent = new EmployeeContactDetailsChangedEvent(
-                currentUserService.Employee.IntegrationId,
-                request.Email,
-                request.PhoneNumber);
-
-            await domainEventsDispatcher.DispatchAsync([employeeContactDetailsChangedEvent], cancellationToken);
+            var user = await employeeService.UpdateAuthUser(
+                new UserToUpdateDto(
+                    currentUserService.Employee.IntegrationId,
+                    request.Email,
+                    request.PhoneNumber)
+                , cancellationToken);
+            
+            employee.Email = user.Email;
+            employee.PhoneNumber = user.PhoneNumber;
         }
         
         employee.Name = request.Name;
         employee.Surname = request.Surname;
         employee.Patronymic = request.Patronymic;
-        employee.Email = request.Email;
-        employee.PhoneNumber = request.PhoneNumber;
         employee.DateOfBirth = request.DateOfBirth;
         employee.Gender = request.Gender;
         

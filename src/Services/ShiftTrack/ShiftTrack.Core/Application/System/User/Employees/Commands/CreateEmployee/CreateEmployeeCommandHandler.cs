@@ -25,25 +25,24 @@ public class CreateEmployeeCommandHandler(
         {
             throw new UserAlreadyExistException(request.PhoneNumber);
         }
+        
+        var user = await userService.RegisterAuthUser(
+            new UserToRegisterDto(
+                request.PhoneNumber,
+                request.Email,
+                request.Password),
+            cancellationToken);
 
-        var employee = new Employee()
+        var employee = new Employee
         {
             Name = request.Name,
             Surname = request.Surname,
             Patronymic = request.Patronymic,
             Email = request.Email,
             PhoneNumber = request.PhoneNumber,
-            Gender = request.Gender
+            Gender = request.Gender,
+            IntegrationId = user.Id
         };
-
-        var user = await userService.RegisterAuthUser(
-            new UserToRegisterDto(
-                employee.PhoneNumber,
-                employee.Email,
-                request.Password),
-            cancellationToken);
-
-        employee.IntegrationId = user.Id;
 
         applicationDbContext.Employees.Add(employee);
         await applicationDbContext.SaveChangesAsync(cancellationToken);
