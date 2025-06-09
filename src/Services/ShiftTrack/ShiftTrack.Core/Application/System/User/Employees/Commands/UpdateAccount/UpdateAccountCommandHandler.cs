@@ -30,19 +30,20 @@ public class UpdateAccountCommandHandler(
         if (employee.PhoneNumber != request.PhoneNumber
             || employee.Email != request.Email)
         {
-            var updatedUser = await employeeService.UpdateAuthUser(
+            var user = await employeeService.UpdateAuthUser(
                 new UserToUpdateDto(
                     currentUserService.Employee.IntegrationId,
                     request.Email,
                     request.PhoneNumber)
                 , cancellationToken);
+            
+            employee.Email = user.Email;
+            employee.PhoneNumber = user.PhoneNumber;
         }
         
         employee.Name = request.Name;
         employee.Surname = request.Surname;
         employee.Patronymic = request.Patronymic;
-        employee.Email = request.Email;
-        employee.PhoneNumber = request.PhoneNumber;
         employee.DateOfBirth = request.DateOfBirth;
         employee.Gender = request.Gender;
         

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using ShiftTrack.Kernel.CQRS.Interfaces;
 
-namespace ShiftTrack.Kernel.CQRS;
+namespace ShiftTrack.Kernel.CQRS.Implementations;
 
 public class Mediator(
     IServiceProvider serviceProvider) : IMediator
