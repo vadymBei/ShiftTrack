@@ -5,7 +5,6 @@ using ShiftTrack.Core.Application.System.User.Common.Constants;
 using ShiftTrack.Core.Application.System.User.Common.Dtos;
 using ShiftTrack.Core.Application.System.User.Common.Exceptions;
 using ShiftTrack.Core.Application.System.User.Common.Interfaces;
-using ShiftTrack.Core.Domain.Organization.Structure.Entities;
 using ShiftTrack.Core.Domain.System.User.EmployeeRoles.Entities;
 using ShiftTrack.Core.Domain.System.User.EmployeeRoles.Enums;
 using ShiftTrack.Kernel.Exceptions;
@@ -30,8 +29,8 @@ public sealed class EmployeeRoleUnitDirectorStrategy(
             || !dto.DepartmentIds.Any())
         {
             throw new EmployeeRoleException(
-                UserExceptionsLocalization.UNIT_DIRECTOR_GLOBAL_SCOPE,
-                nameof(UserExceptionsLocalization.UNIT_DIRECTOR_GLOBAL_SCOPE));
+                UserExceptionsLocalization.CANNOT_ASSIGN_GLOBAL_SCOPE,
+                nameof(UserExceptionsLocalization.CANNOT_ASSIGN_GLOBAL_SCOPE));
         }
 
         var employee = await employeeService.GetById(dto.EmployeeId, cancellationToken);
@@ -44,8 +43,8 @@ public sealed class EmployeeRoleUnitDirectorStrategy(
                                                    && x.Units.Any(u => u.UnitId == employee.Department.UnitId)))
         {
             throw new EmployeeRoleException(
-                UserExceptionsLocalization.UNIT_DIRECTOR_OUT_OF_SCOPE,
-                nameof(UserExceptionsLocalization.UNIT_DIRECTOR_OUT_OF_SCOPE));
+                UserExceptionsLocalization.CREATE_ROLE_UNIT_OUT_OF_SCOPE,
+                nameof(UserExceptionsLocalization.CREATE_ROLE_UNIT_OUT_OF_SCOPE));
         }
 
         var role = await roleService.GetById(dto.RoleId, cancellationToken);
@@ -69,41 +68,21 @@ public sealed class EmployeeRoleUnitDirectorStrategy(
         applicationDbContext.EmployeeRoles.Add(employeeRole);
         await applicationDbContext.SaveChangesAsync(cancellationToken);
 
-        var departments = new List<Department>();
+        var departments = await departmentService
+            .GetDepartmentsByIds(dto.DepartmentIds, cancellationToken);
 
-        if (dto.DepartmentIds is not null
-            && dto.DepartmentIds.Any())
-        {
-            departments = (await departmentService
-                    .GetDepartmentsByIds(dto.DepartmentIds, cancellationToken))
-                .ToList();
-        }
+        var employeeRoleUnit = await CreateEmployeeRoleUnit(
+            new EmployeeRoleUnitToCreateDto(
+                employeeRole.Id,
+                dto.UnitId.Value,
+                RoleScope.Local),
+            cancellationToken);
 
-        EmployeeRoleUnit employeeRoleUnit = null;
-
-        if (dto.UnitId is not null)
-        {
-            employeeRoleUnit = await CreateEmployeeRoleUnit(
-                new EmployeeRoleUnitToCreateDto(
-                    employeeRole.Id,
-                    dto.UnitId.Value,
-                    departments.Any() ? RoleScope.Local : RoleScope.Global),
-                cancellationToken);
-
-            employeeRole.Scope = RoleScope.Local;
-        }
-
-        if (departments.Any()
-            && employeeRoleUnit is not null)
-        {
-            await CreateEmployeeRoleUnitDepartments(
-                new EmployeeRoleUnitDepartmentsToCreateDto(
-                    employeeRoleUnit.Id,
-                    departments.Select(x => x.Id)),
-                cancellationToken);
-        }
-
-        await applicationDbContext.SaveChangesAsync(cancellationToken);
+        await CreateEmployeeRoleUnitDepartments(
+            new EmployeeRoleUnitDepartmentsToCreateDto(
+                employeeRoleUnit.Id,
+                departments.Select(x => x.Id)),
+            cancellationToken);
 
         return employeeRole;
     }
@@ -111,15 +90,11 @@ public sealed class EmployeeRoleUnitDirectorStrategy(
     public async Task DeleteEmployeeRole(long employeeRoleId, CancellationToken cancellationToken)
     {
         var employeeRole = await applicationDbContext.EmployeeRoles
-            .Include(x => x.Employee)
-            .ThenInclude(x => x.Department)
-            .ThenInclude(x => x.Unit)
-            .FirstOrDefaultAsync(x => x.Id == employeeRoleId, cancellationToken);
-
-        if (employeeRole is null)
-        {
-            throw new EntityNotFoundException(typeof(EmployeeRole), employeeRoleId);
-        }
+                               .Include(x => x.Employee)
+                               .ThenInclude(x => x.Department)
+                               .ThenInclude(x => x.Unit)
+                               .FirstOrDefaultAsync(x => x.Id == employeeRoleId, cancellationToken)
+                           ?? throw new EntityNotFoundException(typeof(EmployeeRole), employeeRoleId);
 
         if (employeeRole.Employee.Department is null
             || employeeRole.Employee.Department.UnitId != currentUserService.Employee.Department.UnitId)
@@ -141,10 +116,11 @@ public sealed class EmployeeRoleUnitDirectorStrategy(
         CancellationToken cancellationToken)
     {
         var employeeRole = await applicationDbContext.EmployeeRoles
-            .AsNoTracking()
-            .Include(x => x.Employee)
-            .ThenInclude(x => x.Department)
-            .FirstOrDefaultAsync(x => x.Id == dto.EmployeeRoleId, cancellationToken);
+                               .AsNoTracking()
+                               .Include(x => x.Employee)
+                               .ThenInclude(x => x.Department)
+                               .FirstOrDefaultAsync(x => x.Id == dto.EmployeeRoleId, cancellationToken)
+                           ?? throw new EntityNotFoundException(typeof(EmployeeRole), dto.EmployeeRoleId);
 
         if (employeeRole.Employee.Department is null
             || !currentUserService.Employee.EmployeeRoles
@@ -154,8 +130,8 @@ public sealed class EmployeeRoleUnitDirectorStrategy(
                                   .UnitId)))
         {
             throw new EmployeeRoleException(
-                UserExceptionsLocalization.UNIT_DIRECTOR_OUT_OF_SCOPE,
-                nameof(UserExceptionsLocalization.UNIT_DIRECTOR_OUT_OF_SCOPE));
+                UserExceptionsLocalization.CREATE_ROLE_UNIT_OUT_OF_SCOPE,
+                nameof(UserExceptionsLocalization.CREATE_ROLE_UNIT_OUT_OF_SCOPE));
         }
 
         var unit = await unitService.GetById(dto.UnitId, cancellationToken);
@@ -176,15 +152,11 @@ public sealed class EmployeeRoleUnitDirectorStrategy(
     public async Task DeleteEmployeeRoleUnit(long employeeUnitId, CancellationToken cancellationToken)
     {
         var employeeRoleUnit = await applicationDbContext.EmployeeRoleUnits
-            .Include(x => x.EmployeeRole)
-            .ThenInclude(x => x.Employee)
-            .ThenInclude(x => x.Department)
-            .FirstOrDefaultAsync(x => x.Id == employeeUnitId, cancellationToken);
-
-        if (employeeRoleUnit is null)
-        {
-            throw new EntityNotFoundException(typeof(EmployeeRoleUnit), employeeUnitId);
-        }
+                                   .Include(x => x.EmployeeRole)
+                                   .ThenInclude(x => x.Employee)
+                                   .ThenInclude(x => x.Department)
+                                   .FirstOrDefaultAsync(x => x.Id == employeeUnitId, cancellationToken)
+                               ?? throw new EntityNotFoundException(typeof(EmployeeRoleUnit), employeeUnitId);
 
         if (employeeRoleUnit.EmployeeRole.Employee.Department is null
             || !currentUserService.Employee.EmployeeRoles
@@ -210,10 +182,11 @@ public sealed class EmployeeRoleUnitDirectorStrategy(
         CancellationToken cancellationToken)
     {
         var employeeRoleUnit = await applicationDbContext.EmployeeRoleUnits
-            .AsNoTracking()
-            .Include(x => x.Unit)
-            .Include(x => x.Departments)
-            .FirstOrDefaultAsync(x => x.Id == dto.EmployeeRoleUnitId, cancellationToken);
+                                   .AsNoTracking()
+                                   .Include(x => x.Unit)
+                                   .Include(x => x.Departments)
+                                   .FirstOrDefaultAsync(x => x.Id == dto.EmployeeRoleUnitId, cancellationToken)
+                               ?? throw new EntityNotFoundException(typeof(EmployeeRoleUnit), dto.EmployeeRoleUnitId);
 
         if (!currentUserService.Employee.EmployeeRoles
                 .Any(x => x.Role.Name == DefaultRolesCatalog.UNIT_DIRECTOR
@@ -221,8 +194,8 @@ public sealed class EmployeeRoleUnitDirectorStrategy(
                               u.UnitId == employeeRoleUnit.UnitId)))
         {
             throw new EmployeeRoleException(
-                UserExceptionsLocalization.UNIT_DIRECTOR_OUT_OF_SCOPE,
-                nameof(UserExceptionsLocalization.UNIT_DIRECTOR_OUT_OF_SCOPE));
+                UserExceptionsLocalization.CREATE_ROLE_UNIT_OUT_OF_SCOPE,
+                nameof(UserExceptionsLocalization.CREATE_ROLE_UNIT_OUT_OF_SCOPE));
         }
 
         var employeeRoleUnitDepartments = dto.DepartmentIds
@@ -239,19 +212,16 @@ public sealed class EmployeeRoleUnitDirectorStrategy(
         return employeeRoleUnitDepartments;
     }
 
-    public Task DeleteEmployeeRoleUnitDepartment(long employeeRoleUnitDepartmentId, CancellationToken cancellationToken)
+    public async Task DeleteEmployeeRoleUnitDepartment(long employeeRoleUnitDepartmentId,
+        CancellationToken cancellationToken)
     {
-        var employeeRoleUnitDepartment = applicationDbContext.EmployeeRoleUnitDepartments
-            .Include(x => x.EmployeeRoleUnit)
-            .ThenInclude(x => x.EmployeeRole)
-            .ThenInclude(x => x.Employee)
-            .ThenInclude(x => x.Department)
-            .FirstOrDefault(x => x.Id == employeeRoleUnitDepartmentId);
-
-        if (employeeRoleUnitDepartment is null)
-        {
-            throw new EntityNotFoundException(typeof(EmployeeRoleUnitDepartment), employeeRoleUnitDepartmentId);
-        }
+        var employeeRoleUnitDepartment = await applicationDbContext.EmployeeRoleUnitDepartments
+                                             .Include(x => x.EmployeeRoleUnit)
+                                             .ThenInclude(x => x.EmployeeRole)
+                                             .ThenInclude(x => x.Employee)
+                                             .ThenInclude(x => x.Department)
+                                             .FirstOrDefaultAsync(x => x.Id == employeeRoleUnitDepartmentId, cancellationToken)
+                                         ?? throw new EntityNotFoundException(typeof(EmployeeRoleUnitDepartment), employeeRoleUnitDepartmentId);
 
         var employeeRole = employeeRoleUnitDepartment.EmployeeRoleUnit.EmployeeRole;
 
@@ -266,7 +236,7 @@ public sealed class EmployeeRoleUnitDirectorStrategy(
         }
 
         applicationDbContext.EmployeeRoleUnitDepartments.Remove(employeeRoleUnitDepartment);
-        return applicationDbContext.SaveChangesAsync(cancellationToken);
+        await applicationDbContext.SaveChangesAsync(cancellationToken);
     }
 
     #endregion
