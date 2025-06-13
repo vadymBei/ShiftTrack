@@ -76,12 +76,8 @@ public sealed class EmployeeRoleSysAdminStrategy(
     public async Task DeleteEmployeeRole(long employeeRoleId, CancellationToken cancellationToken)
     {
         var employeeRole = await applicationDbContext.EmployeeRoles
-            .FirstOrDefaultAsync(x => x.Id == employeeRoleId, cancellationToken);
-
-        if (employeeRole is null)
-        {
-            throw new EntityNotFoundException(typeof(EmployeeRole), employeeRoleId);
-        }
+                               .FirstOrDefaultAsync(x => x.Id == employeeRoleId, cancellationToken)
+                           ?? throw new EntityNotFoundException(typeof(EmployeeRole), employeeRoleId);
 
         applicationDbContext.EmployeeRoles.Remove(employeeRole);
         await applicationDbContext.SaveChangesAsync(cancellationToken);
@@ -106,19 +102,15 @@ public sealed class EmployeeRoleSysAdminStrategy(
 
         applicationDbContext.EmployeeRoleUnits.Add(employeeRoleUnit);
         await applicationDbContext.SaveChangesAsync(cancellationToken);
-        
+
         return employeeRoleUnit;
     }
 
     public async Task DeleteEmployeeRoleUnit(long employeeUnitId, CancellationToken cancellationToken)
     {
         var employeeRoleUnit = await applicationDbContext.EmployeeRoleUnits
-            .FirstOrDefaultAsync(x => x.Id == employeeUnitId, cancellationToken);
-
-        if (employeeRoleUnit is null)
-        {
-            throw new EntityNotFoundException(typeof(EmployeeRoleUnit), employeeUnitId);
-        }
+                                   .FirstOrDefaultAsync(x => x.Id == employeeUnitId, cancellationToken)
+                               ?? throw new EntityNotFoundException(typeof(EmployeeRoleUnit), employeeUnitId);
 
         applicationDbContext.EmployeeRoleUnits.Remove(employeeRoleUnit);
         await applicationDbContext.SaveChangesAsync(cancellationToken);
@@ -146,18 +138,14 @@ public sealed class EmployeeRoleSysAdminStrategy(
         return employeeRoleUnitDepartments;
     }
 
-    public Task DeleteEmployeeRoleUnitDepartment(long employeeRoleUnitDepartmentId, CancellationToken cancellationToken)
+    public async Task DeleteEmployeeRoleUnitDepartment(long employeeRoleUnitDepartmentId, CancellationToken cancellationToken)
     {
-        var employeeRoleUnitDepartment = applicationDbContext.EmployeeRoleUnitDepartments
-            .FirstOrDefault(x => x.Id == employeeRoleUnitDepartmentId);
-
-        if (employeeRoleUnitDepartment is null)
-        {
-            throw new EntityNotFoundException(typeof(EmployeeRoleUnitDepartment), employeeRoleUnitDepartmentId);
-        }
+        var employeeRoleUnitDepartment = await applicationDbContext.EmployeeRoleUnitDepartments
+                                             .FirstOrDefaultAsync(x => x.Id == employeeRoleUnitDepartmentId, cancellationToken)
+                                         ?? throw new EntityNotFoundException(typeof(EmployeeRoleUnitDepartment),                                              employeeRoleUnitDepartmentId);
 
         applicationDbContext.EmployeeRoleUnitDepartments.Remove(employeeRoleUnitDepartment);
-        return applicationDbContext.SaveChangesAsync(cancellationToken);
+        await applicationDbContext.SaveChangesAsync(cancellationToken);
     }
 
     #endregion
