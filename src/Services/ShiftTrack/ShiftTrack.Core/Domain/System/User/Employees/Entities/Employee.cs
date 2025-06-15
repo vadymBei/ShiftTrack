@@ -19,7 +19,8 @@ public class Employee : ISoftDeletable
     public DateTime? DeletedAt { get; set; }
     public EmployeeGender Gender { get; set; }
     public string FullName => Surname + " " + Name + " " + Patronymic;
-
+    public string PhotoFullName { get; set; }
+    
     public long? DepartmentId { get; set; }
     public Department Department { get; set; }
 

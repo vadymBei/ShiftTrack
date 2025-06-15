@@ -19,6 +19,8 @@ builder.Services.AddMemoryCache();
 
 builder.Services.AddDistributedMemoryCache();
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
@@ -65,6 +67,8 @@ app.UseKernelExceptionHandler();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseStaticFiles();
 
 app.Run();
 
