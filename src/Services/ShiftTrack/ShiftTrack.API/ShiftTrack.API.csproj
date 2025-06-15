@@ -23,4 +23,9 @@
 		<ProjectReference Include="..\ShiftTrack.Core\ShiftTrack.Core.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="wwwroot\" />
+	  <Folder Include="wwwroot\uploads\employees\" />
+	</ItemGroup>
+
 </Project>
