@@ -12,4 +12,5 @@ public interface IEmployeeService : IEntityServiceBase<Employee>
     Task<Authentication.Models.User> UpdateAuthUser(UserToUpdateDto dto, CancellationToken cancellationToken);
     Task<Token> ChangePassword(ChangeEmployeePasswordDto dto, CancellationToken cancellationToken);
     Task<CurrentUser> GetCurrentUser(CancellationToken cancellationToken);
+    Task<Employee> GetByIntegrationId(string integrationId, CancellationToken cancellationToken);
 }

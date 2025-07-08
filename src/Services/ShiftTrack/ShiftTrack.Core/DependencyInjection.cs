@@ -21,12 +21,14 @@ public static class DependencyInjection
     {
         services.AddKernel();
 
-        services.AddScoped(typeof(IPipelineBehaviour<,>), typeof(RequestAuthorizationBehaviour<,>));
-
         services.AddCqrs();
         
         services.AddClientHttp(configuration);
 
+        // Register Pipelines
+        services.AddTransient(typeof(IPipelineBehaviour<,>), typeof(RequestAuthorizationBehaviour<,>));
+        services.AddTransient(typeof(IPipelineBehaviour<>), typeof(RequestAuthorizationBehaviour<>));
+        
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(
                 configuration.GetConnectionString("DefaultConnection"),
