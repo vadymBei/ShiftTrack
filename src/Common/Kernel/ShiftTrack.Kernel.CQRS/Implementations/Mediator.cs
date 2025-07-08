@@ -21,9 +21,9 @@ public class Mediator(IServiceProvider serviceProvider) : IMediator
         if (!pipelines.Any())
         {
             return await InvokeHandler<TResponse>(
-                handler, 
+                handler,
                 handleMethod,
-                request, 
+                request,
                 cancellationToken);
         }
 
@@ -41,18 +41,18 @@ public class Mediator(IServiceProvider serviceProvider) : IMediator
         ArgumentNullException.ThrowIfNull(request);
 
         var requestType = request.GetType();
-        
+
         var (handler, handleMethod) = GetHandler(requestType, typeof(void));
         var (pipelines, pipelineMethod) = GetPipelines(requestType, typeof(void));
 
         if (!pipelines.Any())
         {
             await InvokeHandler(
-                handler, 
+                handler,
                 handleMethod,
-                request, 
+                request,
                 cancellationToken);
-            
+
             return;
         }
 
@@ -69,20 +69,29 @@ public class Mediator(IServiceProvider serviceProvider) : IMediator
     {
         var handlerType = GetHandlerType(requestType, responseType);
         var handler = serviceProvider.GetRequiredService(handlerType);
-        
-        var handleMethod = handlerType.GetMethod(nameof(IRequestHandler<IRequest>.Handle)) 
-            ?? throw CreateHandleMethodNotFoundException(handlerType.Name);
+
+        var handleMethod = handlerType.GetMethod(nameof(IRequestHandler<IRequest>.Handle))
+                           ?? throw CreateHandleMethodNotFoundException(handlerType.Name);
 
         return (handler, handleMethod);
     }
 
     private (object[] Pipelines, MethodInfo PipelineMethod) GetPipelines(Type requestType, Type responseType)
     {
-        var pipelineType = GetPipelineType(requestType, responseType);
+        Type pipelineType;
+
+        if (responseType == typeof(void))
+        {
+            pipelineType = typeof(IPipelineBehaviour<>).MakeGenericType(requestType);
+        }
+        else
+        {
+            pipelineType = typeof(IPipelineBehaviour<,>).MakeGenericType(requestType, responseType);
+        }
+
         var pipelines = serviceProvider.GetServices(pipelineType).ToArray();
-        
         var pipelineMethod = pipelineType.GetMethod(nameof(IPipelineBehaviour<IRequest, object>.Handle))
-            ?? throw CreateHandleMethodNotFoundException(pipelineType.Name);
+                             ?? throw CreateHandleMethodNotFoundException(pipelineType.Name);
 
         return (pipelines, pipelineMethod);
     }
@@ -95,26 +104,24 @@ public class Mediator(IServiceProvider serviceProvider) : IMediator
         MethodInfo pipelineMethod,
         CancellationToken cancellationToken)
     {
-        // Конвертуємо Func в RequestHandlerDelegate
-        RequestHandlerDelegate<TResponse> baseHandler = () => 
+        RequestHandlerDelegate<TResponse> baseHandler = () =>
             (Task<TResponse>)handleMethod.Invoke(handler, new[] { request, cancellationToken });
 
-        // Будуємо ланцюжок пайплайнів
         var pipeline = pipelines
             .Aggregate(
                 baseHandler,
                 (next, pipe) =>
                 {
                     var currentNext = next;
-                    // Створюємо новий RequestHandlerDelegate
-                    return new RequestHandlerDelegate<TResponse>(() => 
+
+                    return new RequestHandlerDelegate<TResponse>(() =>
                         (Task<TResponse>)pipelineMethod.Invoke(
                             pipe,
                             new object[] { request, currentNext, cancellationToken }));
-            });
+                });
 
-    return await pipeline();
-}
+        return await pipeline();
+    }
 
     private static async Task BuildAndExecutePipeline(
         object request,
@@ -124,7 +131,7 @@ public class Mediator(IServiceProvider serviceProvider) : IMediator
         MethodInfo pipelineMethod,
         CancellationToken cancellationToken)
     {
-        RequestHandlerDelegate baseHandler = () => 
+        RequestHandlerDelegate baseHandler = () =>
             (Task)handleMethod.Invoke(handler, new[] { request, cancellationToken });
 
         var pipeline = pipelines
@@ -133,7 +140,7 @@ public class Mediator(IServiceProvider serviceProvider) : IMediator
                 (next, pipe) =>
                 {
                     var currentNext = next;
-                    return new RequestHandlerDelegate(() => 
+                    return new RequestHandlerDelegate(() =>
                         (Task)pipelineMethod.Invoke(
                             pipe,
                             new object[] { request, currentNext, cancellationToken }));
