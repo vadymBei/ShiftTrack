@@ -13,8 +13,10 @@ COPY ["src/Services/User/Authentication/User.Authentication.Server/User.Authenti
 COPY ["src/Services/User/Authentication/User.Authentication.Core/User.Authentication.Core.csproj", "src/Services/User/Authentication/User.Authentication.Core/"]
 COPY ["src/Common/Authentication/ShiftTrack.Authentication.Identity/ShiftTrack.Authentication.Identity.csproj", "src/Common/Authentication/ShiftTrack.Authentication.Identity/"]
 COPY ["src/Common/Authentication/ShiftTrack.Authentication/ShiftTrack.Authentication.csproj", "src/Common/Authentication/ShiftTrack.Authentication/"]
-COPY ["src/Common/Kernel/Kernel/Kernel.csproj", "src/Common/Kernel/Kernel/"]
-RUN dotnet restore "./src/Services/User/Authentication/User.Authentication.Server/User.Authentication.Server.csproj"
+COPY ["src/Common/Kernel/ShiftTrack.Kernel/ShiftTrack.Kernel.csproj", "src/Common/Kernel/ShiftTrack.Kernel/"]
+COPY ["src/Common/Data/ShiftTrack.Data/ShiftTrack.Data.csproj", "src/Common/Data/ShiftTrack.Data/"]
+COPY ["src/Common/Kernel/ShiftTrack.Kernel.CQRS/ShiftTrack.Kernel.CQRS.csproj", "src/Common/Kernel/ShiftTrack.Kernel.CQRS/"]
+RUN dotnet restore "src/Services/User/Authentication/User.Authentication.Server/User.Authentication.Server.csproj"
 COPY . .
 WORKDIR "/src/src/Services/User/Authentication/User.Authentication.Server"
 RUN dotnet build "./User.Authentication.Server.csproj" -c $BUILD_CONFIGURATION -o /app/build
