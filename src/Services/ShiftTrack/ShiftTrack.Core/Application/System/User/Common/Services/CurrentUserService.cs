@@ -1,7 +1,5 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using ShiftTrack.Core.Application.Data.Common.Interfaces;
 using ShiftTrack.Core.Application.System.User.Common.Interfaces;
 using ShiftTrack.Core.Domain.System.User.Employees.Entities;
 
@@ -9,34 +7,18 @@ namespace ShiftTrack.Core.Application.System.User.Common.Services;
 
 public class CurrentUserService : ICurrentUserService
 {
-    private readonly string EmployeeIntegrationId;
-    public Employee Employee { get; }
-    public List<string> Roles { get; } = [];
+    public Employee Employee { get; set; }
+    public List<string> Roles { get; }
 
     public CurrentUserService(
-        IApplicationDbContext applicationDbContext,
         IHttpContextAccessor httpContextAccessor)
     {
-        EmployeeIntegrationId = httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userRoles = httpContextAccessor.HttpContext?.User?
+            .FindAll(ClaimTypes.Role)
+            .Select(c => c.Value)
+            .ToList();
 
-        if (!string.IsNullOrEmpty(EmployeeIntegrationId))
-        {
-            Employee = applicationDbContext.Employees
-                .AsNoTracking()
-                .Include(x => x.Position)
-                .Include(x => x.Department)
-                .ThenInclude(x => x.Unit)
-                .Include(x => x.EmployeeRoles)
-                .ThenInclude(x => x.Role)
-                .Include(x => x.EmployeeRoles)  
-                .ThenInclude(x => x.Units)
-                .ThenInclude(x => x.Departments)
-                .ThenInclude(x => x.Department)
-                .FirstOrDefault(x => x.IntegrationId == EmployeeIntegrationId);
-
-            Roles = Employee?.EmployeeRoles
-                .Select(x => x.Role.Name)
-                .ToList();
-        }
+        if (userRoles != null)
+            Roles = userRoles;
     }
 }

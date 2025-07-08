@@ -7,6 +7,6 @@ public sealed class EmployeeRoleChecker(
 {
     public bool HasCurrentUserRole(string roleName)
     {
-        return currentUserService.Roles.Any(x => x == roleName);
+        return currentUserService.Employee.EmployeeRoles.Any(x => x.Role.Name == roleName);
     }
 }
