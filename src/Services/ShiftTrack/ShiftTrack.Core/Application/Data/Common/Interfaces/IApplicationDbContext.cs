@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ShiftTrack.Core.Domain.Booking.Vacations.Entities;
 using ShiftTrack.Core.Domain.Organization.Structure.Entities;
 using ShiftTrack.Core.Domain.Organization.Timesheet.Shifts.Entities;
 using ShiftTrack.Core.Domain.System.User.EmployeeRoles.Entities;
@@ -9,6 +10,11 @@ namespace ShiftTrack.Core.Application.Data.Common.Interfaces;
 
 public interface IApplicationDbContext
 {
+    //Booking
+    //Vacations
+    DbSet<Vacation> Vacations { get; set; }
+    
+    //Organization
     //Structure
     DbSet<Unit> Units { get; set; }
     DbSet<Department> Departments { get; set; }
@@ -17,6 +23,7 @@ public interface IApplicationDbContext
     //Timesheet
     DbSet<Shift> Shifts { get; set; }
     
+    //System
     //User
     DbSet<Employee> Employees { get; set; }
     DbSet<Role> Roles { get; set; }

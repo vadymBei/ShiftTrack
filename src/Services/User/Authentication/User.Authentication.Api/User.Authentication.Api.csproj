@@ -21,4 +21,10 @@
     <ProjectReference Include="..\User.Authentication.Core\User.Authentication.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="..\..\..\..\..\.dockerignore">
+      <Link>.dockerignore</Link>
+    </Content>
+  </ItemGroup>
+
 </Project>

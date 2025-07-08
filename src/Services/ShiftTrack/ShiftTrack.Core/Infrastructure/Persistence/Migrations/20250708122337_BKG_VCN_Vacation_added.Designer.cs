@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ShiftTrack.Core.Infrastructure.Persistence;
@@ -11,9 +12,11 @@ using ShiftTrack.Core.Infrastructure.Persistence;
 namespace ShiftTrack.Core.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250708122337_BKG_VCN_Vacation_added")]
+    partial class BKG_VCN_Vacation_added
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -97,23 +100,11 @@ namespace ShiftTrack.Core.Infrastructure.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<long?>("CreatedById")
-                        .HasColumnType("bigint");
-
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("ModifiedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<long?>("ModifiedById")
-                        .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .HasColumnType("text");
@@ -138,12 +129,6 @@ namespace ShiftTrack.Core.Infrastructure.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<long?>("CreatedById")
-                        .HasColumnType("bigint");
-
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp without time zone");
 
@@ -152,12 +137,6 @@ namespace ShiftTrack.Core.Infrastructure.Persistence.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("ModifiedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<long?>("ModifiedById")
-                        .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .HasColumnType("text");
@@ -180,12 +159,6 @@ namespace ShiftTrack.Core.Infrastructure.Persistence.Migrations
                     b.Property<string>("Code")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<long?>("CreatedById")
-                        .HasColumnType("bigint");
-
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp without time zone");
 
@@ -194,12 +167,6 @@ namespace ShiftTrack.Core.Infrastructure.Persistence.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("ModifiedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<long?>("ModifiedById")
-                        .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .HasColumnType("text");
@@ -225,12 +192,6 @@ namespace ShiftTrack.Core.Infrastructure.Persistence.Migrations
                     b.Property<string>("Color")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<long?>("CreatedById")
-                        .HasColumnType("bigint");
-
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp without time zone");
 
@@ -242,12 +203,6 @@ namespace ShiftTrack.Core.Infrastructure.Persistence.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("ModifiedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<long?>("ModifiedById")
-                        .HasColumnType("bigint");
 
                     b.Property<TimeSpan?>("StartTime")
                         .HasColumnType("interval");
@@ -273,19 +228,7 @@ namespace ShiftTrack.Core.Infrastructure.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<long?>("CreatedById")
-                        .HasColumnType("bigint");
-
                     b.Property<long?>("EmployeeId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("ModifiedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<long?>("ModifiedById")
                         .HasColumnType("bigint");
 
                     b.Property<long?>("RoleId")
@@ -311,19 +254,7 @@ namespace ShiftTrack.Core.Infrastructure.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<long?>("CreatedById")
-                        .HasColumnType("bigint");
-
                     b.Property<long?>("EmployeeRoleId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("ModifiedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<long?>("ModifiedById")
                         .HasColumnType("bigint");
 
                     b.Property<int>("Scope")
@@ -349,22 +280,10 @@ namespace ShiftTrack.Core.Infrastructure.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<long?>("CreatedById")
-                        .HasColumnType("bigint");
-
                     b.Property<long?>("DepartmentId")
                         .HasColumnType("bigint");
 
                     b.Property<long?>("EmployeeRoleUnitId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("ModifiedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<long?>("ModifiedById")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
@@ -383,12 +302,6 @@ namespace ShiftTrack.Core.Infrastructure.Persistence.Migrations
                         .HasColumnType("bigint");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<long?>("CreatedById")
-                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("timestamp without time zone");
@@ -412,12 +325,6 @@ namespace ShiftTrack.Core.Infrastructure.Persistence.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("ModifiedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<long?>("ModifiedById")
-                        .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .HasMaxLength(64)
@@ -465,18 +372,6 @@ namespace ShiftTrack.Core.Infrastructure.Persistence.Migrations
                         .HasColumnType("bigint");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<long?>("CreatedById")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("ModifiedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<long?>("ModifiedById")
-                        .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .HasColumnType("text");

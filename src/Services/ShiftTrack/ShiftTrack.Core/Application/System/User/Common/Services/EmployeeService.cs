@@ -74,6 +74,24 @@ public class EmployeeService(
         };
     }
 
+    public async Task<Employee> GetByIntegrationId(string integrationId, CancellationToken cancellationToken)
+    {
+        var employee = await applicationDbContext.Employees
+            .AsNoTracking()
+            .Include(x => x.Position)
+            .Include(x => x.Department)
+            .ThenInclude(x => x.Unit)
+            .Include(x => x.EmployeeRoles)
+            .ThenInclude(x => x.Role)
+            .Include(x => x.EmployeeRoles)
+            .ThenInclude(x => x.Units)
+            .ThenInclude(x => x.Departments)
+            .ThenInclude(x => x.Department)
+            .FirstOrDefaultAsync(x => x.IntegrationId == integrationId, cancellationToken);
+        
+        return employee;
+    }
+
     public Task<Authentication.Models.User> RegisterAuthUser(UserToRegisterDto dto, CancellationToken cancellationToken)
     {
         return userRepository.RegisterUser(dto, cancellationToken);

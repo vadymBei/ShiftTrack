@@ -10,11 +10,14 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["src/Services/User/Authentication/User.Authentication.Api/User.Authentication.Api.csproj", "src/Services/User/Authentication/User.Authentication.Api/"]
+COPY ["src/Common/Authentication/ShiftTrack.Authentication.Basic/ShiftTrack.Authentication.Basic.csproj", "src/Common/Authentication/ShiftTrack.Authentication.Basic/"]
+COPY ["src/Common/Authentication/ShiftTrack.Authentication/ShiftTrack.Authentication.csproj", "src/Common/Authentication/ShiftTrack.Authentication/"]
+COPY ["src/Common/Kernel/ShiftTrack.Kernel/ShiftTrack.Kernel.csproj", "src/Common/Kernel/ShiftTrack.Kernel/"]
 COPY ["src/Services/User/Authentication/User.Authentication.Core/User.Authentication.Core.csproj", "src/Services/User/Authentication/User.Authentication.Core/"]
 COPY ["src/Common/Authentication/ShiftTrack.Authentication.Identity/ShiftTrack.Authentication.Identity.csproj", "src/Common/Authentication/ShiftTrack.Authentication.Identity/"]
-COPY ["src/Common/Authentication/ShiftTrack.Authentication/ShiftTrack.Authentication.csproj", "src/Common/Authentication/ShiftTrack.Authentication/"]
-COPY ["src/Common/Kernel/Kernel/Kernel.csproj", "src/Common/Kernel/Kernel/"]
-RUN dotnet restore "./src/Services/User/Authentication/User.Authentication.Api/User.Authentication.Api.csproj"
+COPY ["src/Common/Data/ShiftTrack.Data/ShiftTrack.Data.csproj", "src/Common/Data/ShiftTrack.Data/"]
+COPY ["src/Common/Kernel/ShiftTrack.Kernel.CQRS/ShiftTrack.Kernel.CQRS.csproj", "src/Common/Kernel/ShiftTrack.Kernel.CQRS/"]
+RUN dotnet restore "src/Services/User/Authentication/User.Authentication.Api/User.Authentication.Api.csproj"
 COPY . .
 WORKDIR "/src/src/Services/User/Authentication/User.Authentication.Api"
 RUN dotnet build "./User.Authentication.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build

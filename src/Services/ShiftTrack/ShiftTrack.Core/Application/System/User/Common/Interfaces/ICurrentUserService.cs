@@ -4,6 +4,6 @@ namespace ShiftTrack.Core.Application.System.User.Common.Interfaces;
 
 public interface ICurrentUserService
 {
-    Employee Employee { get; }
+    Employee Employee { get; set; }
     List<string> Roles { get; }
 }

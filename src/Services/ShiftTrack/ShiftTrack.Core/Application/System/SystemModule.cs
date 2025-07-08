@@ -18,7 +18,6 @@ public static class SystemModule
         services.AddTransient<ITokenService, TokenService>();
 
         //User
-        services.AddTransient<ICurrentUserService, CurrentUserService>();
         services.AddTransient<IEmployeeService, EmployeeService>();
         services.AddTransient<IRoleService, RoleService>();
         services.AddTransient<IEmployeeRoleService, EmployeeRoleService>();

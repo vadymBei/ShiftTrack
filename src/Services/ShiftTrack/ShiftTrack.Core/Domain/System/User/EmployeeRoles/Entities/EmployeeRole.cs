@@ -1,10 +1,11 @@
 ﻿using ShiftTrack.Core.Domain.System.User.EmployeeRoles.Enums;
 using ShiftTrack.Core.Domain.System.User.Employees.Entities;
 using ShiftTrack.Core.Domain.System.User.Roles.Entities;
+using ShiftTrack.Data.Interfaces;
 
 namespace ShiftTrack.Core.Domain.System.User.EmployeeRoles.Entities;
 
-public sealed class EmployeeRole
+public sealed class EmployeeRole : IAuditable
 {
     public long Id { get; set; }
     public RoleScope Scope { get; set; }
@@ -16,4 +17,9 @@ public sealed class EmployeeRole
     public Role Role { get; set; }
 
     public List<EmployeeRoleUnit> Units { get; set; }
+    
+    public DateTime CreatedAt { get; set; }
+    public long? CreatedById { get; set; }
+    public DateTime? ModifiedAt { get; set; }
+    public long? ModifiedById { get; set; }
 }
