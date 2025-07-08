@@ -22,6 +22,73 @@ namespace ShiftTrack.Core.Infrastructure.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("ShiftTrack.Core.Domain.Booking.Vacations.Entities.Vacation", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("ApprovalDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("ApprovedEmployeeId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("CreatedById")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("DaysBalanceAtCreation")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("DaysCount")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long>("EmployeeId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("ModifiedById")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApprovedEmployeeId");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.ToTable("Vacations", (string)null);
+                });
+
             modelBuilder.Entity("ShiftTrack.Core.Domain.Organization.Structure.Entities.Department", b =>
                 {
                     b.Property<long>("Id")
@@ -315,6 +382,23 @@ namespace ShiftTrack.Core.Infrastructure.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("Roles", (string)null);
+                });
+
+            modelBuilder.Entity("ShiftTrack.Core.Domain.Booking.Vacations.Entities.Vacation", b =>
+                {
+                    b.HasOne("ShiftTrack.Core.Domain.System.User.Employees.Entities.Employee", "ApprovedEmployee")
+                        .WithMany()
+                        .HasForeignKey("ApprovedEmployeeId");
+
+                    b.HasOne("ShiftTrack.Core.Domain.System.User.Employees.Entities.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApprovedEmployee");
+
+                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("ShiftTrack.Core.Domain.Organization.Structure.Entities.Department", b =>

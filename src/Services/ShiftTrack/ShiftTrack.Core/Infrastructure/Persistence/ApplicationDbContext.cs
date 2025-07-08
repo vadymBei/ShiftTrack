@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Core.Application.Data.Common.Interfaces;
 using ShiftTrack.Core.Application.System.User.Common.Interfaces;
+using ShiftTrack.Core.Domain.Booking.Vacations.Entities;
 using ShiftTrack.Core.Domain.Organization.Structure.Entities;
 using ShiftTrack.Core.Domain.Organization.Timesheet.Shifts.Entities;
 using ShiftTrack.Core.Domain.System.User.EmployeeRoles.Entities;
@@ -28,6 +29,10 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
         ChangeTracker.AutoDetectChangesEnabled = true;
     }
 
+    //Booking
+    //Vacations
+    public DbSet<Vacation> Vacations { get; set; }
+    
     //Organization
     //Structure
     public DbSet<Unit> Units { get; set; }
