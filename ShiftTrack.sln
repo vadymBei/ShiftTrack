@@ -71,6 +71,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShiftTrack.Client.Http", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShiftTrack.Kernel.CQRS", "src\Common\Kernel\ShiftTrack.Kernel.CQRS\ShiftTrack.Kernel.CQRS.csproj", "{EEFD5EAC-906D-44F5-9A71-FB8F781D4556}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShiftTrack.Domain", "src\Services\ShiftTrack\ShiftTrack.Domain\ShiftTrack.Domain.csproj", "{567C29C6-73A3-4A6D-B5CD-91799E0EF192}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -153,6 +155,10 @@ Global
 		{EEFD5EAC-906D-44F5-9A71-FB8F781D4556}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EEFD5EAC-906D-44F5-9A71-FB8F781D4556}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EEFD5EAC-906D-44F5-9A71-FB8F781D4556}.Release|Any CPU.Build.0 = Release|Any CPU
+		{567C29C6-73A3-4A6D-B5CD-91799E0EF192}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{567C29C6-73A3-4A6D-B5CD-91799E0EF192}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{567C29C6-73A3-4A6D-B5CD-91799E0EF192}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{567C29C6-73A3-4A6D-B5CD-91799E0EF192}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -189,6 +195,7 @@ Global
 		{412B5E00-5D19-465E-86AE-88439B2D611D} = {04E1B193-BF17-470B-BC28-BF860EB450EF}
 		{A793BEBC-68E1-4E79-9CF6-E56DF2A5E05D} = {04E1B193-BF17-470B-BC28-BF860EB450EF}
 		{EEFD5EAC-906D-44F5-9A71-FB8F781D4556} = {CB80AE09-BAAD-484C-9D7F-77227468C028}
+		{567C29C6-73A3-4A6D-B5CD-91799E0EF192} = {0836CADF-B844-4572-AAA6-25B1346F6AA5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {106AEB40-5580-4582-A23A-00CBDE3C1773}
