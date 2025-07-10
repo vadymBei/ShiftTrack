@@ -75,6 +75,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShiftTrack.Domain", "src\Se
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShiftTrack.Application", "src\Services\ShiftTrack\ShiftTrack.Application\ShiftTrack.Application.csproj", "{C11EB856-71C9-441C-AA11-751651529CA9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShiftTrack.Infrastructure", "src\Services\ShiftTrack\ShiftTrack.Infrastructure\ShiftTrack.Infrastructure.csproj", "{37274AC6-BE03-4555-8B41-DA56CDE70524}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -165,6 +167,10 @@ Global
 		{C11EB856-71C9-441C-AA11-751651529CA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C11EB856-71C9-441C-AA11-751651529CA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C11EB856-71C9-441C-AA11-751651529CA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37274AC6-BE03-4555-8B41-DA56CDE70524}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37274AC6-BE03-4555-8B41-DA56CDE70524}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37274AC6-BE03-4555-8B41-DA56CDE70524}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37274AC6-BE03-4555-8B41-DA56CDE70524}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -203,6 +209,7 @@ Global
 		{EEFD5EAC-906D-44F5-9A71-FB8F781D4556} = {CB80AE09-BAAD-484C-9D7F-77227468C028}
 		{567C29C6-73A3-4A6D-B5CD-91799E0EF192} = {0836CADF-B844-4572-AAA6-25B1346F6AA5}
 		{C11EB856-71C9-441C-AA11-751651529CA9} = {0836CADF-B844-4572-AAA6-25B1346F6AA5}
+		{37274AC6-BE03-4555-8B41-DA56CDE70524} = {0836CADF-B844-4572-AAA6-25B1346F6AA5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {106AEB40-5580-4582-A23A-00CBDE3C1773}

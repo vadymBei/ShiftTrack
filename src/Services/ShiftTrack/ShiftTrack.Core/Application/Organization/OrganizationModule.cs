@@ -18,8 +18,6 @@ public static class OrganizationModule
         
         //Timesheet
         services.AddTransient<IShiftService, ShiftService>();
-
-        //Repositories
         
         return services;
     }

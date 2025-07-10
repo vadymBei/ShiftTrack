@@ -29,7 +29,6 @@ public static class SystemModule
         services.AddTransient<IEmployeeRoleStrategy, EmployeeRoleUnitDirectorStrategy>();
         services.AddTransient<IEmployeeRoleStrategy, EmployeeRoleDepartmentDirectorStrategy>();
         
-        
         //Repositories
         //Auth
         services.AddTransient<ITokenRepository, TokenRepository>();

@@ -14,14 +14,12 @@ namespace ShiftTrack.Application;
 [ShiftTrackMember]
 public static class DependencyInjection
 {
-    public static IServiceCollection AddCoreServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddKernel();
 
         services.AddCqrs();
         
-        services.AddClientHttp(configuration);
-
         // Register Pipelines
         services.AddTransient(typeof(IPipelineBehaviour<,>), typeof(RequestAuthorizationBehaviour<,>));
         services.AddTransient(typeof(IPipelineBehaviour<>), typeof(RequestAuthorizationBehaviour<>));
