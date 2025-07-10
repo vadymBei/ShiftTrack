@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ShiftTrack.Core.Application.System.Auth.Common.Dtos;
-using ShiftTrack.Core.Application.System.Auth.Common.ViewModels;
-using ShiftTrack.Core.Application.System.Auth.Tokens.Commands.GenerateToken;
-using ShiftTrack.Core.Application.System.User.Common.ViewModels;
-using ShiftTrack.Core.Application.System.User.Employees.Commands.CreateEmployee;
-using ShiftTrack.Core.Application.System.User.Employees.Commands.UpdateAccount;
-using ShiftTrack.Core.Application.System.User.Employees.Commands.UploadPhoto;
-using ShiftTrack.Core.Application.System.User.Employees.Queries.GetCurrentUser;
-using ShiftTrack.Core.Application.System.User.Employees.Queries.GetUserPhoto;
+using ShiftTrack.Application.Features.Organization.Employees.Common.ViewModels;
+using ShiftTrack.Application.Features.System.Auth.Account.Commands.Register;
+using ShiftTrack.Application.Features.System.Auth.Account.Commands.UpdateAccount;
+using ShiftTrack.Application.Features.System.Auth.Account.Commands.UploadPhoto;
+using ShiftTrack.Application.Features.System.Auth.Account.Queries.GetCurrentUser;
+using ShiftTrack.Application.Features.System.Auth.Account.Queries.GetUserPhoto;
+using ShiftTrack.Application.Features.System.Auth.Common.Dtos;
+using ShiftTrack.Application.Features.System.Auth.Common.ViewModels;
+using ShiftTrack.Application.Features.System.Auth.Tokens.Commands.GenerateToken;
 using ShiftTrack.Kernel.CQRS.Controllers;
 
 namespace ShiftTrack.API.Controllers.System.User;
@@ -18,12 +18,12 @@ namespace ShiftTrack.API.Controllers.System.User;
 public class SYS_USR_AccountController : ApiController
 {
     [HttpGet("current-user")]
-    public Task<CurrentUserVM> GetCurrentUser()
+    public Task<CurrentUserVm> GetCurrentUser()
         => Mediator.Invoke(new GetCurrentUserQuery());
 
     [HttpPost("register")]
     [AllowAnonymous]
-    public async Task<TokenVM> CreateEmployee(CreateEmployeeCommand command)
+    public async Task<TokenVm> CreateEmployee(RegisterCommand command)
     {
         var employee = await Mediator.Invoke(command);
 
@@ -33,7 +33,7 @@ public class SYS_USR_AccountController : ApiController
     }
 
     [HttpPut]
-    public Task<EmployeeVM> UpdateAccount(UpdateAccountCommand command)
+    public Task<EmployeeVm> UpdateAccount(UpdateAccountCommand command)
         => Mediator.Invoke(command);
 
     [HttpPost("upload-photo")]

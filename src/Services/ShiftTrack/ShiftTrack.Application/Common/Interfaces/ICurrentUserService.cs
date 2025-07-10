@@ -7,6 +7,4 @@ public interface ICurrentUserService
 {
     Employee Employee { get; set; }
     List<string> Roles { get; }
-    
-    Task<CurrentUser> GetCurrentUser(CancellationToken cancellationToken);
 }

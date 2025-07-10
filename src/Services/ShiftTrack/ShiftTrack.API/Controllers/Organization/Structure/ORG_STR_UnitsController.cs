@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ShiftTrack.Core.Application.Organization.Structure.Common.ViewModels;
-using ShiftTrack.Core.Application.Organization.Structure.Units.Commands.CreateUnit;
-using ShiftTrack.Core.Application.Organization.Structure.Units.Commands.DeleteUnit;
-using ShiftTrack.Core.Application.Organization.Structure.Units.Commands.UpdateUnit;
-using ShiftTrack.Core.Application.Organization.Structure.Units.Queries.GetUnitById;
-using ShiftTrack.Core.Application.Organization.Structure.Units.Queries.GetUnits;
+using ShiftTrack.Application.Features.Organization.Structure.Common.ViewModels;
+using ShiftTrack.Application.Features.Organization.Structure.Units.Commands.CreateUnit;
+using ShiftTrack.Application.Features.Organization.Structure.Units.Commands.DeleteUnit;
+using ShiftTrack.Application.Features.Organization.Structure.Units.Commands.UpdateUnit;
+using ShiftTrack.Application.Features.Organization.Structure.Units.Queries.GetUnitById;
+using ShiftTrack.Application.Features.Organization.Structure.Units.Queries.GetUnits;
 using ShiftTrack.Kernel.CQRS.Controllers;
 
 namespace ShiftTrack.API.Controllers.Organization.Structure;
@@ -15,11 +15,11 @@ namespace ShiftTrack.API.Controllers.Organization.Structure;
 public class ORG_STR_UnitsController : ApiController
 {
     [HttpPost]
-    public async Task<UnitVM> CreateUnit(CreateUnitCommand command)
+    public async Task<UnitVm> CreateUnit(CreateUnitCommand command)
         => await Mediator.Invoke(command);
 
     [HttpPut]
-    public async Task<UnitVM> UpdateUnit(UpdateUnitCommand command)
+    public async Task<UnitVm> UpdateUnit(UpdateUnitCommand command)
         => await Mediator.Invoke(command);
 
     [HttpDelete("{id}")]
@@ -31,10 +31,10 @@ public class ORG_STR_UnitsController : ApiController
     }
 
     [HttpGet]
-    public async Task<IEnumerable<UnitVM>> GetUnits()
+    public async Task<IEnumerable<UnitVm>> GetUnits()
         => await Mediator.Invoke(new GetUnitsQuery());
 
     [HttpGet("{id}")]
-    public async Task<UnitVM> GetUnitById(long id)
+    public async Task<UnitVm> GetUnitById(long id)
         => await Mediator.Invoke(new GetUnitByIdQuery(id));
 }

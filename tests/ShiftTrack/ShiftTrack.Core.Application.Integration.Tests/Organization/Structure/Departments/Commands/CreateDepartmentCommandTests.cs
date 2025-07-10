@@ -1,9 +1,9 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using ShiftTrack.Application.Features.Organization.Structure.Common.ViewModels;
+using ShiftTrack.Application.Features.Organization.Structure.Departments.Commands.CreateDepartment;
+using ShiftTrack.Application.Features.Organization.Structure.Units.Commands.CreateUnit;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
-using ShiftTrack.Core.Application.Organization.Structure.Common.ViewModels;
-using ShiftTrack.Core.Application.Organization.Structure.Departments.Commands.CreateDepartment;
-using ShiftTrack.Core.Application.Organization.Structure.Units.Commands.CreateUnit;
 
 namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.Departments.Commands;
 
@@ -34,12 +34,12 @@ public class CreateDepartmentCommandTests(
             .FirstOrDefault(x => x.Id == newDepartment.Id);
 
         department.Should().NotBeNull();
-        department.Should().BeEquivalentTo(new DepartmentVM()
+        department.Should().BeEquivalentTo(new DepartmentVm()
         {
             Id = newDepartment.Id,
             Name = newDepartment.Name,
             UnitId = newDepartment.UnitId,
-            Unit = new UnitVM()
+            Unit = new UnitVm()
             {
                 Id = newDepartment.Unit.Id,
                 Name = newDepartment.Unit.Name,

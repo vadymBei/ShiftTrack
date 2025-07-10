@@ -1,9 +1,9 @@
 ﻿using FluentAssertions;
+using ShiftTrack.Application.Features.Organization.Timesheet.Common.ViewModels;
+using ShiftTrack.Application.Features.Organization.Timesheet.Shifts.Commands.CreateShift;
+using ShiftTrack.Application.Features.Organization.Timesheet.Shifts.Queries.GetShiftById;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
-using ShiftTrack.Core.Application.Organization.Timesheet.Common.ViewModels.Shifts;
-using ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Commands.CreateShift;
-using ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Queries.GetShiftById;
-using ShiftTrack.Core.Domain.Organization.Timesheet.Shifts.Enums;
+using ShiftTrack.Domain.Features.Organization.Timesheet.Shifts.Enums;
 using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Timesheet.Shifts.Queries;
@@ -30,8 +30,8 @@ public class GetShiftByIdQueryTests(
     {
         // Arrange
         var createShiftCommand = new CreateShiftCommand(
-            "ВХ",
-            "Вихідний",
+            "ТС1",
+            "Тест 1",
             "#FFFFF",
             ShiftType.DayOff,
             new TimeSpan(09, 30, 00),
@@ -48,7 +48,7 @@ public class GetShiftByIdQueryTests(
         shift.Should().NotBeNull();
 
         shift.Should().BeEquivalentTo(
-            new ShiftVM()
+            new ShiftVm()
             {
                 Id = newShift.Id,
                 Code = newShift.Code,

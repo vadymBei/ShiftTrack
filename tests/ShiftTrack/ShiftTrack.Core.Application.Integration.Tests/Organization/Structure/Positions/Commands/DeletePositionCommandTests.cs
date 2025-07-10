@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
+using ShiftTrack.Application.Features.Organization.Structure.Positions.Commands.CreatePosition;
+using ShiftTrack.Application.Features.Organization.Structure.Positions.Commands.DeletePosition;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
-using ShiftTrack.Core.Application.Organization.Structure.Positions.Commands.CreatePosition;
-using ShiftTrack.Core.Application.Organization.Structure.Positions.Commands.DeletePosition;
 using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.Positions.Commands;

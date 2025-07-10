@@ -3,8 +3,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using ShiftTrack.Core.Infrastructure;
-using ShiftTrack.Core.Infrastructure.Persistence;
+using ShiftTrack.Infrastructure.Persistence;
 using ShiftTrack.Kernel.CQRS;
 using Testcontainers.PostgreSql;
 
@@ -14,7 +13,7 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
 {
     private readonly PostgreSqlContainer _dbContainer = new PostgreSqlBuilder()
         .WithImage("postgres:14")
-        .WithDatabase("shift-track-dev")
+        .WithDatabase("shift-track-tests")
         .WithUsername("postgres")
         .WithPassword("123258")
         .Build();

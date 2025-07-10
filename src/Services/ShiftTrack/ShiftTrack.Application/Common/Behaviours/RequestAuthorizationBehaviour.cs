@@ -2,15 +2,14 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using ShiftTrack.Application.Common.Interfaces;
 using ShiftTrack.Application.Features.Organization.Employees.Common.Interfaces;
-using ShiftTrack.Application.Features.System.User.Common.Interfaces;
 using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Common.Behaviours;
 
 public class RequestAuthorizationBehaviour<TRequest, TResponse>(
-    IHttpContextAccessor httpContextAccessor,
     IEmployeeService employeeService,
-    ICurrentUserService currentUserService)
+    ICurrentUserService currentUserService,
+    IHttpContextAccessor httpContextAccessor)
     : IPipelineBehaviour<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
 

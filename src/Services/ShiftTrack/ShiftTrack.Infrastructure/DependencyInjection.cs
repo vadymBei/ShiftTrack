@@ -5,11 +5,10 @@ using ShiftTrack.Application.Common.Interfaces;
 using ShiftTrack.Application.Features.System.Auth.Common.Interfaces;
 using ShiftTrack.Application.Features.System.User.Common.Interfaces;
 using ShiftTrack.Client.Http;
-using ShiftTrack.Infrastructure.Features.System.Auth;
 using ShiftTrack.Infrastructure.Features.System.Auth.Repositories;
-using ShiftTrack.Infrastructure.Features.System.User;
 using ShiftTrack.Infrastructure.Features.System.User.Repositories;
 using ShiftTrack.Infrastructure.Persistence;
+using ShiftTrack.Infrastructure.Services;
 using ShiftTrack.Kernel.Attributes;
 
 namespace ShiftTrack.Infrastructure;
@@ -28,6 +27,9 @@ public static class DependencyInjection
 
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 
+        //Services
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
+        
         //Repositories
         //System
         //Auth

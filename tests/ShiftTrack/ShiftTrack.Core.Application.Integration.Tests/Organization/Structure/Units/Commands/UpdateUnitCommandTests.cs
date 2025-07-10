@@ -1,8 +1,8 @@
 ﻿using FluentAssertions;
+using ShiftTrack.Application.Features.Organization.Structure.Common.ViewModels;
+using ShiftTrack.Application.Features.Organization.Structure.Units.Commands.CreateUnit;
+using ShiftTrack.Application.Features.Organization.Structure.Units.Commands.UpdateUnit;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
-using ShiftTrack.Core.Application.Organization.Structure.Common.ViewModels;
-using ShiftTrack.Core.Application.Organization.Structure.Units.Commands.CreateUnit;
-using ShiftTrack.Core.Application.Organization.Structure.Units.Commands.UpdateUnit;
 using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.Units.Commands;
@@ -34,7 +34,7 @@ public class UpdateUnitCommandTests(
         updatedUnit.Should().NotBeNull();
 
         updatedUnit.Should().BeEquivalentTo(
-            new UnitVM()
+            new UnitVm()
             {
                 Id = updateUnitCommand.Id,
                 Name = updateUnitCommand.Name,

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using ShiftTrack.Core.Application.Data.Common.Interfaces;
-using IMediator = ShiftTrack.Kernel.CQRS.Interfaces.IMediator;
+using ShiftTrack.Application.Common.Interfaces;
+using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Core.Application.Integration.Tests.Abstractions;
 

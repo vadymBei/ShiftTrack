@@ -1,20 +1,18 @@
-using Microsoft.EntityFrameworkCore;
-using ShiftTrack.Authentication.Bearer;
-using ShiftTrack.Authentication.Bearer.Extensions;
-using ShiftTrack.Core;
 using System.Reflection;
 using System.Text.Json.Serialization;
-using ShiftTrack.Core.Application.System.User.Common.Interfaces;
-using ShiftTrack.Core.Application.System.User.Common.Services;
-using ShiftTrack.Core.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+using ShiftTrack.Application;
+using ShiftTrack.Authentication.Bearer;
+using ShiftTrack.Authentication.Bearer.Extensions;
+using ShiftTrack.Infrastructure;
+using ShiftTrack.Infrastructure.Persistence;
 using ShiftTrack.Kernel.Extensions;
 using Swashbuckle.AspNetCore.SwaggerUI;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCoreServices(builder.Configuration);
-
-builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddApplication(builder.Configuration);
+builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddJWTAuthentication(builder.Configuration);
 

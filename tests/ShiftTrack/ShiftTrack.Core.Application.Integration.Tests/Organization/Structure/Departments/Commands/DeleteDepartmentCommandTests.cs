@@ -1,8 +1,8 @@
 ﻿using FluentAssertions;
+using ShiftTrack.Application.Features.Organization.Structure.Departments.Commands.CreateDepartment;
+using ShiftTrack.Application.Features.Organization.Structure.Departments.Commands.DeleteDepartment;
+using ShiftTrack.Application.Features.Organization.Structure.Units.Commands.CreateUnit;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
-using ShiftTrack.Core.Application.Organization.Structure.Departments.Commands.CreateDepartment;
-using ShiftTrack.Core.Application.Organization.Structure.Departments.Commands.DeleteDepartment;
-using ShiftTrack.Core.Application.Organization.Structure.Units.Commands.CreateUnit;
 using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.Departments.Commands;
