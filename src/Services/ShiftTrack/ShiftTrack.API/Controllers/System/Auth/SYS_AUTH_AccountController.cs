@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShiftTrack.Application.Features.Organization.Employees.Common.ViewModels;
+using ShiftTrack.Application.Features.System.Auth.Account.Commands.ChangePassword;
 using ShiftTrack.Application.Features.System.Auth.Account.Commands.Register;
 using ShiftTrack.Application.Features.System.Auth.Account.Commands.UpdateAccount;
 using ShiftTrack.Application.Features.System.Auth.Account.Commands.UploadPhoto;
@@ -11,11 +12,11 @@ using ShiftTrack.Application.Features.System.Auth.Common.ViewModels;
 using ShiftTrack.Application.Features.System.Auth.Tokens.Commands.GenerateToken;
 using ShiftTrack.Kernel.CQRS.Controllers;
 
-namespace ShiftTrack.API.Controllers.System.User;
+namespace ShiftTrack.API.Controllers.System.Auth;
 
 [Authorize]
-[Route("api/shift-track/system/account")]
-public class SYS_USR_AccountController : ApiController
+[Route("api/shift-track/system/auth/account")]
+public class SYS_AUTH_AccountController : ApiController
 {
     [HttpGet("current-user")]
     public Task<CurrentUserVm> GetCurrentUser()
@@ -32,6 +33,10 @@ public class SYS_USR_AccountController : ApiController
                 new GenerateTokenDto(command.PhoneNumber, command.Password)));
     }
 
+    [HttpPost("password/change")]
+    public async Task<TokenVm> ChangePassword(ChangePasswordDto commandData)
+        => await Mediator.Invoke(new ChangePasswordCommand(commandData));
+    
     [HttpPut]
     public Task<EmployeeVm> UpdateAccount(UpdateAccountCommand command)
         => Mediator.Invoke(command);

@@ -6,11 +6,11 @@ using ShiftTrack.Application.Features.Organization.Employees.Queries.GetEmployee
 using ShiftTrack.Application.Features.Organization.Employees.Queries.GetEmployees;
 using ShiftTrack.Kernel.CQRS.Controllers;
 
-namespace ShiftTrack.API.Controllers.System.User;
+namespace ShiftTrack.API.Controllers.Organization.Employees;
 
 [Authorize]
-[Route("api/shift-track/system/user/employees")]
-public class SYS_USR_EmployeesController : ApiController
+[Route("api/shift-track/organization/employees")]
+public class ORG_EMP_EmployeesController : ApiController
 {
     [HttpGet]
     public async Task<IEnumerable<EmployeeVm>> GetEmployees([FromQuery] GetEmployeesQuery query)
