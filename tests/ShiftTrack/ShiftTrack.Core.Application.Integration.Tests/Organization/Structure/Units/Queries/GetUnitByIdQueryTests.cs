@@ -1,8 +1,8 @@
 ﻿using FluentAssertions;
+using ShiftTrack.Application.Features.Organization.Structure.Common.ViewModels;
+using ShiftTrack.Application.Features.Organization.Structure.Units.Commands.CreateUnit;
+using ShiftTrack.Application.Features.Organization.Structure.Units.Queries.GetUnitById;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
-using ShiftTrack.Core.Application.Organization.Structure.Common.ViewModels;
-using ShiftTrack.Core.Application.Organization.Structure.Units.Commands.CreateUnit;
-using ShiftTrack.Core.Application.Organization.Structure.Units.Queries.GetUnitById;
 using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.Units.Queries;
@@ -44,7 +44,7 @@ public class GetUnitByIdQueryTests(
         unit.Should().NotBeNull();
 
         unit.Should().BeEquivalentTo(
-            new UnitVM
+            new UnitVm()
             {
                 Id = newUnit.Id,
                 Code = newUnit.Code,

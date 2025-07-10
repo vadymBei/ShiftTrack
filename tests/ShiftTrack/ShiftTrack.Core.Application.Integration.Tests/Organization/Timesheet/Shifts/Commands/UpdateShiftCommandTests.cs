@@ -1,9 +1,9 @@
 ﻿using FluentAssertions;
+using ShiftTrack.Application.Features.Organization.Timesheet.Common.ViewModels;
+using ShiftTrack.Application.Features.Organization.Timesheet.Shifts.Commands.CreateShift;
+using ShiftTrack.Application.Features.Organization.Timesheet.Shifts.Commands.UpdateShift;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
-using ShiftTrack.Core.Application.Organization.Timesheet.Common.ViewModels.Shifts;
-using ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Commands.CreateShift;
-using ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Commands.UpdateShift;
-using ShiftTrack.Core.Domain.Organization.Timesheet.Shifts.Enums;
+using ShiftTrack.Domain.Features.Organization.Timesheet.Shifts.Enums;
 using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Timesheet.Shifts.Commands;
@@ -36,8 +36,8 @@ public class UpdateShiftCommandTests(IntegrationTestWebAppFactory factory) : Bas
     {
         // Arrange
         var createShiftCommand = new CreateShiftCommand(
-            "ВХ",
-            "Вихідний",
+            "ТС2",
+            "Тест 2",
             "#FFFFF",
             ShiftType.DayOff,
             new TimeSpan(09, 30, 00),
@@ -61,7 +61,7 @@ public class UpdateShiftCommandTests(IntegrationTestWebAppFactory factory) : Bas
         updatedShift.Should().NotBeNull();
 
         updatedShift.Should().BeEquivalentTo(
-            new ShiftVM()
+            new ShiftVm()
             {
                 Id = updateShiftCommand.Id,
                 Code = updateShiftCommand.Code,

@@ -1,9 +1,9 @@
 ﻿using FluentAssertions;
+using ShiftTrack.Application.Features.Organization.Structure.Common.ViewModels;
+using ShiftTrack.Application.Features.Organization.Structure.Departments.Commands.CreateDepartment;
+using ShiftTrack.Application.Features.Organization.Structure.Departments.Queries.GetDepartmentsByUnitId;
+using ShiftTrack.Application.Features.Organization.Structure.Units.Commands.CreateUnit;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
-using ShiftTrack.Core.Application.Organization.Structure.Common.ViewModels;
-using ShiftTrack.Core.Application.Organization.Structure.Departments.Commands.CreateDepartment;
-using ShiftTrack.Core.Application.Organization.Structure.Departments.Queries.GetDepartmentsByUnitId;
-using ShiftTrack.Core.Application.Organization.Structure.Units.Commands.CreateUnit;
 using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.Departments.Queries;
@@ -54,12 +54,12 @@ public class GetDepartmentsByUnitIdQueryTests(
         departments.Should().NotBeNull();
         departments.Should().NotBeEmpty();
         departments.FirstOrDefault().Should().BeEquivalentTo(
-            new DepartmentVM()
+            new DepartmentVm()
             {
                 Id = department.Id,
                 Name = department.Name,
                 UnitId = department.UnitId,
-                Unit = new UnitVM()
+                Unit = new UnitVm()
                 {
                     Id = unit.Id,
                     Name = unit.Name,

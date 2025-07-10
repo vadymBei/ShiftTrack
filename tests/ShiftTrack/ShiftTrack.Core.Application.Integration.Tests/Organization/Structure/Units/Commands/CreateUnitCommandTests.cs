@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
+using ShiftTrack.Application.Features.Organization.Structure.Common.ViewModels;
+using ShiftTrack.Application.Features.Organization.Structure.Units.Commands.CreateUnit;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
-using ShiftTrack.Core.Application.Organization.Structure.Common.ViewModels;
-using ShiftTrack.Core.Application.Organization.Structure.Units.Commands.CreateUnit;
 
 namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.Units.Commands;
 
@@ -26,9 +26,9 @@ public class CreateUnitCommandTests(
 
         unit.Should().NotBeNull();
         unit.Should().BeEquivalentTo(
-            new UnitVM
+            new UnitVm()
             {
-                Id = 1,
+                Id = newUnit.Id,
                 Name = createUnitCommand.Name,
                 Description = createUnitCommand.Description,
                 Code = createUnitCommand.Code,

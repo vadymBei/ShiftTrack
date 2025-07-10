@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
+using ShiftTrack.Application.Features.Organization.Structure.Units.Commands.CreateUnit;
+using ShiftTrack.Application.Features.Organization.Structure.Units.Queries.GetUnits;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
-using ShiftTrack.Core.Application.Organization.Structure.Units.Commands.CreateUnit;
-using ShiftTrack.Core.Application.Organization.Structure.Units.Queries.GetUnits;
 
 namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.Units.Queries;
 

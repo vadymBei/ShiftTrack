@@ -1,9 +1,9 @@
 ﻿using FluentAssertions;
+using ShiftTrack.Application.Features.Organization.Structure.Common.ViewModels;
+using ShiftTrack.Application.Features.Organization.Structure.Positions.Commands.CreatePosition;
+using ShiftTrack.Application.Features.Organization.Structure.Positions.Commands.UpdatePosition;
+using ShiftTrack.Application.Features.Organization.Structure.Positions.Queries.GetPositionById;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
-using ShiftTrack.Core.Application.Organization.Structure.Common.ViewModels;
-using ShiftTrack.Core.Application.Organization.Structure.Positions.Commands.CreatePosition;
-using ShiftTrack.Core.Application.Organization.Structure.Positions.Commands.UpdatePosition;
-using ShiftTrack.Core.Application.Organization.Structure.Positions.Queries.GetPositionById;
 using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.Positions.Commands;
@@ -37,7 +37,7 @@ public class UpdatePositionCommandTests(
         updatedPosition.Should().NotBeNull();
 
         updatedPosition.Should().BeEquivalentTo(
-            new PositionVM()
+            new PositionVm()
             {
                 Id = position.Id,
                 Name = updatePositionCommand.Name,

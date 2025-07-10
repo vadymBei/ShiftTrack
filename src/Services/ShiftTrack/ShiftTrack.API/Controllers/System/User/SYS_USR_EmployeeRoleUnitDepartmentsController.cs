@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ShiftTrack.Core.Application.System.User.Common.ViewModels;
-using ShiftTrack.Core.Application.System.User.EmployeeRoleUnitDepartments.Commands.CreateEmployeeRoleUnitDepartment;
-using ShiftTrack.Core.Application.System.User.EmployeeRoleUnitDepartments.Commands.DeleteEmployeeRoleUnitDepartment;
-using ShiftTrack.Core.Application.System.User.EmployeeRoleUnitDepartments.Queries.GetEmployeeRoleUnitDepartmentsByEmployeeRoleUnitId;
+using ShiftTrack.Application.Features.System.User.Common.ViewModels;
+using ShiftTrack.Application.Features.System.User.EmployeeRoleUnitDepartments.Commands.CreateEmployeeRoleUnitDepartment;
+using ShiftTrack.Application.Features.System.User.EmployeeRoleUnitDepartments.Commands.DeleteEmployeeRoleUnitDepartment;
+using ShiftTrack.Application.Features.System.User.EmployeeRoleUnitDepartments.Queries.GetEmployeeRoleUnitDepartmentsByEmployeeRoleUnitId;
 using ShiftTrack.Kernel.CQRS.Controllers;
 
 namespace ShiftTrack.API.Controllers.System.User;
