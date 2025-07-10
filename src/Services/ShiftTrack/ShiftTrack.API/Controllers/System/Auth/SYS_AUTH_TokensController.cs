@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ShiftTrack.Application.Features.System.Auth.Account.Commands.ChangePassword;
 using ShiftTrack.Application.Features.System.Auth.Common.Dtos;
 using ShiftTrack.Application.Features.System.Auth.Common.ViewModels;
 using ShiftTrack.Application.Features.System.Auth.Tokens.Commands.GenerateToken;
@@ -10,18 +9,14 @@ using ShiftTrack.Kernel.CQRS.Controllers;
 namespace ShiftTrack.API.Controllers.System.Auth;
 
 [AllowAnonymous]
-[Route("api/shift-track/system/auth")]
-public class SYS_AuthController : ApiController
+[Route("api/shift-track/system/auth/tokens")]
+public class SYS_AUTH_TokensController : ApiController
 {
-    [HttpPost("token/generate")]
+    [HttpPost("generate")]
     public Task<TokenVm> Generate(GenerateTokenDto data)
         => Mediator.Invoke(new GenerateTokenCommand(data));
 
-    [HttpPost("token/refresh")]
+    [HttpPost("refresh")]
     public Task<TokenVm> Refresh(RefreshTokenDto data)
         => Mediator.Invoke(new RefreshTokenCommand(data));
-    
-    [HttpPost("password/change")]
-    public async Task<TokenVm> ChangePassword(ChangePasswordDto commandData)
-        => await Mediator.Invoke(new ChangePasswordCommand(commandData));
 }
