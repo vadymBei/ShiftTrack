@@ -20,7 +20,7 @@ public class UserRepository(
                 .Path("user-authentication-api/request-authentication-service")
                 .Auth(AuthProvider.Basic)
                 .Body(dto)
-                .Post<Token>("users/change-password", cancellationToken);
+                .Post<Token>("account/change-password", cancellationToken);
 
             return token;
         }
@@ -39,7 +39,7 @@ public class UserRepository(
                 .Path("user-authentication-api/request-authentication-service")
                 .Auth(AuthProvider.Basic)
                 .Body(dto)
-                .Post<Authentication.Models.User>("users/register", cancellationToken);
+                .Post<Authentication.Models.User>("account/register", cancellationToken);
 
             return user;
         }
@@ -58,7 +58,7 @@ public class UserRepository(
                 .Path("user-authentication-api/request-authentication-service")
                 .Auth(AuthProvider.Basic)
                 .Body(dto)
-                .Put<Authentication.Models.User>("users", cancellationToken);
+                .Put<Authentication.Models.User>("account", cancellationToken);
 
             return user;
         }
