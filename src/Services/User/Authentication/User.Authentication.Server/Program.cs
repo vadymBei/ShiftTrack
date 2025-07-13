@@ -2,15 +2,16 @@ using Duende.IdentityServer.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using User.Authentication.Core;
-using User.Authentication.Core.Application.Common.Interfaces;
-using User.Authentication.Core.Infrastructure;
-using User.Authentication.Core.Infrastructure.OAuth.ApiResources;
-using User.Authentication.Core.Infrastructure.OAuth.Clients;
+using User.Authentication.Application;
+using User.Authentication.Infrastructure;
+using User.Authentication.Infrastructure.Features.OAuth.ApiResources;
+using User.Authentication.Infrastructure.Features.OAuth.Clients;
+using User.Authentication.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCoreServices(builder.Configuration);
+builder.Services.AddApplication(builder.Configuration);
+builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services
     .AddDefaultIdentity<ShiftTrack.Authentication.Models.User>(options =>
@@ -51,20 +52,6 @@ using (var scope = app.Services.CreateScope())
 {
     var dataContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     dataContext.Database.Migrate();
-
-    var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
-
-    var roleService = scope.ServiceProvider.GetRequiredService<IRoleService>();
-
-    var userRoleService = scope.ServiceProvider.GetRequiredService<IUserRoleService>();
-
-    await ApplicationDbContextSeed.SeedDefaultRolesAsync(
-        roleService);
-
-    await ApplicationDbContextSeed.SeedDefaultUserAsync(
-        userService,
-        roleService,
-        userRoleService);
 }
 
 app.UseAuthentication();

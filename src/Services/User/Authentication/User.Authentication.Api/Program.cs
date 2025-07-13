@@ -4,12 +4,14 @@ using ShiftTrack.Authentication.Identity;
 using ShiftTrack.Kernel.Extensions;
 using System.Reflection;
 using Swashbuckle.AspNetCore.SwaggerUI;
-using User.Authentication.Core;
-using User.Authentication.Core.Infrastructure;
+using User.Authentication.Application;
+using User.Authentication.Infrastructure;
+using User.Authentication.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCoreServices(builder.Configuration);
+builder.Services.AddApplication(builder.Configuration);
+builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddIdentityStorage<ApplicationDbContext>(builder.Configuration);
 

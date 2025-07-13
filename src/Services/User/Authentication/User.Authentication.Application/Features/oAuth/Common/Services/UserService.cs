@@ -38,7 +38,6 @@ public class UserService(
             .ToListAsync(cancellationToken);
 
         return users;
-
     }
 
     public async Task<bool> CheckUserExist(string phoneNumber)

@@ -8,8 +8,8 @@ update-database -p User.Authentication.Core
 
 For terminal execution:
 
-dotnet ef migrations add --project src/Services/User/Authentication/User.Authentication.Infrastructure --startup-project src/Services/User/Authentication/User.Authentication.Api --context ApplicationDbContext Init
-
+ dotnet ef migrations add --project src/Services/User/Authentication/User.Authentication.Infrastructure --startup-project src/Services/User/Authentication/User.Authentication.Api --context ApplicationDbContext --output-dir Persistence/Migrations Init
+ 
 dotnet ef migrations remove --project src/Services/User/Authentication/User.Authentication.Infrastructure --startup-project src/Services/User/Authentication/User.Authentication.Api --context ApplicationDbContext
 
 dotnet ef database update --project src/Services/User/Authentication/User.Authentication.Infrastructure --startup-project src/Services/User/Authentication/User.Authentication.Api --context ApplicationDbContext

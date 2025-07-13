@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShiftTrack.Kernel.CQRS.Controllers;
-using User.Authentication.Core.Application.Common.Dto;
-using User.Authentication.Core.Application.Common.ViewModels;
-using User.Authentication.Core.Application.Users.Commands.ChangePassword;
-using User.Authentication.Core.Application.Users.Commands.CreateUser;
-using User.Authentication.Core.Application.Users.Commands.UpdateUser;
-using User.Authentication.Core.Application.Users.Queries;
+using User.Authentication.Application.Features.oAuth.Account.Commands.ChangePassword;
+using User.Authentication.Application.Features.oAuth.Account.Commands.Register;
+using User.Authentication.Application.Features.oAuth.Account.Commands.UpdateAccount;
+using User.Authentication.Application.Features.oAuth.Common.Dtos;
+using User.Authentication.Application.Features.oAuth.Common.ViewModels;
+using User.Authentication.Application.Features.oAuth.Users.Queries.GetUsers;
 
 namespace User.Authentication.Api.Controllers;
 
@@ -15,18 +15,18 @@ namespace User.Authentication.Api.Controllers;
 public class UsersController : ApiController
 {
     [HttpPost("register")]
-    public async Task<UserVM> CreateUser(CreateUserCommand command)
+    public async Task<UserVm> CreateUser(RegisterCommand command)
         => await Mediator.Invoke(command);
 
     [HttpPut]
-    public async Task<UserVM> UpdateUser(UpdateUserCommand command)
+    public async Task<UserVm> UpdateUser(UpdateAccountCommand command)
         => await Mediator.Invoke(command);
 
     [HttpPost("change-password")]
-    public async Task<TokenVM> ChangePassword(ChangePasswordDto commandData)
+    public async Task<TokenVm> ChangePassword(ChangePasswordDto commandData)
         => await Mediator.Invoke(new ChangePasswordCommand(commandData));
         
     [HttpGet]
-    public async Task<IEnumerable<UserVM>> GetAllUsers()
-        => await Mediator.Invoke(new GetAllUsersQuery());
+    public async Task<IEnumerable<UserVm>> GetAllUsers()
+        => await Mediator.Invoke(new GetUsersQuery());
 }

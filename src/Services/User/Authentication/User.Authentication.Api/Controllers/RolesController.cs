@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShiftTrack.Kernel.CQRS.Controllers;
-using User.Authentication.Core.Application.Common.Dto;
-using User.Authentication.Core.Application.Common.ViewModels;
-using User.Authentication.Core.Application.Roles.Commands.CreateRole;
-using User.Authentication.Core.Application.Roles.Queries.GetRoles;
+using User.Authentication.Application.Features.oAuth.Common.Dtos;
+using User.Authentication.Application.Features.oAuth.Common.ViewModels;
+using User.Authentication.Application.Features.oAuth.Roles.Commands.CreateRole;
+using User.Authentication.Application.Features.oAuth.Roles.Queries.GetRoles;
 
 namespace User.Authentication.Api.Controllers;
 
@@ -13,10 +13,10 @@ namespace User.Authentication.Api.Controllers;
 public class RolesController : ApiController
 {
     [HttpPost]
-    public async Task<RoleVM> CreateRole(RoleToCreateDto commandData)
+    public async Task<RoleVm> CreateRole(RoleToCreateDto commandData)
         => await Mediator.Invoke(new CreateRoleCommand(commandData));
 
     [HttpGet]
-    public async Task<IEnumerable<RoleVM>> GetRoles()
+    public async Task<IEnumerable<RoleVm>> GetRoles()
         => await Mediator.Invoke(new GetRolesQuery());
 }
