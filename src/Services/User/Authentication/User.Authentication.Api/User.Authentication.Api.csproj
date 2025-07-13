@@ -18,13 +18,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Common\Authentication\ShiftTrack.Authentication.Basic\ShiftTrack.Authentication.Basic.csproj" />
-    <ProjectReference Include="..\User.Authentication.Core\User.Authentication.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="..\..\..\..\..\.dockerignore">
-      <Link>.dockerignore</Link>
-    </Content>
+    <ProjectReference Include="..\User.Authentication.Application\User.Authentication.Application.csproj" />
+    <ProjectReference Include="..\User.Authentication.Infrastructure\User.Authentication.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

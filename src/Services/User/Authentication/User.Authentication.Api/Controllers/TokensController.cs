@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShiftTrack.Kernel.CQRS.Controllers;
-using User.Authentication.Core.Application.Common.ViewModels;
-using User.Authentication.Core.Application.Tokens.Commands.GenerateToken;
-using User.Authentication.Core.Application.Tokens.Commands.RefreshToken;
+using User.Authentication.Application.Features.oAuth.Common.ViewModels;
+using User.Authentication.Application.Features.oAuth.Tokens.Commands.GenerateToken;
+using User.Authentication.Application.Features.oAuth.Tokens.Commands.RefreshToken;
 
 namespace User.Authentication.Api.Controllers;
 
@@ -12,10 +12,10 @@ namespace User.Authentication.Api.Controllers;
 public class Tokens : ApiController
 {
     [HttpPost("generate")]
-    public async Task<TokenVM> GenerateToken(GenerateTokenCommand command)
+    public async Task<TokenVm> GenerateToken(GenerateTokenCommand command)
         => await Mediator.Invoke(command);
 
     [HttpPost("refresh")]
-    public async Task<TokenVM> RefreshToken(RefreshTokenCommand command)
+    public async Task<TokenVm> RefreshToken(RefreshTokenCommand command)
         => await Mediator.Invoke(command);
 }

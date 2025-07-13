@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShiftTrack.Kernel.CQRS.Controllers;
-using User.Authentication.Core.Application.Common.Dto;
-using User.Authentication.Core.Application.UserRoles.Commands.CreateUserRole;
+using User.Authentication.Application.Features.oAuth.Common.Dtos;
+using User.Authentication.Application.Features.oAuth.UserRoles.Commands.CreateUserRole;
 
 namespace User.Authentication.Api.Controllers;
 

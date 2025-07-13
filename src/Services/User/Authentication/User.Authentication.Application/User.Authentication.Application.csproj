@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\..\Common\Authentication\ShiftTrack.Authentication.Identity\ShiftTrack.Authentication.Identity.csproj" />
+      <ProjectReference Include="..\..\..\..\Common\Data\ShiftTrack.Data\ShiftTrack.Data.csproj" />
+      <ProjectReference Include="..\..\..\..\Common\Kernel\ShiftTrack.Kernel.CQRS\ShiftTrack.Kernel.CQRS.csproj" />
+      <ProjectReference Include="..\..\..\..\Common\Kernel\ShiftTrack.Kernel\ShiftTrack.Kernel.csproj" />
+      <ProjectReference Include="..\User.Authentication.Domain\User.Authentication.Domain.csproj" />
+    </ItemGroup>
+
+</Project>
