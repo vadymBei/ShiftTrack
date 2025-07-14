@@ -19,6 +19,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Features\Booking\Common\Interfaces\" />
+      <Folder Include="Features\Booking\Common\Services\" />
       <Folder Include="Features\System\Auth\Tokens\Commands\" />
     </ItemGroup>
 
