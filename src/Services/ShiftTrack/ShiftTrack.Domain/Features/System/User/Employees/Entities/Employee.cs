@@ -1,3 +1,4 @@
+using ShiftTrack.Domain.Common.Abstractions;
 using ShiftTrack.Domain.Common.Interfaces;
 using ShiftTrack.Domain.Features.Organization.Structure.Entities;
 using ShiftTrack.Domain.Features.System.User.EmployeeRoles.Entities;
@@ -5,7 +6,7 @@ using ShiftTrack.Domain.Features.System.User.Employees.Enums;
 
 namespace ShiftTrack.Domain.Features.System.User.Employees.Entities;
 
-public class Employee : ISoftDeletable, IAuditable
+public class Employee : AuditableEntity, ISoftDeletable
 {
     public long Id { get; set; }
     public string Name { get; set; }
@@ -30,9 +31,4 @@ public class Employee : ISoftDeletable, IAuditable
 
     public bool IsDeleted { get; set; }
     public DateTime? DeletedAt { get; set; }
-
-    public DateTime CreatedAt { get; set; }
-    public long? CreatedById { get; set; }
-    public DateTime? ModifiedAt { get; set; }
-    public long? ModifiedById { get; set; }
 }

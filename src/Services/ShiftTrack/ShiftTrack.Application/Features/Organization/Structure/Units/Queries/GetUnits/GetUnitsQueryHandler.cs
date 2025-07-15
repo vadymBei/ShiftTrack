@@ -14,6 +14,8 @@ public class GetUnitsQueryHandler(
     {
         var units = await dbContext.Units
             .AsNoTracking()
+            .Include(x =>x.Author)
+            .Include(x =>x.Modifier)
             .OrderBy(x => x.Name)
             .ToListAsync(cancellationToken);
 

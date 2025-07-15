@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ShiftTrack.Infrastructure.Persistence;
@@ -11,9 +12,11 @@ using ShiftTrack.Infrastructure.Persistence;
 namespace ShiftTrack.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250715201439_Remove_ModifiedById_And_CreatedById")]
+    partial class Remove_ModifiedById_And_CreatedById
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -101,9 +104,6 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<long?>("AuthorId")
-                        .HasColumnType("bigint");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
 
@@ -116,9 +116,6 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<long?>("ModifierId")
-                        .HasColumnType("bigint");
-
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
@@ -127,11 +124,7 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthorId");
-
                     b.HasIndex("IsDeleted");
-
-                    b.HasIndex("ModifierId");
 
                     b.HasIndex("UnitId");
 
@@ -145,9 +138,6 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
                         .HasColumnType("bigint");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<long?>("AuthorId")
-                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
@@ -164,19 +154,12 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<long?>("ModifierId")
-                        .HasColumnType("bigint");
-
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthorId");
-
                     b.HasIndex("IsDeleted");
-
-                    b.HasIndex("ModifierId");
 
                     b.ToTable("Positions", (string)null);
                 });
@@ -188,9 +171,6 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
                         .HasColumnType("bigint");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<long?>("AuthorId")
-                        .HasColumnType("bigint");
 
                     b.Property<string>("Code")
                         .HasColumnType("text");
@@ -210,19 +190,12 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<long?>("ModifierId")
-                        .HasColumnType("bigint");
-
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthorId");
-
                     b.HasIndex("IsDeleted");
-
-                    b.HasIndex("ModifierId");
 
                     b.ToTable("Units", (string)null);
                 });
@@ -234,9 +207,6 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
                         .HasColumnType("bigint");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<long?>("AuthorId")
-                        .HasColumnType("bigint");
 
                     b.Property<string>("Code")
                         .HasColumnType("text");
@@ -262,9 +232,6 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<long?>("ModifierId")
-                        .HasColumnType("bigint");
-
                     b.Property<TimeSpan?>("StartTime")
                         .HasColumnType("interval");
 
@@ -276,11 +243,7 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthorId");
-
                     b.HasIndex("IsDeleted");
-
-                    b.HasIndex("ModifierId");
 
                     b.ToTable("Shifts", (string)null);
                 });
@@ -293,9 +256,6 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<long?>("AuthorId")
-                        .HasColumnType("bigint");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
 
@@ -305,9 +265,6 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<long?>("ModifierId")
-                        .HasColumnType("bigint");
-
                     b.Property<long?>("RoleId")
                         .HasColumnType("bigint");
 
@@ -316,11 +273,7 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthorId");
-
                     b.HasIndex("EmployeeId");
-
-                    b.HasIndex("ModifierId");
 
                     b.HasIndex("RoleId");
 
@@ -335,9 +288,6 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<long?>("AuthorId")
-                        .HasColumnType("bigint");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
 
@@ -347,9 +297,6 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<long?>("ModifierId")
-                        .HasColumnType("bigint");
-
                     b.Property<int>("Scope")
                         .HasColumnType("integer");
 
@@ -358,11 +305,7 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthorId");
-
                     b.HasIndex("EmployeeRoleId");
-
-                    b.HasIndex("ModifierId");
 
                     b.HasIndex("UnitId");
 
@@ -377,9 +320,6 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<long?>("AuthorId")
-                        .HasColumnType("bigint");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
 
@@ -392,18 +332,11 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<long?>("ModifierId")
-                        .HasColumnType("bigint");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("AuthorId");
 
                     b.HasIndex("DepartmentId");
 
                     b.HasIndex("EmployeeRoleUnitId");
-
-                    b.HasIndex("ModifierId");
 
                     b.ToTable("EmployeeRoleUnitDepartments", (string)null);
                 });
@@ -415,9 +348,6 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
                         .HasColumnType("bigint");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<long?>("AuthorId")
-                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
@@ -448,9 +378,6 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<long?>("ModifierId")
-                        .HasColumnType("bigint");
-
                     b.Property<string>("Name")
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)");
@@ -478,16 +405,12 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthorId");
-
                     b.HasIndex("DepartmentId");
 
                     b.HasIndex("Email")
                         .IsUnique();
 
                     b.HasIndex("IsDeleted");
-
-                    b.HasIndex("ModifierId");
 
                     b.HasIndex("PhoneNumber")
                         .IsUnique();
@@ -505,17 +428,11 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<long?>("AuthorId")
-                        .HasColumnType("bigint");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("timestamp without time zone");
-
-                    b.Property<long?>("ModifierId")
-                        .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .HasColumnType("text");
@@ -524,10 +441,6 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AuthorId");
-
-                    b.HasIndex("ModifierId");
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -543,8 +456,7 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
 
                     b.HasOne("ShiftTrack.Domain.Features.System.User.Employees.Entities.Employee", "Author")
                         .WithMany()
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("AuthorId");
 
                     b.HasOne("ShiftTrack.Domain.Features.System.User.Employees.Entities.Employee", "Employee")
                         .WithMany()
@@ -554,8 +466,7 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
 
                     b.HasOne("ShiftTrack.Domain.Features.System.User.Employees.Entities.Employee", "Modifier")
                         .WithMany()
-                        .HasForeignKey("ModifierId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("ModifierId");
 
                     b.Navigation("ApprovedEmployee");
 
@@ -568,144 +479,46 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("ShiftTrack.Domain.Features.Organization.Structure.Entities.Department", b =>
                 {
-                    b.HasOne("ShiftTrack.Domain.Features.System.User.Employees.Entities.Employee", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("ShiftTrack.Domain.Features.System.User.Employees.Entities.Employee", "Modifier")
-                        .WithMany()
-                        .HasForeignKey("ModifierId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("ShiftTrack.Domain.Features.Organization.Structure.Entities.Unit", "Unit")
                         .WithMany("Departments")
                         .HasForeignKey("UnitId");
 
-                    b.Navigation("Author");
-
-                    b.Navigation("Modifier");
-
                     b.Navigation("Unit");
-                });
-
-            modelBuilder.Entity("ShiftTrack.Domain.Features.Organization.Structure.Entities.Position", b =>
-                {
-                    b.HasOne("ShiftTrack.Domain.Features.System.User.Employees.Entities.Employee", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("ShiftTrack.Domain.Features.System.User.Employees.Entities.Employee", "Modifier")
-                        .WithMany()
-                        .HasForeignKey("ModifierId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Author");
-
-                    b.Navigation("Modifier");
-                });
-
-            modelBuilder.Entity("ShiftTrack.Domain.Features.Organization.Structure.Entities.Unit", b =>
-                {
-                    b.HasOne("ShiftTrack.Domain.Features.System.User.Employees.Entities.Employee", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("ShiftTrack.Domain.Features.System.User.Employees.Entities.Employee", "Modifier")
-                        .WithMany()
-                        .HasForeignKey("ModifierId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Author");
-
-                    b.Navigation("Modifier");
-                });
-
-            modelBuilder.Entity("ShiftTrack.Domain.Features.Organization.Timesheet.Shifts.Entities.Shift", b =>
-                {
-                    b.HasOne("ShiftTrack.Domain.Features.System.User.Employees.Entities.Employee", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("ShiftTrack.Domain.Features.System.User.Employees.Entities.Employee", "Modifier")
-                        .WithMany()
-                        .HasForeignKey("ModifierId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Author");
-
-                    b.Navigation("Modifier");
                 });
 
             modelBuilder.Entity("ShiftTrack.Domain.Features.System.User.EmployeeRoles.Entities.EmployeeRole", b =>
                 {
-                    b.HasOne("ShiftTrack.Domain.Features.System.User.Employees.Entities.Employee", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("ShiftTrack.Domain.Features.System.User.Employees.Entities.Employee", "Employee")
                         .WithMany("EmployeeRoles")
                         .HasForeignKey("EmployeeId");
-
-                    b.HasOne("ShiftTrack.Domain.Features.System.User.Employees.Entities.Employee", "Modifier")
-                        .WithMany()
-                        .HasForeignKey("ModifierId")
-                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("ShiftTrack.Domain.Features.System.User.Roles.Entities.Role", "Role")
                         .WithMany()
                         .HasForeignKey("RoleId");
 
-                    b.Navigation("Author");
-
                     b.Navigation("Employee");
-
-                    b.Navigation("Modifier");
 
                     b.Navigation("Role");
                 });
 
             modelBuilder.Entity("ShiftTrack.Domain.Features.System.User.EmployeeRoles.Entities.EmployeeRoleUnit", b =>
                 {
-                    b.HasOne("ShiftTrack.Domain.Features.System.User.Employees.Entities.Employee", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("ShiftTrack.Domain.Features.System.User.EmployeeRoles.Entities.EmployeeRole", "EmployeeRole")
                         .WithMany("Units")
                         .HasForeignKey("EmployeeRoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("ShiftTrack.Domain.Features.System.User.Employees.Entities.Employee", "Modifier")
-                        .WithMany()
-                        .HasForeignKey("ModifierId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("ShiftTrack.Domain.Features.Organization.Structure.Entities.Unit", "Unit")
                         .WithMany()
                         .HasForeignKey("UnitId");
 
-                    b.Navigation("Author");
-
                     b.Navigation("EmployeeRole");
-
-                    b.Navigation("Modifier");
 
                     b.Navigation("Unit");
                 });
 
             modelBuilder.Entity("ShiftTrack.Domain.Features.System.User.EmployeeRoles.Entities.EmployeeRoleUnitDepartment", b =>
                 {
-                    b.HasOne("ShiftTrack.Domain.Features.System.User.Employees.Entities.Employee", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("ShiftTrack.Domain.Features.Organization.Structure.Entities.Department", "Department")
                         .WithMany()
                         .HasForeignKey("DepartmentId");
@@ -715,64 +528,24 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
                         .HasForeignKey("EmployeeRoleUnitId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("ShiftTrack.Domain.Features.System.User.Employees.Entities.Employee", "Modifier")
-                        .WithMany()
-                        .HasForeignKey("ModifierId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Author");
-
                     b.Navigation("Department");
 
                     b.Navigation("EmployeeRoleUnit");
-
-                    b.Navigation("Modifier");
                 });
 
             modelBuilder.Entity("ShiftTrack.Domain.Features.System.User.Employees.Entities.Employee", b =>
                 {
-                    b.HasOne("ShiftTrack.Domain.Features.System.User.Employees.Entities.Employee", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("ShiftTrack.Domain.Features.Organization.Structure.Entities.Department", "Department")
                         .WithMany()
                         .HasForeignKey("DepartmentId");
-
-                    b.HasOne("ShiftTrack.Domain.Features.System.User.Employees.Entities.Employee", "Modifier")
-                        .WithMany()
-                        .HasForeignKey("ModifierId")
-                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("ShiftTrack.Domain.Features.Organization.Structure.Entities.Position", "Position")
                         .WithMany()
                         .HasForeignKey("PositionId");
 
-                    b.Navigation("Author");
-
                     b.Navigation("Department");
 
-                    b.Navigation("Modifier");
-
                     b.Navigation("Position");
-                });
-
-            modelBuilder.Entity("ShiftTrack.Domain.Features.System.User.Roles.Entities.Role", b =>
-                {
-                    b.HasOne("ShiftTrack.Domain.Features.System.User.Employees.Entities.Employee", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("ShiftTrack.Domain.Features.System.User.Employees.Entities.Employee", "Modifier")
-                        .WithMany()
-                        .HasForeignKey("ModifierId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Author");
-
-                    b.Navigation("Modifier");
                 });
 
             modelBuilder.Entity("ShiftTrack.Domain.Features.Organization.Structure.Entities.Unit", b =>

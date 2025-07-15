@@ -1,10 +1,11 @@
+using ShiftTrack.Domain.Common.Abstractions;
 using ShiftTrack.Domain.Common.Interfaces;
 using ShiftTrack.Domain.Features.Booking.Vacations.Enums;
 using ShiftTrack.Domain.Features.System.User.Employees.Entities;
 
 namespace ShiftTrack.Domain.Features.Booking.Vacations.Entities;
 
-public class Vacation : ISoftDeletable, IAuditable
+public class Vacation : AuditableEntity, ISoftDeletable
 {
     public long Id { get; set; }
     public DateTime StartDate { get; set; }
@@ -24,9 +25,4 @@ public class Vacation : ISoftDeletable, IAuditable
 
     public bool IsDeleted { get; set; }
     public DateTime? DeletedAt { get; set; }
-
-    public DateTime CreatedAt { get; set; }
-    public long? CreatedById { get; set; }
-    public DateTime? ModifiedAt { get; set; }
-    public long? ModifiedById { get; set; }
 }

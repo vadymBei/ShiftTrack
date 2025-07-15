@@ -20,7 +20,7 @@ public class DeleteVacationCommandHandler(
                        ?? throw new EntityNotFoundException(typeof(Vacation), request.Id);
 
         if (!employeeRoleChecker.HasCurrentUserSysAdminRole()
-            && vacation.CreatedById != currentUserService.Employee.Id)
+            && vacation.AuthorId != currentUserService.Employee.Id)
         {
             throw new VacationException(
                 VacationExceptionsLocalization.CANNOT_DELETE_OTHERS_VACATION,
