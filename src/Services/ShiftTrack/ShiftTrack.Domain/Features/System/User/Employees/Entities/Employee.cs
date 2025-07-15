@@ -18,18 +18,19 @@ public class Employee : ISoftDeletable, IAuditable
     public EmployeeGender Gender { get; set; }
     public string FullName => Surname + " " + Name + " " + Patronymic;
     public string PhotoFullName { get; set; }
-    
+    public int VacationDaysBalance { get; set; }
+
     public long? DepartmentId { get; set; }
     public Department Department { get; set; }
 
     public long? PositionId { get; set; }
     public Position Position { get; set; }
-    
+
     public List<EmployeeRole> EmployeeRoles { get; set; }
-    
+
     public bool IsDeleted { get; set; }
     public DateTime? DeletedAt { get; set; }
-    
+
     public DateTime CreatedAt { get; set; }
     public long? CreatedById { get; set; }
     public DateTime? ModifiedAt { get; set; }
