@@ -67,6 +67,19 @@ public class EmployeeService(
         return employee;
     }
 
+    public async Task<Employee> UpdateVacationDaysBalance(long employeeId, int vacationDaysBalance, CancellationToken cancellationToken)
+    {
+        var employee = await applicationDbContext.Employees
+            .FirstOrDefaultAsync(x => x.Id == employeeId, cancellationToken)
+            ?? throw new EntityNotFoundException(typeof(Employee), employeeId);
+        
+        employee.VacationDaysBalance = vacationDaysBalance;
+        
+        await applicationDbContext.SaveChangesAsync(cancellationToken);
+        
+        return employee;
+    }
+
     public Task<Authentication.Models.User> RegisterAuthUser(UserToRegisterDto dto, CancellationToken cancellationToken)
     {
         return userRepository.RegisterUser(dto, cancellationToken);

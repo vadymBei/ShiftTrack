@@ -1,12 +1,18 @@
+using AutoMapper;
+using ShiftTrack.Application.Features.Booking.Common.Interfaces;
 using ShiftTrack.Application.Features.Booking.Common.ViewModels;
 using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Features.Booking.Vacations.Queries.GetVacationById;
 
-public class GetVacationByIdQueryHandler : IRequestHandler<GetVacationByIdQuery, VacationVm>
+public class GetVacationByIdQueryHandler(
+    IMapper mapper,
+    IVacationService vacationService) : IRequestHandler<GetVacationByIdQuery, VacationVm>
 {
-    public Task<VacationVm> Handle(GetVacationByIdQuery request, CancellationToken cancellationToken = default)
+    public async Task<VacationVm> Handle(GetVacationByIdQuery request, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var vacation = await vacationService.GetById(request.Id, cancellationToken);
+        
+        return mapper.Map<VacationVm>(vacation);
     }
 }
