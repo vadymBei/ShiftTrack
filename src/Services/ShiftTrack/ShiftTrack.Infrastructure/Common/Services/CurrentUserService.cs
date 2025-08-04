@@ -1,9 +1,7 @@
-using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Application.Common.Interfaces;
-using ShiftTrack.Domain.Features.System.Auth.Models;
 using ShiftTrack.Domain.Features.System.User.Employees.Entities;
 
-namespace ShiftTrack.Infrastructure.Services;
+namespace ShiftTrack.Infrastructure.Common.Services;
 
 public class CurrentUserService : ICurrentUserService
 {

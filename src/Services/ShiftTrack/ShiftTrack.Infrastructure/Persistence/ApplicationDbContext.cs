@@ -1,7 +1,7 @@
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Application.Common.Interfaces;
-using ShiftTrack.Domain.Common.Interfaces;
+using ShiftTrack.Domain.Common.Abstractions;
 using ShiftTrack.Domain.Features.Booking.Vacations.Entities;
 using ShiftTrack.Domain.Features.Organization.Structure.Entities;
 using ShiftTrack.Domain.Features.Organization.Timesheet.Shifts.Entities;
@@ -51,34 +51,31 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
     {
-        var entries = ChangeTracker.Entries<IAuditable>()
+        var entries = ChangeTracker.Entries<AuditableEntity>()
             .Where(e => e.State is EntityState.Added or EntityState.Modified);
-        
+    
         var currentTime = DateTime.UtcNow;
-        
         var currentUserId = _currentUserService.Employee?.Id;
-        
+    
         foreach (var entry in entries)
         {
             switch (entry.State)
             {
                 case EntityState.Added:
                 {
-                    entry.Entity.CreatedById = currentUserId;
+                    entry.Entity.AuthorId = currentUserId;
                     entry.Entity.CreatedAt = currentTime;
                     break;
                 }
-                
                 case EntityState.Modified:
                 {
-                    entry.Entity.ModifiedById = currentUserId;
+                    entry.Entity.ModifierId = currentUserId;
                     entry.Entity.ModifiedAt = currentTime;
                     break;
                 }
             }
         }
-
-        
+    
         return await base.SaveChangesAsync(cancellationToken);
     }
 

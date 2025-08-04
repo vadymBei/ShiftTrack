@@ -2,6 +2,7 @@ using ShiftTrack.Kernel.Attributes;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ShiftTrack.Application.Common.Behaviours;
+using ShiftTrack.Application.Features.Booking;
 using ShiftTrack.Application.Features.Organization;
 using ShiftTrack.Application.Features.System;
 using ShiftTrack.Client.Http;
@@ -24,6 +25,7 @@ public static class DependencyInjection
         services.AddTransient(typeof(IPipelineBehaviour<,>), typeof(RequestAuthorizationBehaviour<,>));
         services.AddTransient(typeof(IPipelineBehaviour<>), typeof(RequestAuthorizationBehaviour<>));
 
+        services.AddBookingServices();
         services.AddOrganizationServices();
         services.AddSystemServices();
 

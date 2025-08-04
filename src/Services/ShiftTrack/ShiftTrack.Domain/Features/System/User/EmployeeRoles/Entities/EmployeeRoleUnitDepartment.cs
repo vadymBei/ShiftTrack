@@ -1,9 +1,9 @@
-using ShiftTrack.Domain.Common.Interfaces;
+using ShiftTrack.Domain.Common.Abstractions;
 using ShiftTrack.Domain.Features.Organization.Structure.Entities;
 
 namespace ShiftTrack.Domain.Features.System.User.EmployeeRoles.Entities;
 
-public class EmployeeRoleUnitDepartment : IAuditable
+public class EmployeeRoleUnitDepartment : AuditableEntity
 {
     public long Id { get; set; }
     
@@ -12,9 +12,4 @@ public class EmployeeRoleUnitDepartment : IAuditable
     
     public long? DepartmentId { get; set; }
     public Department Department { get; set; }
-    
-    public DateTime CreatedAt { get; set; }
-    public long? CreatedById { get; set; }
-    public DateTime? ModifiedAt { get; set; }
-    public long? ModifiedById { get; set; }
 }

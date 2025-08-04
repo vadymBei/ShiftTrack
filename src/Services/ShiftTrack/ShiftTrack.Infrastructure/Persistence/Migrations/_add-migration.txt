@@ -8,7 +8,7 @@ update-database -p ShiftTrack.Core
 
 For terminal execution:
 
-dotnet ef migrations add --project src/Services/ShiftTrack/ShiftTrack.Infrastructure --startup-project src/Services/ShiftTrack/ShiftTrack.API --context ApplicationDbContext Init
+dotnet ef migrations add --project src/Services/ShiftTrack/ShiftTrack.Infrastructure --startup-project src/Services/ShiftTrack/ShiftTrack.API --context ApplicationDbContext --output-dir Persistence/Migrations Init
 
 dotnet ef migrations remove --project src/Services/ShiftTrack/ShiftTrack.Infrastructure --startup-project src/Services/ShiftTrack/ShiftTrack.Api --context ApplicationDbContext
 

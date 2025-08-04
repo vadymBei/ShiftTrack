@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ShiftTrack.Domain.Features.System.User.Employees.Entities;
+using ShiftTrack.Infrastructure.Common.Configurations;
 
 namespace ShiftTrack.Infrastructure.Features.Organization.Employees.Configurations;
 
@@ -10,6 +11,8 @@ public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
     {
         builder.ToTable("Employees");
 
+        builder.ConfigureAuditableEntity();
+        
         builder.HasIndex(c => c.Email)
             .IsUnique();
 

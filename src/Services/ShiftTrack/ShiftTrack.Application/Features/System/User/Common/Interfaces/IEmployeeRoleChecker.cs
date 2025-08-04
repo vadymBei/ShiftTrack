@@ -2,5 +2,7 @@ namespace ShiftTrack.Application.Features.System.User.Common.Interfaces;
 
 public interface IEmployeeRoleChecker
 {
-    bool HasCurrentUserRole(string roleName);
+    bool HasCurrentUserSysAdminRole();
+    bool HasCurrentUserUnitDirectorRole();
+    bool HasCurrentUserDepartmentDirectorRole();
 }
