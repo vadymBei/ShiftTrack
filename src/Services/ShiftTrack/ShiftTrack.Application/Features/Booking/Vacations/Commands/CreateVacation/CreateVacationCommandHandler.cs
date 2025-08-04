@@ -27,7 +27,7 @@ public class CreateVacationCommandHandler(
             EmployeeId = employee.Id,
             Comment = request.Comment,
             Type = request.Type,
-            Status = VacationStatus.PendingApproval,
+            Status = VacationStatus.None,
             DaysBalanceAtCreation = employee.VacationDaysBalance,
             DaysCount = (request.EndDate - request.StartDate).Days + 1
         };

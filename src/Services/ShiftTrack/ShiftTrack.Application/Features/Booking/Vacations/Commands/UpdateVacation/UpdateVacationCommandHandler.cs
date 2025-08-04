@@ -65,7 +65,7 @@ public class UpdateVacationCommandHandler(
                 VacationExceptionsLocalization.CANNOT_EDIT_OTHERS_VACATION,
                 nameof(VacationExceptionsLocalization.CANNOT_EDIT_OTHERS_VACATION));
 
-        if (vacation.Status != VacationStatus.PendingApproval)
+        if (vacation.Status != VacationStatus.None)
             throw new VacationException(
                 VacationExceptionsLocalization.CANNOT_EDIT_NON_PENDING_VACATION,
                 nameof(VacationExceptionsLocalization.CANNOT_EDIT_NON_PENDING_VACATION));

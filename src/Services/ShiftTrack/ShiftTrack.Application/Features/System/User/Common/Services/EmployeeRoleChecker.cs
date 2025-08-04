@@ -16,7 +16,12 @@ public sealed class EmployeeRoleChecker(
     {
         return HasCurrentUserRole(DefaultRolesCatalog.UNIT_DIRECTOR);
     }
-    
+
+    public bool HasCurrentUserDepartmentDirectorRole()
+    {
+        return HasCurrentUserRole(DefaultRolesCatalog.DEPARTMENT_DIRECTOR);
+    }
+
     private bool HasCurrentUserRole(string roleName)
     {
         return currentUserService.Employee.EmployeeRoles.Any(x => x.Role.Name == roleName);

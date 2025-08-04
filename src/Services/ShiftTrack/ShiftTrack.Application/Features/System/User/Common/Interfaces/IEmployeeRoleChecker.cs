@@ -4,4 +4,5 @@ public interface IEmployeeRoleChecker
 {
     bool HasCurrentUserSysAdminRole();
     bool HasCurrentUserUnitDirectorRole();
+    bool HasCurrentUserDepartmentDirectorRole();
 }

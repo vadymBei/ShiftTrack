@@ -1,8 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ShiftTrack.Application.Features.Booking.Common.Dtos;
 using ShiftTrack.Application.Features.Booking.Common.ViewModels;
+using ShiftTrack.Application.Features.Booking.Vacations.Commands.ApproveVacation;
 using ShiftTrack.Application.Features.Booking.Vacations.Commands.CreateVacation;
 using ShiftTrack.Application.Features.Booking.Vacations.Commands.DeleteVacation;
+using ShiftTrack.Application.Features.Booking.Vacations.Commands.RejectVacation;
 using ShiftTrack.Application.Features.Booking.Vacations.Commands.UpdateVacation;
 using ShiftTrack.Application.Features.Booking.Vacations.Queries.GetVacationById;
 using ShiftTrack.Application.Features.Booking.Vacations.Queries.GetVacations;
@@ -27,8 +30,8 @@ public class BKG_VCN_VacationsController : ApiController
     }
 
     [HttpGet]
-    public Task<IEnumerable<VacationVm>> GetVacations([FromQuery] GetVacationsQuery query)
-        => Mediator.Invoke(query);
+    public Task<IEnumerable<VacationVm>> GetVacations([FromQuery] VacationsFilterDto filter)
+        => Mediator.Invoke(new GetVacationsQuery(filter));
 
     [HttpGet("{id}")]
     public Task<VacationVm> GetVacationById(long id)
@@ -37,4 +40,12 @@ public class BKG_VCN_VacationsController : ApiController
     [HttpPut]
     public Task<VacationVm> UpdateVacation([FromBody] UpdateVacationCommand command)
         => Mediator.Invoke(command);
+
+    [HttpPut("approve/{id}")]
+    public Task<VacationVm> ApproveVacation(long id)
+        => Mediator.Invoke(new ApproveVacationCommand(id));
+
+    [HttpPut("reject/{id}")]
+    public Task<VacationVm> RejectVacation(long id)
+        => Mediator.Invoke(new RejectVacationCommand(id));
 }
