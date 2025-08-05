@@ -2,6 +2,7 @@ using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Application.Common.Interfaces;
 using ShiftTrack.Domain.Common.Abstractions;
+using ShiftTrack.Domain.Features.Booking.BusinessTrips.Entities;
 using ShiftTrack.Domain.Features.Booking.Vacations.Entities;
 using ShiftTrack.Domain.Features.Organization.Structure.Entities;
 using ShiftTrack.Domain.Features.Organization.Timesheet.Shifts.Entities;
@@ -29,6 +30,10 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
     }
 
     //Booking
+    //BusinessTrips
+    public DbSet<BusinessTrip> BusinessTrips { get; set; }
+    public DbSet<BusinessTripParticipant> BusinessTripParticipants { get; set; }
+    
     //Vacations
     public DbSet<Vacation> Vacations { get; set; }
     
