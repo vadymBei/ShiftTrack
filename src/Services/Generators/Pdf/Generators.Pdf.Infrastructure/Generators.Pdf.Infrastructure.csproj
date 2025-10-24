@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="PuppeteerSharp" Version="20.2.4"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\..\Common\Kernel\ShiftTrack.Kernel\ShiftTrack.Kernel.csproj"/>
+        <ProjectReference Include="..\Generators.Pdf.Application\Generators.Pdf.Application.csproj"/>
+    </ItemGroup>
+
+</Project>

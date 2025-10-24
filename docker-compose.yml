@@ -10,10 +10,10 @@ services:
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_URLS=http://+:8080
       - TZ=Europe/Khmelnytskyi
     ports:
-      - "11000:80"
+      - "11000:8080"
 
  postgres-db:
     image: postgres:14
@@ -36,11 +36,11 @@ services:
       - ASPNETCORE_URLS=http://+:80
       - TZ=Europe/Khmelnytskyi
     ports:
-      - "10101:80"
+      - "10101:8080"
     links:
       - postgres-db
       - user.authentication.server
- 
+
  user.authentication.server:
     image: ${DOCKER_REGISTRY-}user-authentication-server
     build:
@@ -50,10 +50,10 @@ services:
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_URLS=http://+:8080
       - TZ=Europe/Khmelnytskyi
     ports:
-      - "10102:80"
+      - "10102:8080"
     links:
       - postgres-db
 
@@ -66,7 +66,21 @@ services:
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_URLS=http://+:8080
       - TZ=Europe/Khmelnytskyi
     ports:
-      - "20001:80"
+      - "20001:8080"
+
+ generators.pdf.api:
+   image: ${DOCKER_REGISTRY-}generators-pdf-api
+   build:
+     context: .
+     dockerfile: src/Services/Generators/Pdf/Generators.Pdf.Api/Dockerfile
+   container_name: generators-pdf-api
+   environment:
+     - DOTNET_RUNNING_IN_CONTAINER=true
+     - DOTNET_USE_POLLING_FILE_WATCHER=true
+     - TZ=Europe/Khmelnytskyi
+   restart: always
+   ports:
+     - "20002:8080"
