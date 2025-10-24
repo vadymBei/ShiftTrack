@@ -50,10 +50,10 @@ services:
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:8080
+      - ASPNETCORE_URLS=http://+:80
       - TZ=Europe/Khmelnytskyi
     ports:
-      - "10102:8080"
+      - "10102:80"
     links:
       - postgres-db
 
