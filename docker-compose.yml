@@ -40,7 +40,7 @@ services:
     links:
       - postgres-db
       - user.authentication.server
- 
+
  user.authentication.server:
     image: ${DOCKER_REGISTRY-}user-authentication-server
     build:
@@ -71,12 +71,11 @@ services:
     ports:
       - "20001:8080"
 
-
  generators.pdf.api:
    image: ${DOCKER_REGISTRY-}generators-pdf-api
    build:
      context: .
-     dockerfile: src/Services/Generators/Generators.Pdf.Api/Dockerfile
+     dockerfile: src/Services/Generators/Pdf/Generators.Pdf.Api/Dockerfile
    container_name: generators-pdf-api
    environment:
      - DOTNET_RUNNING_IN_CONTAINER=true

@@ -1,4 +1,6 @@
 using System.Reflection;
+using Generators.Pdf.Application;
+using Generators.Pdf.Infrastructure;
 using ShiftTrack.Authentication.Basic;
 using ShiftTrack.Authentication.Basic.Extensions;
 using ShiftTrack.Kernel.Extensions;
@@ -6,6 +8,8 @@ using Swashbuckle.AspNetCore.SwaggerUI;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddApplication();
+builder.Services.AddInfrastructure();
 builder.Services.AddBasicAuthentication(builder.Configuration);
 
 builder.Services.AddControllers();
@@ -46,4 +50,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-

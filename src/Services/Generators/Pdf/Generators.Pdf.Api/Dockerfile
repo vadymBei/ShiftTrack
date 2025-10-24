@@ -1,4 +1,5 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+USER $APP_UID
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
@@ -17,12 +18,16 @@ RUN apt-get update && apt-get install -y chromium \
     && rm -rf /var/lib/apt/lists/*
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["src/Services/Generators/Generators.Pdf.Api/Generators.Pdf.Api.csproj", "src/Services/Generators/Generators.Pdf.Api/"]
+COPY ["src/Services/Generators/Pdf/Generators.Pdf.Api/Generators.Pdf.Api.csproj", "src/Services/Generators/Pdf/Generators.Pdf.Api/"]
+COPY ["src/Services/Generators/Pdf/Generators.Pdf.Application/Generators.Pdf.Application.csproj", "src/Services/Generators/Pdf/Generators.Pdf.Application/"]
+COPY ["src/Common/Kernel/ShiftTrack.Kernel.CQRS/ShiftTrack.Kernel.CQRS.csproj", "src/Common/Kernel/ShiftTrack.Kernel.CQRS/"]
+COPY ["src/Common/Kernel/ShiftTrack.Kernel/ShiftTrack.Kernel.csproj", "src/Common/Kernel/ShiftTrack.Kernel/"]
+COPY ["src/Services/Generators/Pdf/Generators.Pdf.Infrastructure/Generators.Pdf.Infrastructure.csproj", "src/Services/Generators/Pdf/Generators.Pdf.Infrastructure/"]
 COPY ["src/Common/Authentication/ShiftTrack.Authentication.Basic/ShiftTrack.Authentication.Basic.csproj", "src/Common/Authentication/ShiftTrack.Authentication.Basic/"]
 COPY ["src/Common/Authentication/ShiftTrack.Authentication/ShiftTrack.Authentication.csproj", "src/Common/Authentication/ShiftTrack.Authentication/"]
-COPY ["src/Common/Kernel/ShiftTrack.Kernel/ShiftTrack.Kernel.csproj", "src/Common/Kernel/ShiftTrack.Kernel/"]
-RUN dotnet restore "src/Services/Generators/Generators.Pdf.Api/Generators.Pdf.Api.csproj"
+RUN dotnet restore "src/Services/Generators/Pdf/Generators.Pdf.Api/Generators.Pdf.Api.csproj"
 COPY . .
 RUN dotnet restore
 RUN dotnet publish -c Release -o /app

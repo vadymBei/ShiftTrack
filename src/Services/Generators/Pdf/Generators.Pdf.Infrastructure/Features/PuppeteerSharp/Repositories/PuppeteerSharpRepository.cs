@@ -1,33 +1,13 @@
-using Generators.Pdf.Api.Dtos;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Generators.Pdf.Application.Common.Dto;
+using Generators.Pdf.Application.Common.Interfaces;
 using PuppeteerSharp;
 using PuppeteerSharp.Media;
-using ShiftTrack.Kernel.CQRS.Controllers;
 
-namespace Generators.Pdf.Api.Controllers;
+namespace Generators.Pdf.Infrastructure.Features.PuppeteerSharp.Repositories;
 
-[Authorize]
-[Route("api/generators/pdf")]
-public class PdfGeneratorController : ApiController
+public class PuppeteerSharpRepository : IPuppeteerSharpRepository
 {
-    [HttpPost("generate/from-html")]
-    public async Task<Stream> GenerateFromHtml([FromBody] GeneratePdfRequestDto dto)
-    {
-        var pdfStream = await GeneratePdfFromHtml(dto);
-        
-        return pdfStream;
-    }
-
-    [HttpPost("generate/from-html/file")]
-    public async Task<FileResult> GenerateFromHtmlAsFile([FromBody] GeneratePdfRequestDto dto)
-    {
-        var pdfStream = await GeneratePdfFromHtml(dto);
-        
-        return File(pdfStream, "application/pdf", "document.pdf");
-    }
-
-    private static async Task<Stream> GeneratePdfFromHtml(GeneratePdfRequestDto dto)
+    public async Task<Stream> GenerateFromHtml(GeneratePdfDto dto)
     {
         var launchOptions = new LaunchOptions
         {

@@ -1,6 +1,6 @@
-namespace Generators.Pdf.Api.Dtos;
-
-public class GeneratePdfRequestDto
+﻿namespace Generators.Pdf.Application.Common.Dto;
+    
+public class GeneratePdfDto
 {
     public string Html { get; set; }
     public string MarginTop { get; set; } = "0px";
