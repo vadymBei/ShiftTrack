@@ -27,6 +27,7 @@ public interface IApplicationDbContext
     
     //Timesheet
     DbSet<Shift> Shifts { get; set; }
+    DbSet<EmployeeShift> EmployeeShifts { get; set; }
     
     //System
     //User

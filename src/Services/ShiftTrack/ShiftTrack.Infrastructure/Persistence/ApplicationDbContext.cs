@@ -45,6 +45,7 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
     
     //Timesheet
     public DbSet<Shift> Shifts { get; set; }
+    public DbSet<EmployeeShift> EmployeeShifts { get; set; }
     
     //System
     //User
