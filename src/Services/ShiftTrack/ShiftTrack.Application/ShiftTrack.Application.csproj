@@ -7,19 +7,20 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\Common\Authentication\ShiftTrack.Authentication\ShiftTrack.Authentication.csproj" />
-      <ProjectReference Include="..\..\..\Common\Client\ShiftTrack.Client.Http\ShiftTrack.Client.Http.csproj" />
-      <ProjectReference Include="..\..\..\Common\Data\ShiftTrack.Data\ShiftTrack.Data.csproj" />
-      <ProjectReference Include="..\..\..\Common\Kernel\ShiftTrack.Kernel.CQRS\ShiftTrack.Kernel.CQRS.csproj" />
-      <ProjectReference Include="..\ShiftTrack.Domain\ShiftTrack.Domain.csproj" />
+        <ProjectReference Include="..\..\..\Common\Authentication\ShiftTrack.Authentication\ShiftTrack.Authentication.csproj"/>
+        <ProjectReference Include="..\..\..\Common\Client\ShiftTrack.Client.Http\ShiftTrack.Client.Http.csproj"/>
+        <ProjectReference Include="..\..\..\Common\Data\ShiftTrack.Data\ShiftTrack.Data.csproj"/>
+        <ProjectReference Include="..\..\..\Common\Kernel\ShiftTrack.Kernel.CQRS\ShiftTrack.Kernel.CQRS.csproj"/>
+        <ProjectReference Include="..\ShiftTrack.Domain\ShiftTrack.Domain.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Features\System\Auth\Tokens\Commands\" />
+        <Folder Include="Features\Organization\Timesheet\EmployeeShifts\Queries\"/>
+        <Folder Include="Features\System\Auth\Tokens\Commands\"/>
     </ItemGroup>
 
 </Project>

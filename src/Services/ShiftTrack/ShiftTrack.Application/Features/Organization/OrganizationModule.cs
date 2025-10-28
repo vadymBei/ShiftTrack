@@ -14,14 +14,15 @@ public static class OrganizationModule
     {
         //Employees
         services.AddTransient<IEmployeeService, EmployeeService>();
-        
+
         //Structure
         services.AddTransient<IUnitService, UnitService>();
         services.AddTransient<IDepartmentService, DepartmentService>();
         services.AddTransient<IPositionService, PositionService>();
-        
+
         //Timesheet
         services.AddTransient<IShiftService, ShiftService>();
+        services.AddTransient<ITimesheetService, TimesheetService>();
 
         return services;
     }
