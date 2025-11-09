@@ -10,4 +10,8 @@
       <ProjectReference Include="..\ShiftTrack.Application\ShiftTrack.Application.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="EPPlusFree" Version="4.5.3.8" />
+    </ItemGroup>
+
 </Project>
