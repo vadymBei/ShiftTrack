@@ -27,6 +27,7 @@ public class TimesheetService(
 
         var employees = await applicationDbContext.Employees
             .AsTracking()
+            .Include(x => x.Position)
             .Where(x => x.DepartmentId == department.Id)
             .ToListAsync(cancellationToken);
 

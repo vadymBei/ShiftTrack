@@ -2,10 +2,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ShiftTrack.Application.Common.Interfaces;
+using ShiftTrack.Application.Features.Organization.Timesheet.UnitTimesheets.Queries.ExportTimesheet;
 using ShiftTrack.Application.Features.System.Auth.Common.Interfaces;
 using ShiftTrack.Application.Features.System.User.Common.Interfaces;
 using ShiftTrack.Client.Http;
 using ShiftTrack.Infrastructure.Common.Services;
+using ShiftTrack.Infrastructure.Common.Services.Excel;
 using ShiftTrack.Infrastructure.Features.System.Auth.Repositories;
 using ShiftTrack.Infrastructure.Features.System.User.Repositories;
 using ShiftTrack.Infrastructure.Persistence;
@@ -29,6 +31,8 @@ public static class DependencyInjection
 
         //Services
         services.AddScoped<ICurrentUserService, CurrentUserService>();
+        services.AddTransient<IExcelGenerator, ExcelGenerator>();
+        services.AddTransient<IExcelFormatter<TimesheetExportData>, TimesheetPlanFormatter>();
         
         //Repositories
         //System

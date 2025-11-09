@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ShiftTrack.Application.Features.Organization.Timesheet.Common.Dtos;
 using ShiftTrack.Application.Features.Organization.Timesheet.Common.ViewModels;
+using ShiftTrack.Application.Features.Organization.Timesheet.UnitTimesheets.Queries.ExportTimesheet;
 using ShiftTrack.Application.Features.Organization.Timesheet.UnitTimesheets.Queries.GetTimesheet;
 using ShiftTrack.Kernel.CQRS.Controllers;
 
@@ -14,4 +15,13 @@ public class ORG_TSH_TImesheetController : ApiController
     [HttpGet]
     public Task<TimesheetVm> GetTimesheet([FromQuery] TimesheetDto request)
         => Mediator.Invoke(new GetTimesheetQuery(request));
+
+    [AllowAnonymous]
+    [HttpGet("export")]
+    public async Task<IActionResult> ExportTimesheet([FromQuery] ExportTimesheetQuery query)
+    {
+        var document = await Mediator.Invoke(query);
+        
+        return File(document.Content, document.GetMimeType(), document.Name);
+    }
 }
