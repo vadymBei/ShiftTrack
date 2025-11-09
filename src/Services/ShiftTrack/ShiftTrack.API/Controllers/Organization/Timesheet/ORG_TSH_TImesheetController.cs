@@ -16,7 +16,6 @@ public class ORG_TSH_TImesheetController : ApiController
     public Task<TimesheetVm> GetTimesheet([FromQuery] TimesheetDto request)
         => Mediator.Invoke(new GetTimesheetQuery(request));
 
-    [AllowAnonymous]
     [HttpGet("export")]
     public async Task<IActionResult> ExportTimesheet([FromQuery] ExportTimesheetQuery query)
     {
