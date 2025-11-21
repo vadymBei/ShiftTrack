@@ -1,35 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Application.Common.Interfaces;
 using ShiftTrack.Application.Features.Organization.Employees.Common.Interfaces;
-using ShiftTrack.Application.Features.System.Auth.Common.Dtos;
-using ShiftTrack.Application.Features.System.User.Common.Dtos;
-using ShiftTrack.Application.Features.System.User.Common.Interfaces;
-using ShiftTrack.Domain.Features.System.Auth.Models;
 using ShiftTrack.Domain.Features.System.User.Employees.Entities;
 using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Application.Features.Organization.Employees.Common.Services;
 
 public class EmployeeService(
-    IUserRepository userRepository,
-    IApplicationDbContext applicationDbContext)
-    : IEmployeeService
+    IApplicationDbContext applicationDbContext) : IEmployeeService
 {
-    public async Task<Token> ChangePassword(ChangePasswordDto dto, CancellationToken cancellationToken)
-    {
-        var employee = await GetById(dto.EmployeeId, cancellationToken);
-
-        var token = await userRepository.ChangePassword(
-            new ChangeUserPasswordDto(
-                employee.IntegrationId,
-                dto.OldPassword,
-                dto.NewPassword,
-                dto.ConfirmPassword),
-            cancellationToken);
-
-        return token;
-    }
-
     public async Task<Employee> GetById(object id, CancellationToken cancellationToken)
     {
         long employeeId = (long)id;
@@ -63,24 +42,26 @@ public class EmployeeService(
             .ThenInclude(x => x.Departments)
             .ThenInclude(x => x.Department)
             .FirstOrDefaultAsync(x => x.IntegrationId == integrationId, cancellationToken);
-        
+
         return employee;
     }
 
-    public async Task<Employee> UpdateVacationDaysBalance(long employeeId, int vacationDaysBalance, CancellationToken cancellationToken)
+    public async Task<Employee> UpdateVacationDaysBalance(long employeeId, int vacationDaysBalance,
+        CancellationToken cancellationToken)
     {
         var employee = await applicationDbContext.Employees
-            .FirstOrDefaultAsync(x => x.Id == employeeId, cancellationToken)
-            ?? throw new EntityNotFoundException(typeof(Employee), employeeId);
-        
+                           .FirstOrDefaultAsync(x => x.Id == employeeId, cancellationToken)
+                       ?? throw new EntityNotFoundException(typeof(Employee), employeeId);
+
         employee.VacationDaysBalance = vacationDaysBalance;
-        
+
         await applicationDbContext.SaveChangesAsync(cancellationToken);
-        
+
         return employee;
     }
 
-    public async Task<IEnumerable<Employee>> GetEmployeesByIds(IEnumerable<long> ids, CancellationToken cancellationToken)
+    public async Task<IEnumerable<Employee>> GetEmployeesByIds(IEnumerable<long> ids,
+        CancellationToken cancellationToken)
     {
         var employees = await applicationDbContext.Employees
             .AsNoTracking()
@@ -88,15 +69,5 @@ public class EmployeeService(
             .ToListAsync(cancellationToken);
 
         return employees;
-    }
-
-    public Task<Authentication.Models.User> RegisterAuthUser(UserToRegisterDto dto, CancellationToken cancellationToken)
-    {
-        return userRepository.RegisterUser(dto, cancellationToken);
-    }
-
-    public Task<Authentication.Models.User> UpdateAuthUser(UserToUpdateDto dto, CancellationToken cancellationToken)
-    {
-        return userRepository.UpdateUser(dto, cancellationToken);
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Application.Common.Interfaces;
 using ShiftTrack.Application.Features.Organization.Employees.Common.Interfaces;
 using ShiftTrack.Application.Features.Organization.Employees.Common.ViewModels;
+using ShiftTrack.Application.Features.System.Auth.Common.Interfaces;
 using ShiftTrack.Application.Features.System.User.Common.Dtos;
 using ShiftTrack.Domain.Features.System.User.Employees.Entities;
 using ShiftTrack.Kernel.CQRS.Interfaces;
@@ -12,7 +13,7 @@ namespace ShiftTrack.Application.Features.System.Auth.Account.Commands.Register;
 
 public class RegisterCommandHandler(
     IMapper mapper,
-    IEmployeeService userService,
+    IAccountService accountService,
     IApplicationDbContext applicationDbContext)
     : IRequestHandler<RegisterCommand, EmployeeVm>
 {
@@ -26,7 +27,7 @@ public class RegisterCommandHandler(
             throw new UserAlreadyExistException(request.PhoneNumber);
         }
 
-        var user = await userService.RegisterAuthUser(
+        var user = await accountService.RegisterAuthUser(
             new UserToRegisterDto(
                 request.PhoneNumber,
                 request.Email,

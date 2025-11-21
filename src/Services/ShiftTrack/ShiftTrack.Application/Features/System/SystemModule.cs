@@ -13,6 +13,7 @@ public static class SystemModule
     {
         //Auth
         services.AddTransient<ITokenService, TokenService>();
+        services.AddTransient<IAccountService, AccountService>();
         
         //User
         services.AddTransient<IRoleService, RoleService>();
