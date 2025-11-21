@@ -15,13 +15,19 @@ public class ShiftService(
 
         var shift = await applicationDbContext.Shifts
             .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Id == shiftId, cancellationToken);
-
-        if (shift == null)
-        {
-            throw new EntityNotFoundException(typeof(Shift), shiftId);
-        }
+            .FirstOrDefaultAsync(x => x.Id == shiftId, cancellationToken)
+            ?? throw new EntityNotFoundException(typeof(Shift), shiftId);
 
         return shift;
+    }
+
+    public async Task<IEnumerable<Shift>> GetShiftsByIds(IEnumerable<long> shiftIds, CancellationToken cancellationToken)
+    {
+        var shifts = await applicationDbContext.Shifts
+            .AsNoTracking()
+            .Where(x => shiftIds.Contains(x.Id))
+            .ToListAsync(cancellationToken);
+
+        return shifts;
     }
 }

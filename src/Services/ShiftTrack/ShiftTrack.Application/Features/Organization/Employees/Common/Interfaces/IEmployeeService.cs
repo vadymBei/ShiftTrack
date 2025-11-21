@@ -13,4 +13,5 @@ public interface IEmployeeService : IEntityServiceBase<Employee>
     Task<Token> ChangePassword(ChangePasswordDto dto, CancellationToken cancellationToken);
     Task<Employee> GetByIntegrationId(string integrationId, CancellationToken cancellationToken);
     Task<Employee> UpdateVacationDaysBalance(long employeeId, int vacationDaysBalance, CancellationToken cancellationToken);
+    Task<IEnumerable<Employee>> GetEmployeesByIds(IEnumerable<long> ids, CancellationToken cancellationToken);
 }

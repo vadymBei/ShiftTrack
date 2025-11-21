@@ -10,7 +10,7 @@ namespace ShiftTrack.API.Controllers.Organization.Timesheet;
 
 [Authorize]
 [Route("api/shift-track/timesheet")]
-public class ORG_TSH_TImesheetController : ApiController
+public class ORG_TSH_TimesheetController : ApiController
 {
     [HttpGet]
     public Task<TimesheetVm> GetTimesheet([FromQuery] TimesheetDto request)

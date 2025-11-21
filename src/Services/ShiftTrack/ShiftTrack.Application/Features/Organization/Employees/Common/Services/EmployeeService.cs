@@ -80,6 +80,16 @@ public class EmployeeService(
         return employee;
     }
 
+    public async Task<IEnumerable<Employee>> GetEmployeesByIds(IEnumerable<long> ids, CancellationToken cancellationToken)
+    {
+        var employees = await applicationDbContext.Employees
+            .AsNoTracking()
+            .Where(x => ids.Contains(x.Id))
+            .ToListAsync(cancellationToken);
+
+        return employees;
+    }
+
     public Task<Authentication.Models.User> RegisterAuthUser(UserToRegisterDto dto, CancellationToken cancellationToken)
     {
         return userRepository.RegisterUser(dto, cancellationToken);
