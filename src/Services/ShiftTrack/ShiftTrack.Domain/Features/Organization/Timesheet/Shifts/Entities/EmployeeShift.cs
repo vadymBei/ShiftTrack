@@ -15,4 +15,6 @@ public class EmployeeShift : AuditableEntity
     
     public long ShiftId { get; set; }
     public Shift Shift { get; set; }
+
+    public IEnumerable<EmployeeShiftHistory> History { get; set; } = [];
 }
