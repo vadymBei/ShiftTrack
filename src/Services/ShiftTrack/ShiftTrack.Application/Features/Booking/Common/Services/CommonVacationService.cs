@@ -1,7 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Application.Common.Interfaces;
+using ShiftTrack.Application.Features.Booking.Common.Constants;
 using ShiftTrack.Application.Features.Booking.Common.Dtos;
 using ShiftTrack.Application.Features.Booking.Common.Interfaces;
+using ShiftTrack.Application.Features.Organization.Timesheet.Common.Dtos;
+using ShiftTrack.Application.Features.Organization.Timesheet.Common.Interfaces;
 using ShiftTrack.Domain.Features.Booking.Vacations.Entities;
 using ShiftTrack.Domain.Features.Booking.Vacations.Enums;
 using ShiftTrack.Kernel.Exceptions;
@@ -9,9 +12,11 @@ using ShiftTrack.Kernel.Exceptions;
 namespace ShiftTrack.Application.Features.Booking.Common.Services;
 
 public class CommonVacationService(
+    IShiftService shiftService,
+    IEmployeeShiftService employeeShiftService,
     IApplicationDbContext applicationDbContext) : ICommonVacationService
 {
-    public IQueryable<Vacation> GetVacations(VacationsFilterDto filter, CancellationToken cancellationToken)
+    public IQueryable<Vacation> GetVacationsQuery(VacationsFilterDto filter)
     {
         var vacationsQuery = applicationDbContext.Vacations
             .AsNoTracking()
@@ -48,7 +53,7 @@ public class CommonVacationService(
         var vacation = await applicationDbContext.Vacations
                            .AsNoTracking()
                            .Include(x => x.Employee)
-                           .ThenInclude(x=> x.Department)
+                           .ThenInclude(x => x.Department)
                            .FirstOrDefaultAsync(x => x.Id == vacationId, cancellationToken)
                        ?? throw new EntityNotFoundException(typeof(Vacation), vacationId);
 
@@ -58,11 +63,34 @@ public class CommonVacationService(
     public async Task<Vacation> GetVacationForStatusChange(long vacationId, CancellationToken cancellationToken)
     {
         var vacation = await applicationDbContext.Vacations
-                           .Include(x => x.Employee)    
+                           .Include(x => x.Employee)
                            .ThenInclude(x => x.Department)
                            .FirstOrDefaultAsync(x => x.Id == vacationId, cancellationToken)
                        ?? throw new EntityNotFoundException(typeof(Vacation), vacationId);
-        
+
         return vacation;
+    }
+
+    public async Task SetVacationShifts(long vacationId, CancellationToken cancellationToken)
+    {
+        var vacation = await GetVacationById(vacationId, cancellationToken);
+
+        var startDate = vacation.StartDate;
+        var endDate = vacation.EndDate;
+        var daysCount = (endDate - startDate).Days + 1;
+
+        var vacationShift = await shiftService.GetShiftByCode(ShiftCodes.AnnualLeave, cancellationToken);
+
+        var shiftsToCreate = Enumerable.Range(0, daysCount)
+            .Select(offset => startDate.AddDays(offset))
+            .Select(date => new EmployeeShiftToCreateDto
+            {
+                EmployeeId = vacation.EmployeeId,
+                ShiftId = vacationShift.Id,
+                Date = date
+            })
+            .ToList();
+
+        await employeeShiftService.CreateEmployeeShifts(shiftsToCreate, cancellationToken);
     }
 }

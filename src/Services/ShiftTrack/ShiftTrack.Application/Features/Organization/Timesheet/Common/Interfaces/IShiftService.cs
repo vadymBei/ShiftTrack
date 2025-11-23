@@ -6,4 +6,5 @@ namespace ShiftTrack.Application.Features.Organization.Timesheet.Common.Interfac
 public interface IShiftService : IEntityServiceBase<Shift>
 {
     Task<IEnumerable<Shift>> GetShiftsByIds(IEnumerable<long> shiftIds, CancellationToken cancellationToken);
+    Task<Shift> GetShiftByCode(string code, CancellationToken cancellationToken);
 }
