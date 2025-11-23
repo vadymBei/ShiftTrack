@@ -10,10 +10,14 @@ public class EmployeeShiftHistory : AuditableEntity
     public EmployeeShift EmployeeShift { get; set; }
 
     public long? PreviousShiftId { get; set; }
+    public Shift PreviousShift { get; set; }
+    
     public TimeSpan? PreviousStartTime { get; set; }
     public TimeSpan? PreviousEndTime { get; set; }
 
     public long? NewShiftId { get; set; }
+    public Shift NewShift { get; set; }
+    
     public TimeSpan? NewStartTime { get; set; }
     public TimeSpan? NewEndTime { get; set; }
 }
