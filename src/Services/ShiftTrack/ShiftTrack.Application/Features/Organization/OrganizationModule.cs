@@ -22,6 +22,7 @@ public static class OrganizationModule
 
         //Timesheet
         services.AddTransient<IEmployeeShiftService, EmployeeShiftService>();
+        services.AddTransient<IEmployeeShiftHistoryService, EmployeeShiftHistoryService>();
         services.AddTransient<IShiftService, ShiftService>();
         services.AddTransient<ITimesheetService, TimesheetService>();
 

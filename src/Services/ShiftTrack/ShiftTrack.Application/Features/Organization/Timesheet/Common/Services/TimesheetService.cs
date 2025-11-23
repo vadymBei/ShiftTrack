@@ -35,6 +35,7 @@ public class TimesheetService(
 
         var employeeShifts = await applicationDbContext.EmployeeShifts
             .AsNoTracking()
+            .Include(x => x.History)
             .Include(x => x.Shift)
             .Where(x => employeeIds.Contains(x.EmployeeId)
                         && x.Date >= startDate

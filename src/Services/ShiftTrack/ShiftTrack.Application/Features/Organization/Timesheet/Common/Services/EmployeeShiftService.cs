@@ -10,9 +10,11 @@ namespace ShiftTrack.Application.Features.Organization.Timesheet.Common.Services
 public class EmployeeShiftService(
     IShiftService shiftService,
     IEmployeeService employeeService,
-    IApplicationDbContext applicationDbContext) : IEmployeeShiftService
+    IApplicationDbContext applicationDbContext,
+    IEmployeeShiftHistoryService employeeShiftHistoryService) : IEmployeeShiftService
 {
-    public async Task<IEnumerable<EmployeeShift>> GetEmployeeShifts(EmployeeShiftsFilterDto filter, CancellationToken cancellationToken)
+    public async Task<IEnumerable<EmployeeShift>> GetEmployeeShifts(EmployeeShiftsFilterDto filter,
+        CancellationToken cancellationToken)
     {
         var employeeShifts = await applicationDbContext.EmployeeShifts
             .Include(x => x.Shift)
@@ -39,7 +41,7 @@ public class EmployeeShiftService(
         var employees = await employeeService.GetEmployeesByIds(
             employeeIds,
             cancellationToken);
-        
+
         var startDate = dtos.Min(x => x.Date);
         var endDate = dtos.Max(x => x.Date);
 
@@ -47,12 +49,13 @@ public class EmployeeShiftService(
             employeeIds,
             startDate,
             endDate);
-        
+
         var existedEmployeeShifts = await GetEmployeeShifts(
             employeeShiftsFilterDto,
             cancellationToken);
-        
+
         var employeeShiftToCreateList = new List<EmployeeShift>();
+        var historyRecords = new List<EmployeeShiftHistory>();
 
         foreach (var dto in dtos)
         {
@@ -70,8 +73,20 @@ public class EmployeeShiftService(
                 .FirstOrDefault(x => x.Date.Date == dto.Date.Date
                                      && x.EmployeeId == dto.EmployeeId);
 
+
             if (existedEmployeeShift is not null)
             {
+                historyRecords.Add(new EmployeeShiftHistory
+                {
+                    EmployeeShiftId = existedEmployeeShift.Id,
+                    PreviousShiftId = existedEmployeeShift.ShiftId,
+                    PreviousStartTime = existedEmployeeShift.StartTime,
+                    PreviousEndTime = existedEmployeeShift.EndTime,
+                    NewShiftId = shift.Id,
+                    NewStartTime = shift.StartTime,
+                    NewEndTime = shift.EndTime
+                });
+
                 existedEmployeeShift.ShiftId = shift.Id;
                 existedEmployeeShift.StartTime = shift.StartTime;
                 existedEmployeeShift.EndTime = shift.EndTime;
@@ -85,13 +100,24 @@ public class EmployeeShiftService(
                         ShiftId = dto.ShiftId,
                         EmployeeId = dto.EmployeeId,
                         StartTime = shift.StartTime,
-                        EndTime = shift.EndTime
+                        EndTime = shift.EndTime,
+                        History =
+                        [
+                            new EmployeeShiftHistory()
+                            {
+                                NewShiftId = shift.Id,
+                                NewStartTime = shift.StartTime,
+                                NewEndTime = shift.EndTime
+                            }
+                        ]
                     });
             }
         }
 
         applicationDbContext.EmployeeShifts.AddRange(employeeShiftToCreateList);
         await applicationDbContext.SaveChangesAsync(cancellationToken);
+
+        await employeeShiftHistoryService.Create(historyRecords, cancellationToken);
 
         return await GetEmployeeShifts(employeeShiftsFilterDto, cancellationToken);
     }

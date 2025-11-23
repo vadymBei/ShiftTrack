@@ -12,5 +12,15 @@ public class EmployeeShiftHistoryConfiguration : IEntityTypeConfiguration<Employ
         builder.ToTable("EmployeeShiftHistory");
 
         builder.ConfigureAuditableEntity();
+
+        builder.HasOne(x => x.PreviousShift)
+            .WithMany()
+            .HasForeignKey(x => x.PreviousShiftId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(x => x.NewShift)
+            .WithMany()
+            .HasForeignKey(x => x.NewShiftId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
