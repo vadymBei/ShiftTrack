@@ -59,7 +59,7 @@ public class VacationDefaultStrategy(
     public async Task<IEnumerable<Vacation>> GetVacations(VacationsFilterDto filter,
         CancellationToken cancellationToken)
     {
-        var vacationsQuery = commonVacationService.GetVacations(filter, cancellationToken);
+        var vacationsQuery = commonVacationService.GetVacationsQuery(filter);
 
         var vacations = await vacationsQuery
             .Where(x => x.AuthorId == currentUserService.Employee.Id

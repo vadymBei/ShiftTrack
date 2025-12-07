@@ -3,9 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Application.Common.Interfaces;
 using ShiftTrack.Application.Features.Organization.Employees.Common.Interfaces;
 using ShiftTrack.Application.Features.Organization.Employees.Common.ViewModels;
+using ShiftTrack.Application.Features.System.Auth.Common.Interfaces;
 using ShiftTrack.Application.Features.System.User.Common.Dtos;
-using ShiftTrack.Application.Features.System.User.Common.Interfaces;
-using ShiftTrack.Application.Features.System.User.Common.ViewModels;
 using ShiftTrack.Domain.Features.System.User.Employees.Entities;
 using ShiftTrack.Kernel.CQRS.Interfaces;
 using ShiftTrack.Kernel.Exceptions;
@@ -14,6 +13,7 @@ namespace ShiftTrack.Application.Features.System.Auth.Account.Commands.UpdateAcc
 
 public class UpdateAccountCommandHandler(
     IMapper mapper,
+    IAccountService accountService,
     IEmployeeService employeeService,
     ICurrentUserService currentUserService,
     IApplicationDbContext applicationDbContext) : IRequestHandler<UpdateAccountCommand, EmployeeVm>
@@ -32,7 +32,7 @@ public class UpdateAccountCommandHandler(
         if (employee.PhoneNumber != request.PhoneNumber
             || employee.Email != request.Email)
         {
-            var user = await employeeService.UpdateAuthUser(
+            var user = await accountService.UpdateAuthUser(
                 new UserToUpdateDto(
                     currentUserService.Employee.IntegrationId,
                     request.Email,

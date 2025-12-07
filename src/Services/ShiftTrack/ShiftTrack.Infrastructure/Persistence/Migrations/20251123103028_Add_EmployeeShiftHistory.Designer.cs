@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ShiftTrack.Infrastructure.Persistence;
@@ -11,9 +12,11 @@ using ShiftTrack.Infrastructure.Persistence;
 namespace ShiftTrack.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251123103028_Add_EmployeeShiftHistory")]
+    partial class Add_EmployeeShiftHistory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -412,10 +415,6 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
                     b.HasIndex("EmployeeShiftId");
 
                     b.HasIndex("ModifierId");
-
-                    b.HasIndex("NewShiftId");
-
-                    b.HasIndex("PreviousShiftId");
 
                     b.ToTable("EmployeeShiftHistory", (string)null);
                 });
@@ -913,25 +912,11 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
                         .HasForeignKey("ModifierId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("ShiftTrack.Domain.Features.Organization.Timesheet.Shifts.Entities.Shift", "NewShift")
-                        .WithMany()
-                        .HasForeignKey("NewShiftId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("ShiftTrack.Domain.Features.Organization.Timesheet.Shifts.Entities.Shift", "PreviousShift")
-                        .WithMany()
-                        .HasForeignKey("PreviousShiftId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.Navigation("Author");
 
                     b.Navigation("EmployeeShift");
 
                     b.Navigation("Modifier");
-
-                    b.Navigation("NewShift");
-
-                    b.Navigation("PreviousShift");
                 });
 
             modelBuilder.Entity("ShiftTrack.Domain.Features.Organization.Timesheet.Shifts.Entities.Shift", b =>

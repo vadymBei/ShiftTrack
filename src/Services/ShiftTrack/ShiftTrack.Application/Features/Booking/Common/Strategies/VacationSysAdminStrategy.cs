@@ -18,6 +18,8 @@ public class VacationSysAdminStrategy(
         vacation.Status = VacationStatus.ApprovedByUnitDirector;
 
         await applicationDbContext.SaveChangesAsync(cancellationToken);
+        
+        await commonVacationService.SetVacationShifts(id, cancellationToken);
     }
 
     public async Task RejectVacation(long id, CancellationToken cancellationToken)
@@ -39,7 +41,7 @@ public class VacationSysAdminStrategy(
     public async Task<IEnumerable<Vacation>> GetVacations(VacationsFilterDto filter,
         CancellationToken cancellationToken)
     {
-        var vacationsQuery = commonVacationService.GetVacations(filter, cancellationToken);
+        var vacationsQuery = commonVacationService.GetVacationsQuery(filter);
 
         var vacations = await vacationsQuery
             .ToListAsync(cancellationToken);

@@ -162,10 +162,10 @@ public class TimesheetPlanFormatter : IExcelFormatter<TimesheetExportData>
 
         var employeeIndex = 1;
 
-        colIndex = 1;
-
         foreach (var employeeTimesheet in data.Timesheet.EmployeeTimesheets)
         {
+            colIndex = 1;
+            
             worksheet.Row(rowIndex).Height = 30;
 
             range = worksheet.Cells[rowIndex, colIndex];
