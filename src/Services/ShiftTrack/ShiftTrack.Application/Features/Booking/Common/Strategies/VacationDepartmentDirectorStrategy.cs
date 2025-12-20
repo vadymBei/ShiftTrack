@@ -53,6 +53,8 @@ public class VacationDepartmentDirectorStrategy(
         vacation.Status = VacationStatus.Rejected;
 
         await applicationDbContext.SaveChangesAsync(cancellationToken);
+        
+        await commonVacationService.RestoreEmployeeShiftsBeforeVacation(id, cancellationToken);
     }
 
     public async Task<Vacation> GetVacationById(long id, CancellationToken cancellationToken)

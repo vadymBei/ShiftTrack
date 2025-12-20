@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Application.Common.Interfaces;
+using ShiftTrack.Application.Features.Organization.Employees.Common.Dtos;
+using ShiftTrack.Application.Features.Organization.Employees.Common.Interfaces;
 using ShiftTrack.Application.Features.Organization.Structure.Common.Interfaces;
 using ShiftTrack.Application.Features.Organization.Timesheet.Common.Dtos;
 using ShiftTrack.Application.Features.Organization.Timesheet.Common.Interfaces;
@@ -8,6 +10,7 @@ using ShiftTrack.Domain.Features.Organization.Timesheet.Shifts.Models;
 namespace ShiftTrack.Application.Features.Organization.Timesheet.Common.Services;
 
 public class TimesheetService(
+    IEmployeeService employeeService,
     IDepartmentService departmentService,
     IApplicationDbContext applicationDbContext) : ITimesheetService
 {
@@ -25,17 +28,16 @@ public class TimesheetService(
             Department = department
         };
 
-        var employees = await applicationDbContext.Employees
-            .AsTracking()
-            .Include(x => x.Position)
-            .Where(x => x.DepartmentId == department.Id)
-            .ToListAsync(cancellationToken);
+        var employees = await employeeService.GetEmployees(
+            new EmployeesFilterDto(
+                null,
+                dto.DepartmentId),
+            cancellationToken);
 
         var employeeIds = employees.Select(x => x.Id);
 
         var employeeShifts = await applicationDbContext.EmployeeShifts
             .AsNoTracking()
-            .Include(x => x.History)
             .Include(x => x.Shift)
             .Where(x => employeeIds.Contains(x.EmployeeId)
                         && x.Date >= startDate

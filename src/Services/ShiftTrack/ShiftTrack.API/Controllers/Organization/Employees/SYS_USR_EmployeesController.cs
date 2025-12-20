@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShiftTrack.Application.Features.Organization.Employees.Commands.UpdateEmployee;
+using ShiftTrack.Application.Features.Organization.Employees.Common.Dtos;
 using ShiftTrack.Application.Features.Organization.Employees.Common.ViewModels;
 using ShiftTrack.Application.Features.Organization.Employees.Queries.GetEmployeeById;
 using ShiftTrack.Application.Features.Organization.Employees.Queries.GetEmployees;
@@ -13,8 +14,8 @@ namespace ShiftTrack.API.Controllers.Organization.Employees;
 public class ORG_EMP_EmployeesController : ApiController
 {
     [HttpGet]
-    public async Task<IEnumerable<EmployeeVm>> GetEmployees([FromQuery] GetEmployeesQuery query)
-        => await Mediator.Invoke(query);
+    public async Task<IEnumerable<EmployeeVm>> GetEmployees([FromQuery] EmployeesFilterDto filter)
+        => await Mediator.Invoke(new GetEmployeesQuery(filter));
 
     [HttpGet("{id}")]
     public async Task<EmployeeVm> GetEmployeeById(long id)

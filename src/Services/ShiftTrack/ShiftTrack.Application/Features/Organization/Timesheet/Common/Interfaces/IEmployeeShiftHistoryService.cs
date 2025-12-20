@@ -6,4 +6,5 @@ public interface IEmployeeShiftHistoryService
 {
     Task Create(IEnumerable<EmployeeShiftHistory> histories, CancellationToken cancellationToken);
     Task<IEnumerable<EmployeeShiftHistory>> GetByEmployeeShiftId(long employeeShiftId, CancellationToken cancellationToken);
+    Task<IEnumerable<EmployeeShiftHistory>> GetByEmployeeShiftIds(IEnumerable<long> employeeShiftIds, CancellationToken cancellationToken);
 }
