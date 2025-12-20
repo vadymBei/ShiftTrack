@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Application.Common.Interfaces;
+using ShiftTrack.Application.Features.Booking.Common.Constants;
 using ShiftTrack.Application.Features.Organization.Employees.Common.Interfaces;
 using ShiftTrack.Application.Features.Organization.Timesheet.Common.Dtos;
 using ShiftTrack.Application.Features.Organization.Timesheet.Common.Interfaces;
@@ -73,7 +74,6 @@ public class EmployeeShiftService(
                 .FirstOrDefault(x => x.Date.Date == dto.Date.Date
                                      && x.EmployeeId == dto.EmployeeId);
 
-
             if (existedEmployeeShift is not null)
             {
                 historyRecords.Add(new EmployeeShiftHistory
@@ -120,5 +120,70 @@ public class EmployeeShiftService(
         await employeeShiftHistoryService.Create(historyRecords, cancellationToken);
 
         return await GetEmployeeShifts(employeeShiftsFilterDto, cancellationToken);
+    }
+
+    public async Task<IEnumerable<EmployeeShift>> RestorePreviousEmployeeShifts(RestoreEmployeeShiftsDto dto,
+        CancellationToken cancellationToken)
+    {
+        var employeeShifts = await applicationDbContext.EmployeeShifts
+            .Where(x => dto.EmployeeIds.Contains(x.EmployeeId)
+                        && x.Date >= dto.StartDate
+                        && x.Date <= dto.EndDate)
+            .ToListAsync(cancellationToken);
+
+        var employeeShiftHistory = await employeeShiftHistoryService.GetByEmployeeShiftIds(
+            employeeShifts.Select(x => x.Id), 
+            cancellationToken);
+
+        var historyRecords = new List<EmployeeShiftHistory>();
+        
+        foreach (var employeeShift in employeeShifts)
+        {
+            EmployeeShiftHistory lastEmployeeShiftHistoryRecord = null;
+            var historyRecord = new EmployeeShiftHistory()
+            {
+                EmployeeShiftId = employeeShift.Id,
+                PreviousShiftId = employeeShift.ShiftId,
+                PreviousStartTime = employeeShift.StartTime,
+                PreviousEndTime = employeeShift.EndTime
+            };
+            
+            if (employeeShiftHistory.Any())
+            {
+                lastEmployeeShiftHistoryRecord = employeeShiftHistory
+                    .Where(x => x.EmployeeShiftId == employeeShift.Id)
+                    .OrderBy(x => x.CreatedAt)
+                    .LastOrDefault();
+            }
+
+            if (lastEmployeeShiftHistoryRecord?.PreviousShiftId != null)
+            {
+                employeeShift.StartTime = lastEmployeeShiftHistoryRecord.PreviousStartTime;
+                employeeShift.EndTime = lastEmployeeShiftHistoryRecord.PreviousEndTime;
+                employeeShift.ShiftId = (long)lastEmployeeShiftHistoryRecord.PreviousShiftId;
+            }
+            else
+            {
+                var dismissedShift = await shiftService.GetShiftByCode(
+                    ShiftCodes.Dismissed,
+                    cancellationToken);
+                
+                employeeShift.ShiftId = dismissedShift.Id;
+                employeeShift.StartTime = dismissedShift.StartTime;
+                employeeShift.EndTime = dismissedShift.EndTime;
+            }
+            
+            historyRecord.NewShiftId = employeeShift.ShiftId;
+            historyRecord.NewStartTime = employeeShift.StartTime;
+            historyRecord.NewEndTime = employeeShift.EndTime;
+            
+            historyRecords.Add(historyRecord);
+        }
+        
+        await applicationDbContext.SaveChangesAsync(cancellationToken);
+        
+        await employeeShiftHistoryService.Create(historyRecords, cancellationToken);
+        
+        return employeeShifts;
     }
 }

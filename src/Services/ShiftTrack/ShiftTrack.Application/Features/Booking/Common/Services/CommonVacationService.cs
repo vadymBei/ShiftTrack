@@ -93,4 +93,16 @@ public class CommonVacationService(
 
         await employeeShiftService.CreateEmployeeShifts(shiftsToCreate, cancellationToken);
     }
+
+    public async Task RestoreEmployeeShiftsBeforeVacation(long vacationId, CancellationToken cancellationToken)
+    {
+        var vacation = await GetVacationById(vacationId, cancellationToken);
+        
+        await employeeShiftService.RestorePreviousEmployeeShifts(
+            new RestoreEmployeeShiftsDto(
+                [vacation.EmployeeId],
+                vacation.StartDate,
+                vacation.EndDate),
+            cancellationToken);
+    }
 }

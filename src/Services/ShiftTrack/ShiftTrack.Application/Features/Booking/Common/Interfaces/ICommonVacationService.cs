@@ -9,4 +9,5 @@ public interface ICommonVacationService
     Task<Vacation> GetVacationById(long vacationId, CancellationToken cancellationToken);
     Task<Vacation> GetVacationForStatusChange(long vacationId, CancellationToken cancellationToken);
     Task SetVacationShifts(long vacationId, CancellationToken cancellationToken);
+    Task RestoreEmployeeShiftsBeforeVacation(long vacationId, CancellationToken cancellationToken);
 }

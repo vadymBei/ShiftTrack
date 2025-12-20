@@ -27,4 +27,15 @@ public class EmployeeShiftHistoryService(
 
         return employeeShiftHistory;
     }
+
+    public async Task<IEnumerable<EmployeeShiftHistory>> GetByEmployeeShiftIds(IEnumerable<long> employeeShiftIds, CancellationToken cancellationToken)
+    {
+        var employeeShiftHistory = await applicationDbContext.EmployeeShiftHistories
+            .AsNoTracking()
+            .Where(x => employeeShiftIds.Contains(x.EmployeeShiftId))
+            .OrderBy(x => x.CreatedAt)
+            .ToListAsync(cancellationToken);
+
+        return employeeShiftHistory;
+    }
 }
