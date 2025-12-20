@@ -14,19 +14,6 @@ public class EmployeeShiftService(
     IApplicationDbContext applicationDbContext,
     IEmployeeShiftHistoryService employeeShiftHistoryService) : IEmployeeShiftService
 {
-    public async Task<IEnumerable<EmployeeShift>> GetEmployeeShifts(EmployeeShiftsFilterDto filter,
-        CancellationToken cancellationToken)
-    {
-        var employeeShifts = await applicationDbContext.EmployeeShifts
-            .Include(x => x.Shift)
-            .Where(x => filter.EmployeeIds.Contains(x.EmployeeId)
-                        && x.Date.Date >= filter.StartDate.Date
-                        && x.Date.Date <= filter.EndDate.Date)
-            .ToListAsync(cancellationToken);
-
-        return employeeShifts;
-    }
-
     public async Task<IEnumerable<EmployeeShift>> CreateEmployeeShifts(
         IEnumerable<EmployeeShiftToCreateDto> dtos,
         CancellationToken cancellationToken)
@@ -46,13 +33,10 @@ public class EmployeeShiftService(
         var startDate = dtos.Min(x => x.Date);
         var endDate = dtos.Max(x => x.Date);
 
-        var employeeShiftsFilterDto = new EmployeeShiftsFilterDto(
+        var existedEmployeeShifts = await GetEmployeeShifts(
             employeeIds,
             startDate,
-            endDate);
-
-        var existedEmployeeShifts = await GetEmployeeShifts(
-            employeeShiftsFilterDto,
+            endDate,
             cancellationToken);
 
         var employeeShiftToCreateList = new List<EmployeeShift>();
@@ -119,24 +103,45 @@ public class EmployeeShiftService(
 
         await employeeShiftHistoryService.Create(historyRecords, cancellationToken);
 
-        return await GetEmployeeShifts(employeeShiftsFilterDto, cancellationToken);
+        return await GetEmployeeShifts(
+            employeeIds,
+            startDate,
+            endDate,
+            cancellationToken);
     }
 
-    public async Task<IEnumerable<EmployeeShift>> RestorePreviousEmployeeShifts(RestoreEmployeeShiftsDto dto,
+    private async Task<IEnumerable<EmployeeShift>> GetEmployeeShifts(
+        IEnumerable<long> employeeIds,
+        DateTime startDate,
+        DateTime endDate,
         CancellationToken cancellationToken)
     {
         var employeeShifts = await applicationDbContext.EmployeeShifts
-            .Where(x => dto.EmployeeIds.Contains(x.EmployeeId)
-                        && x.Date >= dto.StartDate
-                        && x.Date <= dto.EndDate)
+            .Include(x => x.Shift)
+            .Where(x => employeeIds.Contains(x.EmployeeId)
+                        && x.Date.Date >= startDate.Date
+                        && x.Date.Date <= endDate.Date)
             .ToListAsync(cancellationToken);
 
+        return employeeShifts;
+    }
+
+    public async Task<IEnumerable<EmployeeShift>> RestorePreviousEmployeeShifts(
+        RestoreEmployeeShiftsDto dto,
+        CancellationToken cancellationToken)
+    {
+        var employeeShifts = await GetEmployeeShifts(
+            dto.EmployeeIds,
+            dto.StartDate,
+            dto.EndDate,
+            cancellationToken);
+
         var employeeShiftHistory = await employeeShiftHistoryService.GetByEmployeeShiftIds(
-            employeeShifts.Select(x => x.Id), 
+            employeeShifts.Select(x => x.Id),
             cancellationToken);
 
         var historyRecords = new List<EmployeeShiftHistory>();
-        
+
         foreach (var employeeShift in employeeShifts)
         {
             EmployeeShiftHistory lastEmployeeShiftHistoryRecord = null;
@@ -147,7 +152,7 @@ public class EmployeeShiftService(
                 PreviousStartTime = employeeShift.StartTime,
                 PreviousEndTime = employeeShift.EndTime
             };
-            
+
             if (employeeShiftHistory.Any())
             {
                 lastEmployeeShiftHistoryRecord = employeeShiftHistory
@@ -167,23 +172,23 @@ public class EmployeeShiftService(
                 var dismissedShift = await shiftService.GetShiftByCode(
                     ShiftCodes.Dismissed,
                     cancellationToken);
-                
+
                 employeeShift.ShiftId = dismissedShift.Id;
                 employeeShift.StartTime = dismissedShift.StartTime;
                 employeeShift.EndTime = dismissedShift.EndTime;
             }
-            
+
             historyRecord.NewShiftId = employeeShift.ShiftId;
             historyRecord.NewStartTime = employeeShift.StartTime;
             historyRecord.NewEndTime = employeeShift.EndTime;
-            
+
             historyRecords.Add(historyRecord);
         }
-        
+
         await applicationDbContext.SaveChangesAsync(cancellationToken);
-        
+
         await employeeShiftHistoryService.Create(historyRecords, cancellationToken);
-        
+
         return employeeShifts;
     }
 }
