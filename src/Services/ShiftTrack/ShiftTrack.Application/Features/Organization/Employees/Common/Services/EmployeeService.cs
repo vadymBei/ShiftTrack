@@ -1,17 +1,20 @@
 using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Application.Common.Interfaces;
+using ShiftTrack.Application.Features.Organization.Employees.Common.Dtos;
 using ShiftTrack.Application.Features.Organization.Employees.Common.Interfaces;
+using ShiftTrack.Application.Features.Organization.Structure.Common.Interfaces;
 using ShiftTrack.Domain.Features.System.User.Employees.Entities;
 using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Application.Features.Organization.Employees.Common.Services;
 
 public class EmployeeService(
+    IDepartmentService departmentService,
     IApplicationDbContext applicationDbContext) : IEmployeeService
 {
     public async Task<Employee> GetById(object id, CancellationToken cancellationToken)
     {
-        long employeeId = (long)id;
+        var employeeId = (long)id;
 
         var employee = await applicationDbContext.Employees
             .AsNoTracking()
@@ -66,6 +69,42 @@ public class EmployeeService(
         var employees = await applicationDbContext.Employees
             .AsNoTracking()
             .Where(x => ids.Contains(x.Id))
+            .ToListAsync(cancellationToken);
+
+        return employees;
+    }
+
+    public async Task<IEnumerable<Employee>> GetEmployees(
+        EmployeesFilterDto filter,
+        CancellationToken cancellationToken)
+    {
+        var employeeQuery = applicationDbContext.Employees
+            .Include(x => x.Department)
+            .ThenInclude(x => x.Unit)
+            .Include(x => x.Position)
+            .AsQueryable();
+
+        if (filter.DepartmentId is not null)
+        {
+            await departmentService.GetById(filter.DepartmentId, cancellationToken);
+
+            employeeQuery = employeeQuery
+                .Where(x => x.DepartmentId == filter.DepartmentId);
+        }
+
+        if (!string.IsNullOrWhiteSpace(filter.SearchPattern))
+        {
+            employeeQuery = employeeQuery
+                .Where(x => EF.Functions.Like(
+                    x.Surname.ToLower() + " " + x.Name.ToLower() + " " + x.Patronymic.ToLower(),
+                    $"%{filter.SearchPattern.ToLower()}%"));
+        }
+
+        var employees = await employeeQuery
+            .AsNoTracking()
+            .OrderBy(x => x.Surname)
+            .ThenBy(x => x.Name)
+            .ThenBy(x => x.Patronymic)
             .ToListAsync(cancellationToken);
 
         return employees;
