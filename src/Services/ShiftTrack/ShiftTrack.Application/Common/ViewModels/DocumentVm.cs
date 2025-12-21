@@ -3,6 +3,7 @@ namespace ShiftTrack.Application.Common.ViewModels;
 public class DocumentVm
 {
     public string Path { get; set; }
+    public Stream StreamContent { get; set; }
     public byte[] Content { get; set; }
     public string Extension { get; set; }
     public string Name { get; set; }
@@ -12,6 +13,7 @@ public class DocumentVm
         {
             ".jpg" or ".jpeg" => "image/jpeg",
             ".png" => "image/png",
+            ".pdf" => "application/pdf",
             ".xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             _ => "application/octet-stream"
         };
