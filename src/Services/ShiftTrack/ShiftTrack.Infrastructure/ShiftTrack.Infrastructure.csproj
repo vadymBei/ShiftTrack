@@ -12,6 +12,7 @@
 
     <ItemGroup>
       <PackageReference Include="EPPlusFree" Version="4.5.3.8" />
+      <PackageReference Include="HtmlAgilityPack" Version="1.12.4" />
     </ItemGroup>
 
 </Project>

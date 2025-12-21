@@ -7,6 +7,7 @@ using ShiftTrack.Application.Features.Booking.Vacations.Commands.CreateVacation;
 using ShiftTrack.Application.Features.Booking.Vacations.Commands.DeleteVacation;
 using ShiftTrack.Application.Features.Booking.Vacations.Commands.RejectVacation;
 using ShiftTrack.Application.Features.Booking.Vacations.Commands.UpdateVacation;
+using ShiftTrack.Application.Features.Booking.Vacations.Queries.DownloadVacationRequestPdf;
 using ShiftTrack.Application.Features.Booking.Vacations.Queries.GetVacationById;
 using ShiftTrack.Application.Features.Booking.Vacations.Queries.GetVacations;
 using ShiftTrack.Kernel.CQRS.Controllers;
@@ -48,4 +49,12 @@ public class BKG_VCN_VacationsController : ApiController
     [HttpPut("reject/{id}")]
     public Task<VacationVm> RejectVacation(long id)
         => Mediator.Invoke(new RejectVacationCommand(id));
+
+    [HttpGet("download/request/pdf/{id}")]
+    public async Task<FileResult> DownloadVacationRequestPdfQuery(long id)
+    {
+        var documentVm = await Mediator.Invoke(new DownloadVacationRequestPdfQuery(id));
+        
+        return File(documentVm.StreamContent, documentVm.GetMimeType(), documentVm.Name);
+    }
 }
