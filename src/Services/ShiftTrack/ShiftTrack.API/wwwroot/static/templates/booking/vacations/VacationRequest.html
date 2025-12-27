@@ -46,11 +46,20 @@
             font-size: 9pt;
         }
 
-        #signature_employee {
+        .signature-employee {
             border-bottom: 1px solid black;
             min-width: 200px;
             display: inline-block;
             text-align: center;
+            vertical-align: bottom;
+        }
+        
+        .signature-sign {
+            border-bottom: 1px solid black;
+            min-width: 100px;
+            display: inline-block;
+            text-align: center;
+            vertical-align: bottom;
         }
     </style>
 </head>
@@ -79,8 +88,8 @@
         </div>
 
         <div class="signature">
-            <span id="signature_employee"></span> / _____________<br>
-            <span class="signature-label">(ПІБ)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <span class="signature-employee" id="signature_employee">Ntrssidhfbn</span> / <span class="signature-sign"></span><br>
+            <span class="signature-label">(ПІБ)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <span class="signature-label">(підпис)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         </div>
     </div>
