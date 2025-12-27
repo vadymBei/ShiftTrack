@@ -10,9 +10,6 @@
             color: #000;
         }
 
-        .container {
-        }
-
         .header {
             text-align: right;
             margin-bottom: 60px;
@@ -41,22 +38,31 @@
         }
 
         .signature {
+            padding-top: 20px;
             text-align: right;
+        }
+        
+        .signature-label {
+            font-size: 9pt;
+        }
+
+        #signature_employee {
+            border-bottom: 1px solid black;
+            min-width: 200px;
+            display: inline-block;
+            text-align: center;
         }
     </style>
 </head>
 <body>
-<div class="container">
+<div>
 
     <div class="header">
-        <p>Директору ТОВ «____________»</p>
-        <p>___________________________</p>
-        <p>(ПІБ керівника)</p>
+        <p>Директору ТОВ «ShiftTrack»</p>
+        <p id="unit_director"></p>
         <br>
-        <p>від ________________________</p>
-        <p>(посада)</p>
-        <p>___________________________</p>
-        <p>(ПІБ працівника)</p>
+        <p>від <span id="employee_position"></span></p>
+        <p id="employee"></p>
     </div>
 
     <div class="title">
@@ -64,21 +70,18 @@
     </div>
 
     <div class="content">
-        Прошу надати мені щорічну основну відпустку тривалістю
-        <strong>____ календарних днів</strong>
-        з <strong>«___» __________ 20__ р.</strong>
-        по <strong>«___» __________ 20__ р.</strong>
-        включно.
+        <span id="vacation_request"></span>
     </div>
 
     <div class="footer">
         <div class="date">
-            «___» __________ 20__ р.
+            <span id="creation_date"></span>
         </div>
 
         <div class="signature">
-            _______________________ / _____________<br>
-            (підпис) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (ПІБ)
+            <span id="signature_employee"></span> / _____________<br>
+            <span class="signature-label">(ПІБ)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <span class="signature-label">(підпис)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         </div>
     </div>
 

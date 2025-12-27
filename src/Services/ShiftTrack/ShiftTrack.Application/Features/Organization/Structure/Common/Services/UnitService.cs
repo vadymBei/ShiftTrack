@@ -14,11 +14,9 @@ public class UnitService(
         var unitId = (long)id;
 
         var unit = await dbContext.Units
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Id == unitId, cancellationToken);
-
-        if (unit == null)
-            throw new EntityNotFoundException(typeof(Unit), unitId);
+                       .AsNoTracking()
+                       .FirstOrDefaultAsync(x => x.Id == unitId, cancellationToken)
+                   ?? throw new EntityNotFoundException(typeof(Unit), unitId);
 
         return unit;
     }

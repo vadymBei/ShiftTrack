@@ -12,7 +12,6 @@ public interface IEmployeeRoleService
     Task<EmployeeRole> GetEmployeeRoleById(long employeeRoleId, CancellationToken cancellationToken);
     Task<IEnumerable<EmployeeRole>> GetEmployeeRolesByEmployeeId(long employeeId, CancellationToken cancellationToken);
     Task<EmployeeRole>CreateSysAdminEmployeeRole(EmployeeRoleToCreateDto dto, CancellationToken cancellationToken);
-    
     #endregion
 
     #region EmployeeRoleUnit
@@ -21,7 +20,7 @@ public interface IEmployeeRoleService
     Task<EmployeeRoleUnit> GetEmployeeRoleUnitById(long employeeRoleUnitId, CancellationToken cancellationToken);
     Task<IEnumerable<EmployeeRoleUnit>> GetEmployeeRoleUnitsByEmployeeRoleId(long employeeRoleId, CancellationToken cancellationToken);
     Task DeleteEmployeeRoleUnit(long employeeRoleUnitId, CancellationToken cancellationToken);
-
+    Task<IEnumerable<EmployeeRoleUnit>> GetEmployeeRoleUnitsByUnitId(long unitId, CancellationToken cancellationToken);
     #endregion
 
     #region EmployeeRoleUnitDepartment

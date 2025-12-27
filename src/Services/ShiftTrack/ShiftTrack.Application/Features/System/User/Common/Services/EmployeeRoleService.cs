@@ -101,10 +101,10 @@ public class EmployeeRoleService(
         CancellationToken cancellationToken)
     {
         var sysAdminStrategy = strategies.OfType<EmployeeRoleSysAdminStrategy>().First();
-        
+
         return sysAdminStrategy.CreateEmployeeRole(dto, cancellationToken);
     }
-    
+
     #endregion
 
     #region EmployeeRoleUnit
@@ -132,7 +132,8 @@ public class EmployeeRoleService(
         return employeeRoleUnit;
     }
 
-    public async Task<EmployeeRoleUnit> GetEmployeeRoleUnitById(long employeeRoleUnitId, CancellationToken cancellationToken)
+    public async Task<EmployeeRoleUnit> GetEmployeeRoleUnitById(long employeeRoleUnitId,
+        CancellationToken cancellationToken)
     {
         var employeeRoleUnit = await applicationDbContext.EmployeeRoleUnits
             .AsNoTracking()
@@ -188,6 +189,20 @@ public class EmployeeRoleService(
 
         applicationDbContext.EmployeeRoleUnits.Update(employeeRoleUnit);
         await applicationDbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<IEnumerable<EmployeeRoleUnit>> GetEmployeeRoleUnitsByUnitId(
+        long unitId,
+        CancellationToken cancellationToken)
+    {
+        return await applicationDbContext.EmployeeRoleUnits
+            .AsNoTracking()
+            .Include(x => x.EmployeeRole)
+            .ThenInclude(x => x.Employee)
+            .Include(x => x.EmployeeRole)
+            .ThenInclude(x => x.Role)
+            .Where(x => x.UnitId == unitId)
+            .ToListAsync(cancellationToken);
     }
 
     #endregion

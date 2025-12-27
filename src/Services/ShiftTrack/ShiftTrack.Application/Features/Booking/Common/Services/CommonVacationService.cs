@@ -54,6 +54,8 @@ public class CommonVacationService(
                            .AsNoTracking()
                            .Include(x => x.Employee)
                            .ThenInclude(x => x.Department)
+                           .Include(x => x.Employee)
+                           .ThenInclude(x => x.Position)
                            .FirstOrDefaultAsync(x => x.Id == vacationId, cancellationToken)
                        ?? throw new EntityNotFoundException(typeof(Vacation), vacationId);
 
