@@ -62,7 +62,7 @@ public class VacationRequestFormatter(
                    з <strong>«{data.Vacation.StartDate.Day}» {data.Vacation.StartDate.ToString("MMMM", _culture)} {data.Vacation.StartDate.Year} р.</strong> 
                    по <strong>«{data.Vacation.EndDate.Day}» {data.Vacation.EndDate.ToString("MMMM", _culture)} {data.Vacation.EndDate.Year} р.</strong> включно.";
 
-        var vacationRequestText = "&nbsp;&nbsp;&nbsp;";
+        var vacationRequestText = "&nbsp";
         
         vacationRequestText += data.Vacation.Type switch
         {
