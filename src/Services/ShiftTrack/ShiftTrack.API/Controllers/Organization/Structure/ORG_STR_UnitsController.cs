@@ -6,6 +6,7 @@ using ShiftTrack.Application.Features.Organization.Structure.Units.Commands.Dele
 using ShiftTrack.Application.Features.Organization.Structure.Units.Commands.UpdateUnit;
 using ShiftTrack.Application.Features.Organization.Structure.Units.Queries.GetUnitById;
 using ShiftTrack.Application.Features.Organization.Structure.Units.Queries.GetUnits;
+using ShiftTrack.Application.Features.Organization.Structure.Units.Queries.GetUnitsByRoles;
 using ShiftTrack.Kernel.CQRS.Controllers;
 
 namespace ShiftTrack.API.Controllers.Organization.Structure;
@@ -34,6 +35,10 @@ public class ORG_STR_UnitsController : ApiController
     public async Task<IEnumerable<UnitVm>> GetUnits()
         => await Mediator.Invoke(new GetUnitsQuery());
 
+    [HttpGet("by-roles")]
+    public async Task<IEnumerable<UnitVm>> GetUnitsByRoles()
+        => await Mediator.Invoke(new GetUnitsByRolesQuery());
+    
     [HttpGet("{id}")]
     public async Task<UnitVm> GetUnitById(long id)
         => await Mediator.Invoke(new GetUnitByIdQuery(id));
