@@ -1,4 +1,3 @@
-using ShiftTrack.Domain.Features.System.Auth.Models;
 using ShiftTrack.Domain.Features.System.User.Employees.Entities;
 
 namespace ShiftTrack.Application.Common.Interfaces;

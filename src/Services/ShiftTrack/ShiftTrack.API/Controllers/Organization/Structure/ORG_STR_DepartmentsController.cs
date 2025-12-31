@@ -5,6 +5,7 @@ using ShiftTrack.Application.Features.Organization.Structure.Departments.Command
 using ShiftTrack.Application.Features.Organization.Structure.Departments.Commands.DeleteDepartment;
 using ShiftTrack.Application.Features.Organization.Structure.Departments.Commands.UpdateDepartment;
 using ShiftTrack.Application.Features.Organization.Structure.Departments.Queries.GetDepartmentById;
+using ShiftTrack.Application.Features.Organization.Structure.Departments.Queries.GetDepartmentsByRoles;
 using ShiftTrack.Application.Features.Organization.Structure.Departments.Queries.GetDepartmentsByUnitId;
 using ShiftTrack.Application.Features.Organization.Structure.Departments.Queries.GetGroupedDepartmentsByUnit;
 using ShiftTrack.Kernel.CQRS.Controllers;
@@ -42,4 +43,8 @@ public class ORG_STR_DepartmentsController : ApiController
     [HttpGet("grouped/by-unit")]
     public Task<IEnumerable<GroupedDepartmentsByUnitVm>> GetGroupedDepartmentsByUnit()
         => Mediator.Invoke(new GetGroupedDepartmentsByUnitQuery());
+    
+    [HttpGet("by-roles/{unitId}")]
+    public Task<IEnumerable<DepartmentVm>> GetDepartmentsByRoles(long unitId)
+        => Mediator.Invoke(new GetDepartmentsByRolesQuery(unitId));
 }

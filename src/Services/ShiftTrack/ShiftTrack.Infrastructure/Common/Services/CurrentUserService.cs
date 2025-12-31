@@ -6,5 +6,5 @@ namespace ShiftTrack.Infrastructure.Common.Services;
 public class CurrentUserService : ICurrentUserService
 {
     public Employee Employee { get; set; }
-    public List<string> Roles { get; }
+    public List<string> Roles => Employee.EmployeeRoles.Select(x => x.Role.Name).ToList();
 }
