@@ -9,6 +9,7 @@ using ShiftTrack.Kernel.Exceptions;
 namespace ShiftTrack.Application.Features.Organization.Employees.Common.Services;
 
 public class EmployeeService(
+    IUnitService unitService,
     IDepartmentService departmentService,
     IApplicationDbContext applicationDbContext) : IEmployeeService
 {
@@ -84,6 +85,14 @@ public class EmployeeService(
             .Include(x => x.Position)
             .AsQueryable();
 
+        if (filter.UnitId is not null)
+        {
+            await unitService.GetById(filter.UnitId, cancellationToken);
+            
+            employeeQuery = employeeQuery
+                .Where(x => x.Department.UnitId == filter.UnitId);
+        }
+        
         if (filter.DepartmentId is not null)
         {
             await departmentService.GetById(filter.DepartmentId, cancellationToken);
