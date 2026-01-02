@@ -27,7 +27,9 @@ public class GetDepartmentsByRolesQueryHandler(
 
         if (employeeRoleChecker.HasCurrentUserSysAdminRole())
         {
-            departments = await departmentQuery.ToListAsync(cancellationToken);
+            departments = await departmentQuery
+                .Where(x => x.UnitId == request.UnitId)
+                .ToListAsync(cancellationToken);
         }
         else if (employeeRoleChecker.HasCurrentUserUnitDirectorRole())
         {
