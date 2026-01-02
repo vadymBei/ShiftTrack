@@ -2,4 +2,5 @@
 
 public record EmployeesFilterDto(
     string SearchPattern,
+    long? UnitId,
     long? DepartmentId);

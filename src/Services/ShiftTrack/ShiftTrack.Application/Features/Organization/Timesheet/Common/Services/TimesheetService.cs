@@ -31,6 +31,7 @@ public class TimesheetService(
         var employees = await employeeService.GetEmployees(
             new EmployeesFilterDto(
                 null,
+                null,
                 dto.DepartmentId),
             cancellationToken);
 
