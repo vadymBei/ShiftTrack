@@ -1,4 +1,5 @@
-﻿using ShiftTrack.Application.Common.Interfaces;
+﻿using ShiftTrack.Application.Common.Constants;
+using ShiftTrack.Application.Common.Interfaces;
 using ShiftTrack.Application.Common.ViewModels;
 using ShiftTrack.Application.Features.Organization.Timesheet.Common.Dtos;
 using ShiftTrack.Application.Features.Organization.Timesheet.Common.Interfaces;
@@ -7,8 +8,7 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 namespace ShiftTrack.Application.Features.Organization.Timesheet.UnitTimesheets.Queries.ExportTimesheet;
 
 public class ExportTimesheetQueryHandler(
-    IExcelGenerator excelGenerator,
-    IExcelFormatter<TimesheetExportData> timesheetPlanFormatter,
+    IExcelExporter<TimesheetExportData> timesheetPlanExporter,
     ITimesheetService timesheetService) : IRequestHandler<ExportTimesheetQuery, DocumentVm>
 {
     public async Task<DocumentVm> Handle(ExportTimesheetQuery request, CancellationToken cancellationToken = default)
@@ -19,8 +19,7 @@ public class ExportTimesheetQueryHandler(
                 request.DepartmentId),
             cancellationToken);
 
-        var content = excelGenerator.Generate<TimesheetExportData>(
-            timesheetPlanFormatter,
+        var content = timesheetPlanExporter.Export(
             new TimesheetExportData(
                 timesheet,
                 request.ExportWorkHours));
@@ -28,7 +27,7 @@ public class ExportTimesheetQueryHandler(
         return new DocumentVm()
         {
             Content = content,
-            Extension = ".xlsx",
+            Extension = FileExtensions.Excel,
             Name = "Timesheet"
         };
     }

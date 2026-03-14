@@ -1,18 +1,20 @@
 ﻿using System.Globalization;
 using HtmlAgilityPack;
 using Microsoft.Extensions.Hosting;
+using ShiftTrack.Application.Common.Dtos;
 using ShiftTrack.Application.Common.Interfaces;
 using ShiftTrack.Application.Features.Booking.Vacations.Queries.DownloadVacationRequestPdf;
 using ShiftTrack.Domain.Features.Booking.Vacations.Enums;
 
 namespace ShiftTrack.Infrastructure.Common.Services.Pdf;
 
-public class VacationRequestFormatter(
-    IHostEnvironment hostEnvironment) : IPdfFormatter<VacationRequestData>
+public class VacationRequestExporter(
+    IPdfRepository pdfRepository,
+    IHostEnvironment hostEnvironment) : IPdfExporter<VacationRequestData>
 {
     private readonly CultureInfo _culture = new("uk-UA");
 
-    public string Format(VacationRequestData data)
+    public async Task<Stream> Export(VacationRequestData data, CancellationToken cancellationToken)
     {
         var path = Path.Combine(
             hostEnvironment.ContentRootPath,
@@ -52,8 +54,16 @@ public class VacationRequestFormatter(
         var signatureEmployee = htmlDocument.GetElementbyId("signature_employee");
         signatureEmployee.InnerHtml = data.Vacation.Employee.FullName;
 
-        
-        return htmlDocument.DocumentNode.OuterHtml;
+        return await pdfRepository.GenerateFromHtml(
+            new PdfTemplateDto()
+            {
+                Html = htmlDocument.DocumentNode.OuterHtml,
+                MarginBottom = "76px",
+                MarginTop = "76px",
+                MarginRight = "76px",
+                MarginLeft = "113px"
+            },
+            cancellationToken);
     }
 
     private string GetVacationRequestText(VacationRequestData data)

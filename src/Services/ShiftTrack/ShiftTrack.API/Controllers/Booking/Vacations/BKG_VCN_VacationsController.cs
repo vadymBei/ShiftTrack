@@ -55,6 +55,6 @@ public class BKG_VCN_VacationsController : ApiController
     {
         var documentVm = await Mediator.Invoke(new DownloadVacationRequestPdfQuery(id));
         
-        return File(documentVm.StreamContent, documentVm.GetMimeType(), documentVm.Name);
+        return File(documentVm.StreamContent, documentVm.MimeType, documentVm.Name);
     }
 }

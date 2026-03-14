@@ -9,7 +9,7 @@ using ShiftTrack.Infrastructure.Common.Extensions;
 
 namespace ShiftTrack.Infrastructure.Common.Services.Excel;
 
-public class TimesheetPlanFormatter : IExcelFormatter<TimesheetExportData>
+public class TimesheetPlanExporter : IExcelExporter<TimesheetExportData>
 {
     #region Colors
 
@@ -19,7 +19,7 @@ public class TimesheetPlanFormatter : IExcelFormatter<TimesheetExportData>
 
     #endregion
 
-    public byte[] Format(TimesheetExportData data)
+    public byte[] Export(TimesheetExportData data)
     {
         using var package = new ExcelPackage();
         var worksheet = package.Workbook.Worksheets.Add("Timesheet");
