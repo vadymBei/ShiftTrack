@@ -34,10 +34,8 @@ public static class DependencyInjection
 
         //Services
         services.AddScoped<ICurrentUserService, CurrentUserService>();
-        services.AddTransient<IExcelGenerator, ExcelGenerator>();
-        services.AddTransient<IExcelFormatter<TimesheetExportData>, TimesheetPlanFormatter>();
-        services.AddTransient<IPdfGenerator, PdfGenerator>();
-        services.AddTransient<IPdfFormatter<VacationRequestData>, VacationRequestFormatter>();
+        services.AddTransient<IExcelExporter<TimesheetExportData>, TimesheetPlanExporter>();
+        services.AddTransient<IPdfExporter<VacationRequestData>, VacationRequestExporter>();
 
         //Repositories
         services.AddTransient<IPdfRepository, PdfRepository>();

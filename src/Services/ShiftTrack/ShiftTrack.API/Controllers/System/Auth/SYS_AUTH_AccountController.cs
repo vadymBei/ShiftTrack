@@ -46,7 +46,7 @@ public class SYS_AUTH_AccountController : ApiController
     {
         var document = await Mediator.Invoke(command);
 
-        return PhysicalFile(document.Path, document.GetMimeType());
+        return PhysicalFile(document.Path, document.MimeType);
     }
 
     [HttpGet("photo")]
@@ -54,6 +54,6 @@ public class SYS_AUTH_AccountController : ApiController
     {
         var document = await Mediator.Invoke(query);
 
-        return PhysicalFile(document.Path, document.GetMimeType());
+        return PhysicalFile(document.Path, document.MimeType);
     }
 }

@@ -1,3 +1,5 @@
+using ShiftTrack.Application.Common.Constants;
+
 namespace ShiftTrack.Application.Common.ViewModels;
 
 public class DocumentVm
@@ -7,16 +9,12 @@ public class DocumentVm
     public byte[] Content { get; set; }
     public string Extension { get; set; }
     public string Name { get; set; }
-    public string GetMimeType()
+    public string MimeType => Extension switch
     {
-        return Extension switch
-        {
-            ".jpg" or ".jpeg" => "image/jpeg",
-            ".png" => "image/png",
-            ".pdf" => "application/pdf",
-            ".xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            _ => "application/octet-stream"
-        };
-
-    } 
+        FileExtensions.Jpg or ".jpeg" => "image/jpeg",
+        FileExtensions.Png => "image/png",
+        FileExtensions.Pdf => "application/pdf",
+        FileExtensions.Excel => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        _ => "application/octet-stream"
+    };
 }

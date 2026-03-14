@@ -21,6 +21,6 @@ public class ORG_TSH_TimesheetController : ApiController
     {
         var document = await Mediator.Invoke(query);
         
-        return File(document.Content, document.GetMimeType(), document.Name);
+        return File(document.Content, document.MimeType, document.Name);
     }
 }
