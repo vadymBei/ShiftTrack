@@ -5,7 +5,7 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Features.Booking.Vacations.Queries.GetVacations;
 
-public class GetVacationsQueryHandler(
+internal class GetVacationsQueryHandler(
     IMapper mapper,
     IVacationService vacationService) :IRequestHandler<GetVacationsQuery, IEnumerable<VacationVm>>
 {

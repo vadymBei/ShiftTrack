@@ -7,7 +7,7 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Features.System.User.Roles.Queries.GetRoles;
 
-public class GetRolesQueryHandler(
+internal class GetRolesQueryHandler(
     IMapper mapper,
     IMemoryCache memoryCache,
     IRoleService roleService)

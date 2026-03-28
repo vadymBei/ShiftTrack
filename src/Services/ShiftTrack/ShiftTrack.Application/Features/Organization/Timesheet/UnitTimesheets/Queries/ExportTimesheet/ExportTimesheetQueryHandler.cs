@@ -7,7 +7,7 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Features.Organization.Timesheet.UnitTimesheets.Queries.ExportTimesheet;
 
-public class ExportTimesheetQueryHandler(
+internal class ExportTimesheetQueryHandler(
     IExcelExporter<TimesheetExportData> timesheetPlanExporter,
     ITimesheetService timesheetService) : IRequestHandler<ExportTimesheetQuery, DocumentVm>
 {

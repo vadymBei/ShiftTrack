@@ -5,7 +5,7 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Features.System.User.EmployeeRoleUnits.Queries.GetEmployeeRoleUnitsByEmployeeRoleId;
 
-public class GetEmployeeRoleUnitsByEmployeeRoleIdQueryHandler(
+internal class GetEmployeeRoleUnitsByEmployeeRoleIdQueryHandler(
     IMapper mapper,
     IEmployeeRoleService employeeRoleService) : IRequestHandler<GetEmployeeRoleUnitsByEmployeeRoleIdQuery, IEnumerable<EmployeeRoleUnitVm>>
 {

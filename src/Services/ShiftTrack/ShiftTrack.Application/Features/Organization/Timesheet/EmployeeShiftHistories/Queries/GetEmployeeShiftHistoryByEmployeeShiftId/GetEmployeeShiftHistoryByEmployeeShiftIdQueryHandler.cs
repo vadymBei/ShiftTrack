@@ -6,7 +6,7 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 namespace ShiftTrack.Application.Features.Organization.Timesheet.EmployeeShiftHistories.Queries.
     GetEmployeeShiftHistoryByEmployeeShiftId;
 
-public class GetEmployeeShiftHistoryByEmployeeShiftIdQueryHandler(
+internal class GetEmployeeShiftHistoryByEmployeeShiftIdQueryHandler(
     IMapper mapper,
     IEmployeeShiftHistoryService employeeShiftHistoryService)
     : IRequestHandler<GetEmployeeShiftHistoryByEmployeeShiftIdQuery, IEnumerable<EmployeeShiftHistoryVm>>

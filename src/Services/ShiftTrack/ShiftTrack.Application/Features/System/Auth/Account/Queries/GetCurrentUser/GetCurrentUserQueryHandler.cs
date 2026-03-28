@@ -8,7 +8,7 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Features.System.Auth.Account.Queries.GetCurrentUser;
 
-public class GetCurrentUserQueryHandler(
+internal class GetCurrentUserQueryHandler(
     IMapper mapper,
     ICurrentUserService currentUserService) : IRequestHandler<GetCurrentUserQuery, CurrentUserVm>
 {

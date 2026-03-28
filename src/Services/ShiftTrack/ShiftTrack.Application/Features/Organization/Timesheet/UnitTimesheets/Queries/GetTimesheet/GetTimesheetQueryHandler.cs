@@ -5,7 +5,7 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Features.Organization.Timesheet.UnitTimesheets.Queries.GetTimesheet;
 
-public class GetTimesheetQueryHandler(
+internal class GetTimesheetQueryHandler(
     IMapper mapper,
     ITimesheetService timesheetService) : IRequestHandler<GetTimesheetQuery, TimesheetVm>
 {

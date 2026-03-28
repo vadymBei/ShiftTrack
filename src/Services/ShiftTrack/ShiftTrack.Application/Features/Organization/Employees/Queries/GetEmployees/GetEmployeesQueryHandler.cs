@@ -5,7 +5,7 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Features.Organization.Employees.Queries.GetEmployees;
 
-public class GetEmployeesQueryHandler(
+internal class GetEmployeesQueryHandler(
     IMapper mapper,
     IEmployeeService employeeService)
     : IRequestHandler<GetEmployeesQuery, IEnumerable<EmployeeVm>>

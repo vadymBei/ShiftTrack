@@ -5,7 +5,7 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Features.Organization.Structure.Units.Queries.GetUnitById;
 
-public class GetUnitByIdQueryHandler(
+internal class GetUnitByIdQueryHandler(
     IMapper mapper,
     IUnitService unitService) : IRequestHandler<GetUnitByIdQuery, UnitVm>
 {

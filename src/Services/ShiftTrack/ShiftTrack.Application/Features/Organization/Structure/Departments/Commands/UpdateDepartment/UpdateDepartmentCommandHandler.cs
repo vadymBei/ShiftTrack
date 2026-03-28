@@ -8,7 +8,7 @@ using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Application.Features.Organization.Structure.Departments.Commands.UpdateDepartment;
 
-public class UpdateDepartmentCommandHandler(
+internal class UpdateDepartmentCommandHandler(
     IMapper mapper,
     IApplicationDbContext dbContext) : IRequestHandler<UpdateDepartmentCommand, DepartmentVm>
 {

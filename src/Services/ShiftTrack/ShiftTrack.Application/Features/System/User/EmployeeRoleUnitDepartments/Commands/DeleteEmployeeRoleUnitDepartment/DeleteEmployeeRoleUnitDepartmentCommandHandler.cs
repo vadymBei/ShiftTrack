@@ -3,7 +3,7 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Features.System.User.EmployeeRoleUnitDepartments.Commands.DeleteEmployeeRoleUnitDepartment;
 
-public class DeleteEmployeeRoleUnitDepartmentCommandHandler(
+internal class DeleteEmployeeRoleUnitDepartmentCommandHandler(
     IEmployeeRoleService employeeRoleService) : IRequestHandler<DeleteEmployeeRoleUnitDepartmentCommand>
 {
     public async Task Handle(DeleteEmployeeRoleUnitDepartmentCommand request, CancellationToken cancellationToken)

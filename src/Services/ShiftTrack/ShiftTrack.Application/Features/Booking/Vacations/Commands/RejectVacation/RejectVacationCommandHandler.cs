@@ -5,7 +5,7 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Features.Booking.Vacations.Commands.RejectVacation;
 
-public class RejectVacationCommandHandler(
+internal class RejectVacationCommandHandler(
     IMapper mapper,
     IVacationService vacationService) : IRequestHandler<RejectVacationCommand, VacationVm>
 {

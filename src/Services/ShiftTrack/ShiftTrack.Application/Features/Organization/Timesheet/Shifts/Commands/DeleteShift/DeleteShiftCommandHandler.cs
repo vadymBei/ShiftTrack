@@ -6,7 +6,7 @@ using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Application.Features.Organization.Timesheet.Shifts.Commands.DeleteShift;
 
-public class DeleteShiftCommandHandler(
+internal class DeleteShiftCommandHandler(
     IApplicationDbContext applicationDbContext) : IRequestHandler<DeleteShiftCommand>
 {
     public async Task Handle(DeleteShiftCommand request, CancellationToken cancellationToken)

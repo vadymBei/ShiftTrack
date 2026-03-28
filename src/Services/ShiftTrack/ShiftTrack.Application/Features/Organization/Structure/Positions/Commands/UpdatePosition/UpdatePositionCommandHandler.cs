@@ -7,7 +7,7 @@ using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Application.Features.Organization.Structure.Positions.Commands.UpdatePosition;
 
-public class UpdatePositionCommandHandler(
+internal class UpdatePositionCommandHandler(
     IMapper mapper,
     IApplicationDbContext applicationDbContext)
     : IRequestHandler<UpdatePositionCommand, PositionVm>

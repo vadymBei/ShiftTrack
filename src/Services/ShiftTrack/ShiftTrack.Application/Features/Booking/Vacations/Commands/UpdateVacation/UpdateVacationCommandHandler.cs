@@ -12,7 +12,7 @@ using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Application.Features.Booking.Vacations.Commands.UpdateVacation;
 
-public class UpdateVacationCommandHandler(
+internal class UpdateVacationCommandHandler(
     IMapper mapper,
     IEmployeeService employeeService,
     IVacationService vacationService,

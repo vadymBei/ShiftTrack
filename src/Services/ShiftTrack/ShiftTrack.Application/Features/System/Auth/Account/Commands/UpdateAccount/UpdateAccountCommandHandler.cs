@@ -11,7 +11,7 @@ using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Application.Features.System.Auth.Account.Commands.UpdateAccount;
 
-public class UpdateAccountCommandHandler(
+internal class UpdateAccountCommandHandler(
     IMapper mapper,
     IAccountService accountService,
     IEmployeeService employeeService,

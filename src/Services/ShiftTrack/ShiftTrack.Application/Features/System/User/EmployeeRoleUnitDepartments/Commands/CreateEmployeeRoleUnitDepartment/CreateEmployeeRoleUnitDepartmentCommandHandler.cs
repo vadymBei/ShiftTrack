@@ -6,7 +6,7 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Features.System.User.EmployeeRoleUnitDepartments.Commands.CreateEmployeeRoleUnitDepartment;
 
-public class CreateEmployeeRoleUnitDepartmentCommandHandler(
+internal class CreateEmployeeRoleUnitDepartmentCommandHandler(
     IMapper mapper,
     IEmployeeRoleService employeeRoleService) : IRequestHandler<CreateEmployeeRoleUnitDepartmentCommand, EmployeeRoleUnitDepartmentVm>
 {

@@ -6,7 +6,7 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Features.Organization.Timesheet.Shifts.Queries.GetShifts;
 
-public class GetShiftsQueryHandler(
+internal class GetShiftsQueryHandler(
     IMapper mapper,
     IApplicationDbContext applicationDbContext)
     : IRequestHandler<GetShiftsQuery, IEnumerable<ShiftVm>>

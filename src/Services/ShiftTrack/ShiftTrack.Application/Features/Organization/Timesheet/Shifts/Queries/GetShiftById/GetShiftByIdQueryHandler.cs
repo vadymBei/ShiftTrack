@@ -5,7 +5,7 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Features.Organization.Timesheet.Shifts.Queries.GetShiftById;
 
-public class GetShiftByIdQueryHandler(
+internal class GetShiftByIdQueryHandler(
     IMapper mapper,
     IShiftService shiftService) : IRequestHandler<GetShiftByIdQuery, ShiftVm>
 {

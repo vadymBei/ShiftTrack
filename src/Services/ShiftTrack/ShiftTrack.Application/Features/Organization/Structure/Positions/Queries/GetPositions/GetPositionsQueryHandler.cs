@@ -6,7 +6,7 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Features.Organization.Structure.Positions.Queries.GetPositions;
 
-public class GetPositionsQueryHandler(
+internal class GetPositionsQueryHandler(
     IMapper mapper,
     IApplicationDbContext applicationDbContext)
     : IRequestHandler<GetPositionsQuery, IEnumerable<PositionVm>>

@@ -11,7 +11,7 @@ using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Application.Features.System.Auth.Account.Commands.Register;
 
-public class RegisterCommandHandler(
+internal class RegisterCommandHandler(
     IMapper mapper,
     IAccountService accountService,
     IApplicationDbContext applicationDbContext)

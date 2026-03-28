@@ -6,7 +6,7 @@ using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Application.Features.Organization.Structure.Units.Commands.DeleteUnit;
 
-public class DeleteUnitCommandHandler(
+internal class DeleteUnitCommandHandler(
     IApplicationDbContext dbContext) : IRequestHandler<DeleteUnitCommand>
 {
     public async Task Handle(DeleteUnitCommand request, CancellationToken cancellationToken)

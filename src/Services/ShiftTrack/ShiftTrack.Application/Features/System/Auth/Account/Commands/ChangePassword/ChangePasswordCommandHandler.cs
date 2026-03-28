@@ -5,7 +5,7 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Features.System.Auth.Account.Commands.ChangePassword;
 
-public class ChangePasswordCommandHandler(
+internal class ChangePasswordCommandHandler(
     IMapper mapper,
     IAccountService accountService) : IRequestHandler<ChangePasswordCommand, TokenVm>
 {

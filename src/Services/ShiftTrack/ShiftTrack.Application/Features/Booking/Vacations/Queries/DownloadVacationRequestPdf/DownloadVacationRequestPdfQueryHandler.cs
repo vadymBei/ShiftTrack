@@ -7,7 +7,7 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Features.Booking.Vacations.Queries.DownloadVacationRequestPdf;
 
-public class DownloadVacationRequestPdfQueryHandler(
+internal class DownloadVacationRequestPdfQueryHandler(
     IVacationService vacationService,
     IEmployeeRoleService employeeRoleService,
     IPdfExporter<VacationRequestData> vacationRequestExporter)
