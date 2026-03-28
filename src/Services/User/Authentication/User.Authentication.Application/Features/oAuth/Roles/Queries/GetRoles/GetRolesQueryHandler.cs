@@ -5,7 +5,7 @@ using User.Authentication.Application.Features.oAuth.Common.ViewModels;
 
 namespace User.Authentication.Application.Features.oAuth.Roles.Queries.GetRoles;
 
-public class GetRolesQueryHandler(
+internal class GetRolesQueryHandler(
     IMapper mapper,
     IRoleService roleService) : IRequestHandler<GetRolesQuery, IEnumerable<RoleVm>>
 {

@@ -5,7 +5,7 @@ using User.Authentication.Application.Features.oAuth.Common.ViewModels;
 
 namespace User.Authentication.Application.Features.oAuth.Account.Commands.ChangePassword;
 
-public class ChangePasswordCommandHandler(
+internal class ChangePasswordCommandHandler(
     IMapper mapper,
     IUserService userService) : IRequestHandler<ChangePasswordCommand, TokenVm>
 {

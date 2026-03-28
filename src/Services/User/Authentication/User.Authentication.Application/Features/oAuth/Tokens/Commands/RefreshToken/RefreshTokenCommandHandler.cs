@@ -5,7 +5,7 @@ using User.Authentication.Application.Features.oAuth.Common.ViewModels;
 
 namespace User.Authentication.Application.Features.oAuth.Tokens.Commands.RefreshToken;
 
-public class RefreshTokenCommandHandler(
+internal class RefreshTokenCommandHandler(
     IMapper mapper,
     ITokenService tokenService) : IRequestHandler<RefreshTokenCommand, TokenVm>
 {

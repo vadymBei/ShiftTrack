@@ -6,7 +6,7 @@ using User.Authentication.Application.Features.oAuth.Common.ViewModels;
 
 namespace User.Authentication.Application.Features.oAuth.Account.Commands.UpdateAccount;
 
-public class UpdateAccountCommandHandler(
+internal class UpdateAccountCommandHandler(
     IMapper mapper,
     IUserService userService) : IRequestHandler<UpdateAccountCommand, UserVm>
 {
