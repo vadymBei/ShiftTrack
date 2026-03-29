@@ -9,7 +9,7 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Features.System.Data.Initializations.Commands.InitializeSysAdmin;
 
-internal class InitializeSysAdminCommandHandler(
+public sealed class InitializeSysAdminCommandHandler(
     IMediator mediator,
     IEmployeeRoleService employeeRoleService,
     IApplicationDbContext applicationDbContext) : IRequestHandler<InitializeSysAdminCommand>

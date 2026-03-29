@@ -6,7 +6,7 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Features.Organization.Structure.Positions.Commands.CreatePosition;
 
-internal class CreatePositionCommandHandler(
+public class CreatePositionCommandHandler(
     IMapper mapper,
     IApplicationDbContext applicationDbContext)
     : IRequestHandler<CreatePositionCommand, PositionVm>

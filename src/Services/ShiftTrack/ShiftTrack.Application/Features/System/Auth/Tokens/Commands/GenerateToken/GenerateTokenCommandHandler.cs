@@ -5,7 +5,7 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Features.System.Auth.Tokens.Commands.GenerateToken;
 
-internal class GenerateTokenCommandHandler(
+public class GenerateTokenCommandHandler(
     IMapper mapper,
     ITokenService tokenService) : IRequestHandler<GenerateTokenCommand, TokenVm>
 {

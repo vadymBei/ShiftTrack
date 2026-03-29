@@ -9,7 +9,7 @@ using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Application.Features.System.Auth.Account.Commands.UploadPhoto;
 
-internal class UploadPhotoCommandHandler(
+public class UploadPhotoCommandHandler(
     IHostEnvironment hostEnvironment, 
     IApplicationDbContext applicationDbContext) : IRequestHandler<UploadPhotoCommand, DocumentVm>
 {

@@ -9,7 +9,7 @@ using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Application.Features.Booking.Vacations.Commands.DeleteVacation;
 
-internal class DeleteVacationCommandHandler(
+public class DeleteVacationCommandHandler(
     ICurrentUserService currentUserService,
     IEmployeeRoleChecker employeeRoleChecker,
     IApplicationDbContext applicationDbContext) : IRequestHandler<DeleteVacationCommand>

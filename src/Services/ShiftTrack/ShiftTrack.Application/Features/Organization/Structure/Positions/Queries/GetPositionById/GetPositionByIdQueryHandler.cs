@@ -5,7 +5,7 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Features.Organization.Structure.Positions.Queries.GetPositionById;
 
-internal class GetPositionByIdQueryHandler(
+public class GetPositionByIdQueryHandler(
     IMapper mapper,
     IPositionService positionService) : IRequestHandler<GetPositionByIdQuery, PositionVm>
 {

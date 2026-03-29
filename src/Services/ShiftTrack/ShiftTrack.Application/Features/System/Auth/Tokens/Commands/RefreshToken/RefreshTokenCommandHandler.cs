@@ -5,7 +5,7 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Features.System.Auth.Tokens.Commands.RefreshToken;
 
-internal class RefreshTokenCommandHandler(
+public class RefreshTokenCommandHandler(
     IMapper mapper,
     ITokenService tokenService) : IRequestHandler<RefreshTokenCommand, TokenVm>
 {

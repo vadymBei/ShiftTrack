@@ -7,7 +7,7 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Features.Organization.Structure.Departments.Queries.GetGroupedDepartmentsByUnit;
 
-internal class GetGroupedDepartmentsByUnitQueryHandler(
+public class GetGroupedDepartmentsByUnitQueryHandler(
     IMapper mapper,
     IApplicationDbContext applicationDbContext)
     : IRequestHandler<GetGroupedDepartmentsByUnitQuery, IEnumerable<GroupedDepartmentsByUnitVm>>

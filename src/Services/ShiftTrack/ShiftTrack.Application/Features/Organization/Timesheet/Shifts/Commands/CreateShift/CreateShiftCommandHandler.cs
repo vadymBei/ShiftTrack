@@ -7,7 +7,7 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Features.Organization.Timesheet.Shifts.Commands.CreateShift;
 
-internal class CreateShiftCommandHandler(
+public class CreateShiftCommandHandler(
     IMapper mapper,
     IApplicationDbContext applicationDbContext)
     : IRequestHandler<CreateShiftCommand, ShiftVm>

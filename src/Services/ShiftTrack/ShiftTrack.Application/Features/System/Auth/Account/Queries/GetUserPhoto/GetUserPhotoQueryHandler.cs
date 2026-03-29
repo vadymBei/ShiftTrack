@@ -8,7 +8,7 @@ using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Application.Features.System.Auth.Account.Queries.GetUserPhoto;
 
-internal class GetUserPhotoQueryHandler(
+public class GetUserPhotoQueryHandler(
     IHostEnvironment hostEnvironment,
     IApplicationDbContext applicationDbContext) : IRequestHandler<GetUserPhotoQuery, DocumentVm>
 {

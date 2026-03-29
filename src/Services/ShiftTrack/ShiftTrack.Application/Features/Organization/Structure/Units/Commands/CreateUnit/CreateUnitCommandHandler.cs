@@ -6,7 +6,7 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Features.Organization.Structure.Units.Commands.CreateUnit;
 
-internal class CreateUnitCommandHandler(
+public class CreateUnitCommandHandler(
     IMapper mapper,
     IApplicationDbContext dbContext)
     : IRequestHandler<CreateUnitCommand, UnitVm>

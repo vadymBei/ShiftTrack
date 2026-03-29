@@ -7,7 +7,7 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Features.Organization.Structure.Departments.Queries.GetDepartmentsByUnitId;
 
-internal class GetDepartmentsByUnitIdQueryHandler(
+public class GetDepartmentsByUnitIdQueryHandler(
     IMapper mapper,
     IUnitService unitService,
     IApplicationDbContext dbContext)

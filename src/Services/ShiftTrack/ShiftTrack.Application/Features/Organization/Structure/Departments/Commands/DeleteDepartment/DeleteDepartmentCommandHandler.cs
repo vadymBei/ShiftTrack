@@ -6,7 +6,7 @@ using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Application.Features.Organization.Structure.Departments.Commands.DeleteDepartment;
 
-internal class DeleteDepartmentCommandHandler(
+public class DeleteDepartmentCommandHandler(
     IApplicationDbContext dbContext) : IRequestHandler<DeleteDepartmentCommand>
 {
     public async Task Handle(DeleteDepartmentCommand request, CancellationToken cancellationToken)

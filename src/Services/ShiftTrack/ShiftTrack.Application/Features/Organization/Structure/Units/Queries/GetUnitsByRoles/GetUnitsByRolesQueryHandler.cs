@@ -9,7 +9,7 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Features.Organization.Structure.Units.Queries.GetUnitsByRoles;
 
-internal class GetUnitsByRolesQueryHandler(
+public class GetUnitsByRolesQueryHandler(
     IMapper mapper,
     ICurrentUserService currentUserService,
     IEmployeeRoleChecker employeeRoleChecker,

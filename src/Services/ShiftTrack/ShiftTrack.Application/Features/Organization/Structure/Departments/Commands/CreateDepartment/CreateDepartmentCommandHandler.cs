@@ -7,7 +7,7 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Features.Organization.Structure.Departments.Commands.CreateDepartment;
 
-internal class CreateDepartmentCommandHandler(
+public class CreateDepartmentCommandHandler(
     IMapper mapper,
     IUnitService unitService,
     IDepartmentService departmentService,

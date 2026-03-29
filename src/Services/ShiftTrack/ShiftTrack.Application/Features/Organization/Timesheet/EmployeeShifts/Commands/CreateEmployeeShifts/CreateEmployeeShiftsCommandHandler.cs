@@ -5,7 +5,7 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Features.Organization.Timesheet.EmployeeShifts.Commands.CreateEmployeeShifts;
 
-internal class CreateEmployeeShiftsCommandHandler(
+public class CreateEmployeeShiftsCommandHandler(
     IMapper mapper,
     IEmployeeShiftService employeeShiftService)
     : IRequestHandler<CreateEmployeeShiftsCommand, IEnumerable<EmployeeShiftVm>>

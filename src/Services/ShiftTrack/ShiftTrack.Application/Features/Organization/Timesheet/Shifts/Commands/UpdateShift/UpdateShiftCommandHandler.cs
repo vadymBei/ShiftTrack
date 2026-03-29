@@ -8,7 +8,7 @@ using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Application.Features.Organization.Timesheet.Shifts.Commands.UpdateShift;
 
-internal class UpdateShiftCommandHandler(
+public class UpdateShiftCommandHandler(
     IMapper mapper,
     IApplicationDbContext applicationDbContext)
     : IRequestHandler<UpdateShiftCommand, ShiftVm>

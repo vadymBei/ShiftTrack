@@ -9,7 +9,7 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Features.Booking.Vacations.Commands.CreateVacation;
 
-internal class CreateVacationCommandHandler(
+public class CreateVacationCommandHandler(
     IMapper mapper,
     IEmployeeService employeeService,
     IVacationService vacationService,

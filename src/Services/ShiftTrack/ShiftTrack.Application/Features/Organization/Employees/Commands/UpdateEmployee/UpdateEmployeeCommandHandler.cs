@@ -12,7 +12,7 @@ using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Application.Features.Organization.Employees.Commands.UpdateEmployee;
 
-internal class UpdateEmployeeCommandHandler(
+public class UpdateEmployeeCommandHandler(
     IMapper mapper,
     IPositionService positionService,
     IEmployeeService employeeService,

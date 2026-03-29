@@ -5,7 +5,7 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Features.Organization.Structure.Departments.Queries.GetDepartmentById;
 
-internal class GetDepartmentByIdQueryHandler(
+public class GetDepartmentByIdQueryHandler(
     IMapper mapper,
     IDepartmentService departmentService) : IRequestHandler<GetDepartmentByIdQuery, DepartmentVm>
 {

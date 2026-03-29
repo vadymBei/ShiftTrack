@@ -6,7 +6,7 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Features.Organization.Structure.Units.Queries.GetUnits;
 
-internal class GetUnitsQueryHandler(
+public class GetUnitsQueryHandler(
     IMapper mapper,
     IApplicationDbContext dbContext) : IRequestHandler<GetUnitsQuery, IEnumerable<UnitVm>>
 {

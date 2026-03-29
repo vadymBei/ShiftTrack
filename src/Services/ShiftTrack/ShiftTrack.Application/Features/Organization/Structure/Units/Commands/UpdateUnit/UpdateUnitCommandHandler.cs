@@ -9,7 +9,7 @@ using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Application.Features.Organization.Structure.Units.Commands.UpdateUnit;
 
-internal class UpdateUnitCommandHandler(
+public class UpdateUnitCommandHandler(
     IMapper mapper,
     IUnitService unitService,
     IApplicationDbContext dbContext)
