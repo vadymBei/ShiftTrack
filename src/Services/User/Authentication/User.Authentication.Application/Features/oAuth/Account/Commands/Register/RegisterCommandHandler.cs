@@ -6,7 +6,7 @@ using User.Authentication.Application.Features.oAuth.Common.ViewModels;
 
 namespace User.Authentication.Application.Features.oAuth.Account.Commands.Register;
 
-internal class RegisterCommandHandler(
+public class RegisterCommandHandler(
     IMapper mapper,
     IUserService userService) : IRequestHandler<RegisterCommand, UserVm>
 {

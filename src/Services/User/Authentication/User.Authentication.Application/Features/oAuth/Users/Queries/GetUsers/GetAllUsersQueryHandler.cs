@@ -5,7 +5,7 @@ using User.Authentication.Application.Features.oAuth.Common.ViewModels;
 
 namespace User.Authentication.Application.Features.oAuth.Users.Queries.GetUsers;
 
-internal class GetUsersQueryHandler(
+public class GetUsersQueryHandler(
     IMapper mapper,
     IUserService userService) : IRequestHandler<GetUsersQuery, IEnumerable<UserVm>>
 {

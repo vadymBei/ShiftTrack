@@ -5,7 +5,7 @@ using User.Authentication.Application.Features.oAuth.Common.ViewModels;
 
 namespace User.Authentication.Application.Features.oAuth.Roles.Commands.CreateRole;
 
-internal class CreateRoleCommandHandler(
+public class CreateRoleCommandHandler(
     IMapper mapper,
     IRoleService roleService) : IRequestHandler<CreateRoleCommand, RoleVm>
 {

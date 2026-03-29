@@ -5,7 +5,7 @@ using User.Authentication.Application.Features.oAuth.Common.ViewModels;
 
 namespace User.Authentication.Application.Features.oAuth.Tokens.Commands.GenerateToken;
 
-internal class GenerateTokenCommandHandler(
+public class GenerateTokenCommandHandler(
     IMapper mapper,
     ITokenService tokenService) : IRequestHandler<GenerateTokenCommand, TokenVm>
 {
