@@ -5,4 +5,5 @@ namespace ShiftTrack.Application.Features.Organization.Structure.Positions.Comma
 
 public record CreatePositionCommand(
     string Name,
-    string Description) : IRequest<PositionVm>;
+    string Description,
+    decimal HourlyRate) : IRequest<PositionVm>;

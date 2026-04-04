@@ -16,7 +16,8 @@ public class CreatePositionCommandHandler(
         var position = new Position()
         {
             Name = request.Name,
-            Description = request.Description
+            Description = request.Description,
+            HourlyRate = request.HourlyRate
         };
 
         applicationDbContext.Positions.Add(position);

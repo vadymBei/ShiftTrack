@@ -14,7 +14,8 @@ public class DeletePositionCommandTests(IntegrationTestWebAppFactory factory) : 
         // Arrange
         var createPositionCommand = new CreatePositionCommand(
             "Адміністратор",
-            "Адміністратор магазину");
+            "Адміністратор магазину",
+            150);
 
         var newPosition = await Mediator.Invoke(createPositionCommand);
 

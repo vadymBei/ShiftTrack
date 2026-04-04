@@ -15,15 +15,12 @@ public class UpdatePositionCommandHandler(
     public async Task<PositionVm> Handle(UpdatePositionCommand request, CancellationToken cancellationToken)
     {
         var position = await applicationDbContext.Positions
-            .FindAsync(request.Id);
-
-        if (position is null)
-        {
-            throw new EntityNotFoundException(typeof(Position), request.Id);
-        }
+            .FindAsync(request.Id)
+            ?? throw new EntityNotFoundException(typeof(Position), request.Id);
 
         position.Name = request.Name;
         position.Description = request.Description;
+        position.HourlyRate = request.HourlyRate;
 
         await applicationDbContext.SaveChangesAsync(cancellationToken);
 
