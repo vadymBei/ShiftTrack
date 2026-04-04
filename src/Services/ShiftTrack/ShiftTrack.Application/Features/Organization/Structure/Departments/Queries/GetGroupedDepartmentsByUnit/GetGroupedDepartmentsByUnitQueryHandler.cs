@@ -12,23 +12,33 @@ public class GetGroupedDepartmentsByUnitQueryHandler(
     IApplicationDbContext applicationDbContext)
     : IRequestHandler<GetGroupedDepartmentsByUnitQuery, IEnumerable<GroupedDepartmentsByUnitVm>>
 {
-    public async Task<IEnumerable<GroupedDepartmentsByUnitVm>> Handle(GetGroupedDepartmentsByUnitQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<GroupedDepartmentsByUnitVm>> Handle(GetGroupedDepartmentsByUnitQuery request,
+        CancellationToken cancellationToken)
     {
         var departments = await applicationDbContext.Departments
             .AsNoTracking()
             .Include(x => x.Unit)
             .ToListAsync(cancellationToken);
 
-        var groupedDepartments = departments
-            .Where(x => x.UnitId is not null)
-            .GroupBy(x => x.UnitId, (key, values) =>
-                new GroupedDepartmentsByUnit
-                {
-                    Unit = values.FirstOrDefault().Unit,
-                    Departments = values
-                        .OrderBy(x => x.Name)
-                        .ToList()
-                })
+        var units = await applicationDbContext.Units
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+
+        var groupedDepartments = new List<GroupedDepartmentsByUnit>();
+
+        foreach (var unit in units)
+        {
+            var unitDepartments = departments
+                .Where(x => x.UnitId == unit.Id);
+
+            groupedDepartments.Add(new GroupedDepartmentsByUnit()
+            {
+                Unit = unit,
+                Departments = unitDepartments.OrderBy(x => x.Name).ToList()
+            });
+        }
+        
+        groupedDepartments = groupedDepartments
             .OrderBy(x => x.Unit.Name)
             .ToList();
 
