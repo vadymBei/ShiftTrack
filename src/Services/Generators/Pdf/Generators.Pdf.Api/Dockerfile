@@ -30,8 +30,8 @@ COPY ["src/Common/Authentication/ShiftTrack.Authentication.Basic/ShiftTrack.Auth
 COPY ["src/Common/Authentication/ShiftTrack.Authentication/ShiftTrack.Authentication.csproj", "src/Common/Authentication/ShiftTrack.Authentication/"]
 RUN dotnet restore "src/Services/Generators/Pdf/Generators.Pdf.Api/Generators.Pdf.Api.csproj"
 COPY . .
-RUN dotnet restore
-RUN dotnet publish -c Release -o /app
+WORKDIR "/src/src/Services/Generators/Pdf/Generators.Pdf.Api"
+RUN dotnet publish "Generators.Pdf.Api.csproj" -c Release -o /app
 
 FROM base AS final
 WORKDIR /app

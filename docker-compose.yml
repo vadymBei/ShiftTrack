@@ -84,3 +84,18 @@ services:
    restart: always
    ports:
      - "20002:8080"
+   
+
+ location.api:
+   image: ${DOCKER_REGISTRY-}location-api
+   build:
+     context: .
+     dockerfile: src/Services/Location/Location.Api/Dockerfile
+   container_name: location-api
+   restart: always
+   environment:
+     - ASPNETCORE_ENVIRONMENT=Development
+     - ASPNETCORE_URLS=http://+:8080
+     - TZ=Europe/Khmelnytskyi
+   ports:
+     - "20003:8080"
