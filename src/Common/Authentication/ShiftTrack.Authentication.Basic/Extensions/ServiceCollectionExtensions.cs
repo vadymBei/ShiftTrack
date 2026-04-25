@@ -21,10 +21,9 @@ namespace ShiftTrack.Authentication.Basic.Extensions
                     "BasicAuthentication",
                     new OpenApiSecurityScheme()
                     {
-                        In = ParameterLocation.Header,
-                        Name = "Authorization",
-                        Scheme = "BasicAuthentication",
-                        Type = SecuritySchemeType.ApiKey
+                        Type = SecuritySchemeType.Http,
+                        Scheme = "basic",
+                        Description = "Input your username and password to access this API"
                     });
 
                 x.AddSecurityRequirement(document => new OpenApiSecurityRequirement()
