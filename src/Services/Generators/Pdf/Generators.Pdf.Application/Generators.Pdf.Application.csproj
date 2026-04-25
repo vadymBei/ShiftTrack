@@ -10,4 +10,8 @@
         <ProjectReference Include="..\..\..\..\Common\Kernel\ShiftTrack.Kernel.CQRS\ShiftTrack.Kernel.CQRS.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="UseCases\" />
+    </ItemGroup>
+
 </Project>

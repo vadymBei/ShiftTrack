@@ -1,7 +1,7 @@
 ﻿using Generators.Pdf.Application.Common.Interfaces;
 using ShiftTrack.Kernel.CQRS.Interfaces;
 
-namespace Generators.Pdf.Application.Queries.GeneratePdfFromHtml;
+namespace Generators.Pdf.Application.UseCases.Queries.GeneratePdfFromHtml;
 
 public class GeneratePdfFromHtmlQueryHandler(
     IPdfGeneratorService pdfGeneratorService) : IRequestHandler<GeneratePdfFromHtmlQuery, Stream>
