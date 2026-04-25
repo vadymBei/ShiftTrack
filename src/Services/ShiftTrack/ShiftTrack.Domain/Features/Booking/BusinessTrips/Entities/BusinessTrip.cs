@@ -14,4 +14,5 @@ public class BusinessTrip : AuditableEntity
     public BusinessTripStatus Status { get; set; }
 
     public List<BusinessTripParticipant> Participants { get; set; }
+    public List<BusinessTripLocation> Locations { get; set; }
 }
