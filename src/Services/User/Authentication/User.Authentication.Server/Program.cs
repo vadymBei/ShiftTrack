@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using User.Authentication.Application;
 using User.Authentication.Infrastructure;
-using User.Authentication.Infrastructure.Features.OAuth.ApiResources;
-using User.Authentication.Infrastructure.Features.OAuth.ApiScopes;
-using User.Authentication.Infrastructure.Features.OAuth.Clients;
+using User.Authentication.Infrastructure.Modules.OAuth.ApiResources;
+using User.Authentication.Infrastructure.Modules.OAuth.ApiScopes;
+using User.Authentication.Infrastructure.Modules.OAuth.Clients;
 using User.Authentication.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions

@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShiftTrack.Kernel.CQRS.Controllers;
-using User.Authentication.Application.Features.oAuth.Common.Dtos;
-using User.Authentication.Application.Features.oAuth.Common.ViewModels;
-using User.Authentication.Application.Features.oAuth.Roles.Commands.CreateRole;
-using User.Authentication.Application.Features.oAuth.Roles.Queries.GetRoles;
+using User.Authentication.Application.Modules.oAuth.Common.Dtos;
+using User.Authentication.Application.Modules.oAuth.Common.ViewModels;
+using User.Authentication.Application.Modules.oAuth.Roles.Commands.CreateRole;
+using User.Authentication.Application.Modules.oAuth.Roles.Queries.GetRoles;
 
 namespace User.Authentication.Api.Controllers;
 

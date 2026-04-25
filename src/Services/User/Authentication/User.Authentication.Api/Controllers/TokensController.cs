@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShiftTrack.Kernel.CQRS.Controllers;
-using User.Authentication.Application.Features.oAuth.Common.ViewModels;
-using User.Authentication.Application.Features.oAuth.Tokens.Commands.GenerateToken;
-using User.Authentication.Application.Features.oAuth.Tokens.Commands.RefreshToken;
+using User.Authentication.Application.Modules.oAuth.Common.ViewModels;
+using User.Authentication.Application.Modules.oAuth.Tokens.Commands.GenerateToken;
+using User.Authentication.Application.Modules.oAuth.Tokens.Commands.RefreshToken;
 
 namespace User.Authentication.Api.Controllers;
 

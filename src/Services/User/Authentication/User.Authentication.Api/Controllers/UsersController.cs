@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShiftTrack.Kernel.CQRS.Controllers;
-using User.Authentication.Application.Features.oAuth.Common.ViewModels;
-using User.Authentication.Application.Features.oAuth.Users.Queries.GetUsers;
+using User.Authentication.Application.Modules.oAuth.Common.ViewModels;
+using User.Authentication.Application.Modules.oAuth.Users.Queries.GetUsers;
 
 namespace User.Authentication.Api.Controllers;
 
