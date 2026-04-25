@@ -1,0 +1,16 @@
+using ShiftTrack.Application.Modules.Organization.Employees.Common.ViewModels;
+using ShiftTrack.Domain.Modules.System.User.Employees.Enums;
+using ShiftTrack.Kernel.CQRS.Interfaces;
+
+namespace ShiftTrack.Application.Modules.Organization.Employees.Commands.UpdateEmployee;
+
+public record UpdateEmployeeCommand(
+    long Id,
+    string Name,
+    string Surname,
+    string Patronymic,
+    string Email,
+    long? DepartmentId,
+    long? PositionId,
+    DateTime? DateOfBirth,
+    EmployeeGender Gender) : IRequest<EmployeeVm>;

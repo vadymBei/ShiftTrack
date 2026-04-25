@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ShiftTrack.Application.Features.System.Data.Initializations.Commands.InitializeSysAdmin;
+using ShiftTrack.Application.Modules.System.Data.Initializations.Commands.InitializeSysAdmin;
 using ShiftTrack.Kernel.CQRS.Controllers;
 
 namespace ShiftTrack.API.Controllers.System.Data;

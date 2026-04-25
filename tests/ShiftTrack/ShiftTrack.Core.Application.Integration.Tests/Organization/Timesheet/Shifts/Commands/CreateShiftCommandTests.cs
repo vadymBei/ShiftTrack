@@ -1,8 +1,8 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using ShiftTrack.Application.Features.Organization.Timesheet.Shifts.Commands.CreateShift;
+using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.Commands.CreateShift;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
-using ShiftTrack.Domain.Features.Organization.Timesheet.Shifts.Enums;
+using ShiftTrack.Domain.Modules.Organization.Timesheet.Shifts.Enums;
 
 namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Timesheet.Shifts.Commands;
 

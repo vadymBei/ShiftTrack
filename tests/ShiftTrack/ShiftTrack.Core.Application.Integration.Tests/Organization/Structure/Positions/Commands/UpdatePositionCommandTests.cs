@@ -1,8 +1,8 @@
 ﻿using FluentAssertions;
-using ShiftTrack.Application.Features.Organization.Structure.Common.ViewModels;
-using ShiftTrack.Application.Features.Organization.Structure.Positions.Commands.CreatePosition;
-using ShiftTrack.Application.Features.Organization.Structure.Positions.Commands.UpdatePosition;
-using ShiftTrack.Application.Features.Organization.Structure.Positions.Queries.GetPositionById;
+using ShiftTrack.Application.Modules.Organization.Structure.Common.ViewModels;
+using ShiftTrack.Application.Modules.Organization.Structure.Positions.Commands.CreatePosition;
+using ShiftTrack.Application.Modules.Organization.Structure.Positions.Commands.UpdatePosition;
+using ShiftTrack.Application.Modules.Organization.Structure.Positions.Queries.GetPositionById;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
 using ShiftTrack.Kernel.Exceptions;
 

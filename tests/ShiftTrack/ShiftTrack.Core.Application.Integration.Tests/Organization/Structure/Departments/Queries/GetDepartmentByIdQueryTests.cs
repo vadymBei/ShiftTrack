@@ -1,8 +1,8 @@
 ﻿using FluentAssertions;
-using ShiftTrack.Application.Features.Organization.Structure.Common.ViewModels;
-using ShiftTrack.Application.Features.Organization.Structure.Departments.Commands.CreateDepartment;
-using ShiftTrack.Application.Features.Organization.Structure.Departments.Queries.GetDepartmentById;
-using ShiftTrack.Application.Features.Organization.Structure.Units.Commands.CreateUnit;
+using ShiftTrack.Application.Modules.Organization.Structure.Common.ViewModels;
+using ShiftTrack.Application.Modules.Organization.Structure.Departments.Commands.CreateDepartment;
+using ShiftTrack.Application.Modules.Organization.Structure.Departments.Queries.GetDepartmentById;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.Commands.CreateUnit;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
 using ShiftTrack.Kernel.Exceptions;
 

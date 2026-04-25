@@ -19,8 +19,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Features\Organization\Timesheet\EmployeeShifts\Queries\"/>
-        <Folder Include="Features\System\Auth\Tokens\Commands\"/>
+        <Folder Include="Modules\Organization\Timesheet\EmployeeShifts\Queries\" />
+        <Folder Include="Modules\System\Auth\Tokens\Commands\" />
     </ItemGroup>
 
 </Project>

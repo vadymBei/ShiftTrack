@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ShiftTrack.Application.Features.Organization.Structure.Common.ViewModels;
-using ShiftTrack.Application.Features.Organization.Structure.Departments.Commands.CreateDepartment;
-using ShiftTrack.Application.Features.Organization.Structure.Departments.Commands.DeleteDepartment;
-using ShiftTrack.Application.Features.Organization.Structure.Departments.Commands.UpdateDepartment;
-using ShiftTrack.Application.Features.Organization.Structure.Departments.Queries.GetDepartmentById;
-using ShiftTrack.Application.Features.Organization.Structure.Departments.Queries.GetDepartmentsByRoles;
-using ShiftTrack.Application.Features.Organization.Structure.Departments.Queries.GetDepartmentsByUnitId;
-using ShiftTrack.Application.Features.Organization.Structure.Departments.Queries.GetGroupedDepartmentsByUnit;
+using ShiftTrack.Application.Modules.Organization.Structure.Common.ViewModels;
+using ShiftTrack.Application.Modules.Organization.Structure.Departments.Commands.CreateDepartment;
+using ShiftTrack.Application.Modules.Organization.Structure.Departments.Commands.DeleteDepartment;
+using ShiftTrack.Application.Modules.Organization.Structure.Departments.Commands.UpdateDepartment;
+using ShiftTrack.Application.Modules.Organization.Structure.Departments.Queries.GetDepartmentById;
+using ShiftTrack.Application.Modules.Organization.Structure.Departments.Queries.GetDepartmentsByRoles;
+using ShiftTrack.Application.Modules.Organization.Structure.Departments.Queries.GetDepartmentsByUnitId;
+using ShiftTrack.Application.Modules.Organization.Structure.Departments.Queries.GetGroupedDepartmentsByUnit;
 using ShiftTrack.Kernel.CQRS.Controllers;
 
 namespace ShiftTrack.API.Controllers.Organization.Structure;

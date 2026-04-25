@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ShiftTrack.Application.Features.Organization.Timesheet.Common.ViewModels;
-using ShiftTrack.Application.Features.Organization.Timesheet.Shifts.Commands.CreateShift;
-using ShiftTrack.Application.Features.Organization.Timesheet.Shifts.Commands.DeleteShift;
-using ShiftTrack.Application.Features.Organization.Timesheet.Shifts.Commands.UpdateShift;
-using ShiftTrack.Application.Features.Organization.Timesheet.Shifts.Queries.GetShiftById;
-using ShiftTrack.Application.Features.Organization.Timesheet.Shifts.Queries.GetShifts;
+using ShiftTrack.Application.Modules.Organization.Timesheet.Common.ViewModels;
+using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.Commands.CreateShift;
+using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.Commands.DeleteShift;
+using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.Commands.UpdateShift;
+using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.Queries.GetShiftById;
+using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.Queries.GetShifts;
 using ShiftTrack.Kernel.CQRS.Controllers;
 
 namespace ShiftTrack.API.Controllers.Organization.Timesheet;

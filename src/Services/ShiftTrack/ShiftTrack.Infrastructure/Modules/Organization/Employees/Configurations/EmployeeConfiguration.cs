@@ -1,0 +1,42 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using ShiftTrack.Domain.Modules.System.User.Employees.Entities;
+using ShiftTrack.Infrastructure.Common.Configurations;
+
+namespace ShiftTrack.Infrastructure.Modules.Organization.Employees.Configurations;
+
+public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
+{
+    public void Configure(EntityTypeBuilder<Employee> builder)
+    {
+        builder.ToTable("Employees");
+
+        builder.ConfigureAuditableEntity();
+        
+        builder.HasIndex(c => c.Email)
+            .IsUnique();
+
+        builder.HasIndex(x => x.PhoneNumber)
+            .IsUnique();
+
+        builder.HasIndex(x => x.IsDeleted);
+
+        builder.HasQueryFilter(x => !x.IsDeleted);
+
+        builder.Property(t => t.Email)
+            .HasMaxLength(128)
+            .IsRequired();
+
+        builder.Property(t => t.Name)
+            .HasMaxLength(64);
+
+        builder.Property(t => t.Surname)
+            .HasMaxLength(64);
+
+        builder.Property(t => t.Patronymic)
+            .HasMaxLength(64);
+
+        builder.Property(t => t.PhoneNumber)
+            .HasMaxLength(13);
+    }
+}

@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
-using ShiftTrack.Application.Features.Organization.Structure.Units.Commands.CreateUnit;
-using ShiftTrack.Application.Features.Organization.Structure.Units.Commands.DeleteUnit;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.Commands.CreateUnit;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.Commands.DeleteUnit;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
 using ShiftTrack.Kernel.Exceptions;
 

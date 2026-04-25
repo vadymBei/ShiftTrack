@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using ShiftTrack.Application.Common.Interfaces;
-using ShiftTrack.Application.Features.Organization.Employees.Common.Interfaces;
+using ShiftTrack.Application.Modules.Organization.Employees.Common.Interfaces;
 using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Common.Behaviours;

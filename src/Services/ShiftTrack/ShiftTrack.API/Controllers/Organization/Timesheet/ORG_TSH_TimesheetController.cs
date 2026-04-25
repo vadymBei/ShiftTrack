@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ShiftTrack.Application.Features.Organization.Timesheet.Common.Dtos;
-using ShiftTrack.Application.Features.Organization.Timesheet.Common.ViewModels;
-using ShiftTrack.Application.Features.Organization.Timesheet.UnitTimesheets.Queries.ExportTimesheet;
-using ShiftTrack.Application.Features.Organization.Timesheet.UnitTimesheets.Queries.GetTimesheet;
+using ShiftTrack.Application.Modules.Organization.Timesheet.Common.Dtos;
+using ShiftTrack.Application.Modules.Organization.Timesheet.Common.ViewModels;
+using ShiftTrack.Application.Modules.Organization.Timesheet.UnitTimesheets.Queries.ExportTimesheet;
+using ShiftTrack.Application.Modules.Organization.Timesheet.UnitTimesheets.Queries.GetTimesheet;
 using ShiftTrack.Kernel.CQRS.Controllers;
 
 namespace ShiftTrack.API.Controllers.Organization.Timesheet;

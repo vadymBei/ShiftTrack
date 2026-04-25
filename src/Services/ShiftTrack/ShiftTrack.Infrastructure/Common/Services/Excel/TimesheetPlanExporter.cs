@@ -3,8 +3,8 @@ using System.Globalization;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using ShiftTrack.Application.Common.Interfaces;
-using ShiftTrack.Application.Features.Organization.Timesheet.UnitTimesheets.Queries.ExportTimesheet;
-using ShiftTrack.Domain.Features.Organization.Timesheet.Shifts.Enums;
+using ShiftTrack.Application.Modules.Organization.Timesheet.UnitTimesheets.Queries.ExportTimesheet;
+using ShiftTrack.Domain.Modules.Organization.Timesheet.Shifts.Enums;
 using ShiftTrack.Infrastructure.Common.Extensions;
 
 namespace ShiftTrack.Infrastructure.Common.Services.Excel;

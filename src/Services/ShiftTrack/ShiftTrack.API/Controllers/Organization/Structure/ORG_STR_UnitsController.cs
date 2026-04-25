@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ShiftTrack.Application.Features.Organization.Structure.Common.ViewModels;
-using ShiftTrack.Application.Features.Organization.Structure.Units.Commands.CreateUnit;
-using ShiftTrack.Application.Features.Organization.Structure.Units.Commands.DeleteUnit;
-using ShiftTrack.Application.Features.Organization.Structure.Units.Commands.UpdateUnit;
-using ShiftTrack.Application.Features.Organization.Structure.Units.Queries.GetUnitById;
-using ShiftTrack.Application.Features.Organization.Structure.Units.Queries.GetUnits;
-using ShiftTrack.Application.Features.Organization.Structure.Units.Queries.GetUnitsByRoles;
+using ShiftTrack.Application.Modules.Organization.Structure.Common.ViewModels;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.Commands.CreateUnit;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.Commands.DeleteUnit;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.Commands.UpdateUnit;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.Queries.GetUnitById;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.Queries.GetUnits;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.Queries.GetUnitsByRoles;
 using ShiftTrack.Kernel.CQRS.Controllers;
 
 namespace ShiftTrack.API.Controllers.Organization.Structure;

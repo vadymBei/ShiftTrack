@@ -1,15 +1,15 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ShiftTrack.Application.Features.Booking.Common.Dtos;
-using ShiftTrack.Application.Features.Booking.Common.ViewModels;
-using ShiftTrack.Application.Features.Booking.Vacations.Commands.ApproveVacation;
-using ShiftTrack.Application.Features.Booking.Vacations.Commands.CreateVacation;
-using ShiftTrack.Application.Features.Booking.Vacations.Commands.DeleteVacation;
-using ShiftTrack.Application.Features.Booking.Vacations.Commands.RejectVacation;
-using ShiftTrack.Application.Features.Booking.Vacations.Commands.UpdateVacation;
-using ShiftTrack.Application.Features.Booking.Vacations.Queries.DownloadVacationRequestPdf;
-using ShiftTrack.Application.Features.Booking.Vacations.Queries.GetVacationById;
-using ShiftTrack.Application.Features.Booking.Vacations.Queries.GetVacations;
+using ShiftTrack.Application.Modules.Booking.Common.Dtos;
+using ShiftTrack.Application.Modules.Booking.Common.ViewModels;
+using ShiftTrack.Application.Modules.Booking.Vacations.Commands.ApproveVacation;
+using ShiftTrack.Application.Modules.Booking.Vacations.Commands.CreateVacation;
+using ShiftTrack.Application.Modules.Booking.Vacations.Commands.DeleteVacation;
+using ShiftTrack.Application.Modules.Booking.Vacations.Commands.RejectVacation;
+using ShiftTrack.Application.Modules.Booking.Vacations.Commands.UpdateVacation;
+using ShiftTrack.Application.Modules.Booking.Vacations.Queries.DownloadVacationRequestPdf;
+using ShiftTrack.Application.Modules.Booking.Vacations.Queries.GetVacationById;
+using ShiftTrack.Application.Modules.Booking.Vacations.Queries.GetVacations;
 using ShiftTrack.Kernel.CQRS.Controllers;
 
 namespace ShiftTrack.API.Controllers.Booking.Vacations;

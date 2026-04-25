@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ShiftTrack.Application.Features.Organization.Employees.Common.ViewModels;
-using ShiftTrack.Application.Features.System.Auth.Account.Commands.ChangePassword;
-using ShiftTrack.Application.Features.System.Auth.Account.Commands.Register;
-using ShiftTrack.Application.Features.System.Auth.Account.Commands.UpdateAccount;
-using ShiftTrack.Application.Features.System.Auth.Account.Commands.UploadPhoto;
-using ShiftTrack.Application.Features.System.Auth.Account.Queries.GetCurrentUser;
-using ShiftTrack.Application.Features.System.Auth.Account.Queries.GetUserPhoto;
-using ShiftTrack.Application.Features.System.Auth.Common.Dtos;
-using ShiftTrack.Application.Features.System.Auth.Common.ViewModels;
-using ShiftTrack.Application.Features.System.Auth.Tokens.Commands.GenerateToken;
+using ShiftTrack.Application.Modules.Organization.Employees.Common.ViewModels;
+using ShiftTrack.Application.Modules.System.Auth.Account.Commands.ChangePassword;
+using ShiftTrack.Application.Modules.System.Auth.Account.Commands.Register;
+using ShiftTrack.Application.Modules.System.Auth.Account.Commands.UpdateAccount;
+using ShiftTrack.Application.Modules.System.Auth.Account.Commands.UploadPhoto;
+using ShiftTrack.Application.Modules.System.Auth.Account.Queries.GetCurrentUser;
+using ShiftTrack.Application.Modules.System.Auth.Account.Queries.GetUserPhoto;
+using ShiftTrack.Application.Modules.System.Auth.Common.Dtos;
+using ShiftTrack.Application.Modules.System.Auth.Common.ViewModels;
+using ShiftTrack.Application.Modules.System.Auth.Tokens.Commands.GenerateToken;
 using ShiftTrack.Kernel.CQRS.Controllers;
 
 namespace ShiftTrack.API.Controllers.System.Auth;
