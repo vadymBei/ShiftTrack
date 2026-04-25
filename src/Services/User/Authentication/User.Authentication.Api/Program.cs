@@ -3,6 +3,7 @@ using ShiftTrack.Authentication.Basic.Extensions;
 using ShiftTrack.Authentication.Identity;
 using ShiftTrack.Kernel.Extensions;
 using System.Reflection;
+using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using User.Authentication.Application;
 using User.Authentication.Infrastructure;
@@ -24,6 +25,28 @@ builder.Services.AddBasicAuthenticationSwagger(
     Assembly.GetEntryAssembly().GetName().Version.ToString());
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dataContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    
+    var retryCount = 0;
+    while (retryCount < 5)
+    {
+        try
+        {
+            dataContext.Database.Migrate();
+            break;
+        }
+        catch (Exception ex)
+        {
+            retryCount++;
+            Console.WriteLine($"[DEBUG_LOG] Database migration (API) failed (attempt {retryCount}). Error: {ex.Message}");
+            if (retryCount >= 5) throw;
+            Thread.Sleep(2000);
+        }
+    }
+}
 
 app.UseKernelExceptionHandler();
 

@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 namespace ShiftTrack.Authentication.Basic.Extensions
 {
@@ -27,18 +27,11 @@ namespace ShiftTrack.Authentication.Basic.Extensions
                         Type = SecuritySchemeType.ApiKey
                     });
 
-                x.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                x.AddSecurityRequirement(document => new OpenApiSecurityRequirement()
                 {
                     {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "BasicAuthentication"
-                            }
-                        },
-                        Array.Empty<string>()
+                        new OpenApiSecuritySchemeReference("BasicAuthentication", document),
+                        new List<string>()
                     }
                 });
             });

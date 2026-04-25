@@ -17,7 +17,8 @@ public class GetPositionsQueryTests(
 
         var createPositionCommand = new CreatePositionCommand(
             "Адміністратор",
-            "Адміністратор магазину");
+            "Адміністратор магазину",
+            150);
 
         var newPosition = await Mediator.Invoke(createPositionCommand);
 
@@ -33,5 +34,6 @@ public class GetPositionsQueryTests(
         positions.Should().Contain(x => x.Id == newPosition.Id);
         positions.Should().Contain(x => x.Name == newPosition.Name);
         positions.Should().Contain(x => x.Description == newPosition.Description);
+        positions.Should().Contain(x => x.HourlyRate == newPosition.HourlyRate);
     }
 }

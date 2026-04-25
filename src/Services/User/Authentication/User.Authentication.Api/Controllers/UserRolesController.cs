@@ -6,7 +6,7 @@ using User.Authentication.Application.Features.oAuth.UserRoles.Commands.CreateUs
 
 namespace User.Authentication.Api.Controllers;
 
-[Authorize]
+[Authorize(AuthenticationSchemes = "BasicAuthentication")]
 [Route("api/user/authentication/user-roles")]
 public class UserRolesController : ApiController
 {

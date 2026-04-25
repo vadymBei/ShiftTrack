@@ -95,7 +95,9 @@ namespace User.Authentication.Infrastructure.Persistence.Migrations
                 name: "PersistedGrants",
                 columns: table => new
                 {
-                    Key = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Key = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
                     Type = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     SubjectId = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
                     SessionId = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
@@ -108,7 +110,43 @@ namespace User.Authentication.Infrastructure.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PersistedGrants", x => x.Key);
+                    table.PrimaryKey("PK_PersistedGrants", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PushedAuthorizationRequests",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ReferenceValueHash = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    ExpiresAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Parameters = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PushedAuthorizationRequests", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ServerSideSessions",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Key = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Scheme = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    SubjectId = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    SessionId = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    DisplayName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Renewed = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Expires = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    Data = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ServerSideSessions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -157,8 +195,8 @@ namespace User.Authentication.Infrastructure.Persistence.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
-                    ProviderKey = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(type: "text", nullable: false),
+                    ProviderKey = table.Column<string>(type: "text", nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "text", nullable: true),
                     UserId = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false)
                 },
@@ -202,8 +240,8 @@ namespace User.Authentication.Infrastructure.Persistence.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
-                    LoginProvider = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
-                    Name = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
                     Value = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
@@ -281,6 +319,12 @@ namespace User.Authentication.Infrastructure.Persistence.Migrations
                 column: "Expiration");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PersistedGrants_Key",
+                table: "PersistedGrants",
+                column: "Key",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PersistedGrants_SubjectId_ClientId_Type",
                 table: "PersistedGrants",
                 columns: new[] { "SubjectId", "ClientId", "Type" });
@@ -289,6 +333,43 @@ namespace User.Authentication.Infrastructure.Persistence.Migrations
                 name: "IX_PersistedGrants_SubjectId_SessionId_Type",
                 table: "PersistedGrants",
                 columns: new[] { "SubjectId", "SessionId", "Type" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PushedAuthorizationRequests_ExpiresAtUtc",
+                table: "PushedAuthorizationRequests",
+                column: "ExpiresAtUtc");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PushedAuthorizationRequests_ReferenceValueHash",
+                table: "PushedAuthorizationRequests",
+                column: "ReferenceValueHash",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ServerSideSessions_DisplayName",
+                table: "ServerSideSessions",
+                column: "DisplayName");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ServerSideSessions_Expires",
+                table: "ServerSideSessions",
+                column: "Expires");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ServerSideSessions_Key",
+                table: "ServerSideSessions",
+                column: "Key",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ServerSideSessions_SessionId",
+                table: "ServerSideSessions",
+                column: "SessionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ServerSideSessions_SubjectId",
+                table: "ServerSideSessions",
+                column: "SubjectId");
         }
 
         /// <inheritdoc />
@@ -317,6 +398,12 @@ namespace User.Authentication.Infrastructure.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "PersistedGrants");
+
+            migrationBuilder.DropTable(
+                name: "PushedAuthorizationRequests");
+
+            migrationBuilder.DropTable(
+                name: "ServerSideSessions");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

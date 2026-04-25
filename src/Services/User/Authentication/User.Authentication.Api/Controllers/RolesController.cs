@@ -8,7 +8,7 @@ using User.Authentication.Application.Features.oAuth.Roles.Queries.GetRoles;
 
 namespace User.Authentication.Api.Controllers;
 
-[Authorize]
+[Authorize(AuthenticationSchemes = "BasicAuthentication")]
 [Route("api/user/authentication/roles")]
 public class RolesController : ApiController
 {

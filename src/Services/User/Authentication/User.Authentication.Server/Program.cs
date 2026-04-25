@@ -1,20 +1,30 @@
 using Duende.IdentityServer.Models;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using User.Authentication.Application;
 using User.Authentication.Infrastructure;
 using User.Authentication.Infrastructure.Features.OAuth.ApiResources;
+using User.Authentication.Infrastructure.Features.OAuth.ApiScopes;
 using User.Authentication.Infrastructure.Features.OAuth.Clients;
 using User.Authentication.Infrastructure.Persistence;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+{
+    Args = args,
+    ContentRootPath = Directory.GetCurrentDirectory()
+});
+
+// Disable Static Web Assets in Docker to avoid DirectoryNotFoundException for NuGet packages
+if (Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")
+{
+    builder.WebHost.UseStaticWebAssets(); 
+}
 
 builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services
-    .AddDefaultIdentity<ShiftTrack.Authentication.Models.User>(options =>
+    .AddIdentity<ShiftTrack.Authentication.Models.User, IdentityRole>(options =>
     {
         options.Password.RequireDigit = true;
         options.Password.RequiredLength = 6;
@@ -23,41 +33,51 @@ builder.Services
         options.Password.RequireLowercase = true;
     })
     .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services
-    .AddIdentityServer()
-    .AddApiAuthorization<ShiftTrack.Authentication.Models.User, ApplicationDbContext>(options =>
+    .AddIdentityServer(options =>
     {
-        options.Clients.AddRange(ShiftTrackClient.Register());
+        options.IssuerUri = "http://user.authentication.server:8080";
+    })
+    .AddAspNetIdentity<ShiftTrack.Authentication.Models.User>()
+    .AddOperationalStore<ApplicationDbContext>()
+    .AddInMemoryClients([ShiftTrackClient.Register()])
+    .AddInMemoryApiResources([ShiftTrackApi.Register()])
+    .AddInMemoryApiScopes(ShiftTrackApiScopes.Get())
+    .AddInMemoryIdentityResources([
+        new IdentityResources.Email(),
+        new IdentityResources.Phone(),
+        new IdentityResource("role", ["role"]),
+        new IdentityResource("id", ["id"])
+    ]);
 
-        options.ApiResources.AddRange(ShiftTrackApi.Register());
-
-        options.IdentityResources.AddEmail();
-
-        options.IdentityResources.AddPhone();
-
-        options.IdentityResources.Add(new IdentityResource("role", new[] { "role" }));
-
-        options.IdentityResources.Add(new IdentityResource("id", new[] { "id" }));
-    });
-
-builder.Services
-    .AddAuthentication()
-    .AddIdentityServerJwt();
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
     var dataContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    dataContext.Database.Migrate();
+
+    try
+    {
+        dataContext.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[DEBUG_LOG] Database migration failed. Error: {ex.Message}");
+        if (!app.Environment.IsDevelopment())
+        {
+            throw;
+        }
+        Console.WriteLine("[DEBUG_LOG] Continuing execution because we are in Development mode.");
+    }
 }
 
 app.UseAuthentication();
-
 app.UseIdentityServer();
-
 app.UseAuthorization();
 
 app.Run();

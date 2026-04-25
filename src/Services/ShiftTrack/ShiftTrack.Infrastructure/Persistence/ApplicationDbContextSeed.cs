@@ -260,22 +260,26 @@ public static class ApplicationDbContextSeed
             new()
             {
                 Name = "Адміністратор",
-                Description = "Адміністратор магазину"
+                Description = "Адміністратор магазину",
+                HourlyRate = 150
             },
             new()
             {
                 Name = "Директор",
-                Description = "Директор магазину"
+                Description = "Директор магазину",
+                HourlyRate = 180
             },
             new()
             {
                 Name = "Регіональний директор",
-                Description = "Регіональний директор"
+                Description = "Регіональний директор",
+                HourlyRate = 230
             },
             new()
             {
                 Name = "Стиліст",
-                Description = "Стиліст магазину"
+                Description = "Стиліст магазину",
+                HourlyRate = 100
             },
         };
 

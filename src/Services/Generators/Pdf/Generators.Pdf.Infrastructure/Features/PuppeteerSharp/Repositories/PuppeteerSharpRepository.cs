@@ -1,40 +1,48 @@
 ﻿using Generators.Pdf.Application.Common.Dto;
 using Generators.Pdf.Application.Common.Interfaces;
+using Generators.Pdf.Infrastructure.Features.PuppeteerSharp.Interfaces;
 using PuppeteerSharp;
 using PuppeteerSharp.Media;
 
 namespace Generators.Pdf.Infrastructure.Features.PuppeteerSharp.Repositories;
 
-public class PuppeteerSharpRepository : IPuppeteerSharpRepository
+public class PuppeteerSharpRepository(
+    IBrowserManager browserManager) : IPuppeteerSharpRepository
 {
-    public async Task<Stream> GenerateFromHtml(GeneratePdfDto dto)
+    private readonly SemaphoreSlim _semaphore = new(5);
+
+    public async Task<Stream> GenerateFromHtml(GeneratePdfDto dto, CancellationToken cancellationToken)
     {
-        var launchOptions = new LaunchOptions
-        {
-            Headless = true,
-            ExecutablePath = "/usr/bin/chromium",
-            Args = new[] { "--no-sandbox", "--disable-setuid-sandbox" }
-        };
+        await _semaphore.WaitAsync(cancellationToken);
 
-        await using var browser = await Puppeteer.LaunchAsync(launchOptions);
-        
-        await using var page = await browser.NewPageAsync();
-        
-        await page.SetContentAsync(dto.Html);
-
-        var pdfStream = await page.PdfStreamAsync(new PdfOptions
+        try
         {
-            Format = PaperFormat.A4,
-            PrintBackground = true,
-            MarginOptions = new MarginOptions
+            var browser = await browserManager.GetBrowserAsync();
+
+            await using var page = await browser.NewPageAsync();
+            
+            page.DefaultTimeout = 30000;
+
+            await page.SetContentAsync(dto.Html);
+
+            var pdfStream = await page.PdfStreamAsync(new PdfOptions
             {
-                Top = dto.MarginTop,
-                Bottom = dto.MarginBottom,
-                Right = dto.MarginRight,
-                Left = dto.MarginLeft
-            }
-        });
+                Format = PaperFormat.A4,
+                PrintBackground = true,
+                MarginOptions = new MarginOptions
+                {
+                    Top = dto.MarginTop,
+                    Bottom = dto.MarginBottom,
+                    Right = dto.MarginRight,
+                    Left = dto.MarginLeft
+                }
+            });
 
-        return pdfStream;
+            return pdfStream;
+        }
+        finally
+        {
+            _semaphore.Release();
+        }
     }
 }

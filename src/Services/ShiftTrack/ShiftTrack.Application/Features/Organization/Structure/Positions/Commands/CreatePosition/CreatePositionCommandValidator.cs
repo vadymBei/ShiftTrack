@@ -17,5 +17,9 @@ public class CreatePositionCommandValidator : AbstractValidator<CreatePositionCo
             .WithMessage("Description is required")
             .MaximumLength(100)
             .WithMessage("Maximum field length is 100 characters");
+        
+        RuleFor(x => x.HourlyRate)
+            .GreaterThan(0)
+            .WithMessage("Hourly rate must be positive");
     }
 }

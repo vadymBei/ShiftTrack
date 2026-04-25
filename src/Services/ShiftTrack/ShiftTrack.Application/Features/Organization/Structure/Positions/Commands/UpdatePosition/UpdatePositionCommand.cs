@@ -6,4 +6,5 @@ namespace ShiftTrack.Application.Features.Organization.Structure.Positions.Comma
 public record UpdatePositionCommand(
     long Id,
     string Name,
-    string Description) : IRequest<PositionVm>;
+    string Description,
+    decimal HourlyRate) : IRequest<PositionVm>;

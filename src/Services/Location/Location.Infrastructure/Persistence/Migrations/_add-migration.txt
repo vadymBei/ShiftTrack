@@ -1,0 +1,7 @@
+﻿For terminal execution:
+
+dotnet ef migrations add --project src/Services/Location/Location.Infrastructure --startup-project src/Services/Location/Location.Api --context ApplicationDbContext --output-dir Persistence/Migrations Init
+
+dotnet ef migrations remove --project src/Services/Location/Location.Infrastructure --startup-project src/Services/Location/Location.Api --context ApplicationDbContext
+
+dotnet ef database update --project src/Services/Location/Location.Infrastructure --startup-project src/Services/Location/Location.Api --context ApplicationDbContext

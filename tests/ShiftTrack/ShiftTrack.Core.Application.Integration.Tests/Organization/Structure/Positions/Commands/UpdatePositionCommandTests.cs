@@ -17,7 +17,8 @@ public class UpdatePositionCommandTests(
         // Arrange
         var createPositionCommand = new CreatePositionCommand(
             "Адміністратор",
-            "Адміністратор магазину");
+            "Адміністратор магазину",
+            150);
 
         var newPosition = await Mediator.Invoke(createPositionCommand);
 
@@ -28,7 +29,8 @@ public class UpdatePositionCommandTests(
         var updatePositionCommand = new UpdatePositionCommand(
             position.Id,
             "Адміністратор оновлений",
-            "Адміністратор магазину оновлений");
+            "Адміністратор магазину оновлений",
+            170);
 
         // Act
         var updatedPosition = await Mediator.Invoke(updatePositionCommand);
@@ -41,7 +43,8 @@ public class UpdatePositionCommandTests(
             {
                 Id = position.Id,
                 Name = updatePositionCommand.Name,
-                Description = updatePositionCommand.Description
+                Description = updatePositionCommand.Description,
+                HourlyRate = updatePositionCommand.HourlyRate
             });
     }
 
@@ -52,7 +55,8 @@ public class UpdatePositionCommandTests(
         var updatePositionCommand = new UpdatePositionCommand(
             1000,
             "Тест",
-            "Тест оновлення посади з помилкою");
+            "Тест оновлення посади з помилкою",
+            150);
 
         // Act
         Func<Task> act = async () => await Mediator.Invoke(updatePositionCommand);

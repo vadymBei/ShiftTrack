@@ -5,6 +5,7 @@ using ShiftTrack.Client.Enums;
 using ShiftTrack.Client.Http.Extensions;
 using ShiftTrack.Client.Http.Interfaces;
 using ShiftTrack.Domain.Features.System.Auth.Models;
+using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Infrastructure.Features.System.User.Repositories;
 
@@ -24,7 +25,7 @@ public class UserRepository(
 
             return token;
         }
-        catch (Exception ex)
+        catch (HttpClientException ex)
         {
             logger.LogError(ex, "Error occurred while changing password");
             throw;
@@ -42,7 +43,7 @@ public class UserRepository(
                 .Post<Authentication.Models.User>("account/register", cancellationToken);
 
             return user;
-        }
+        } 
         catch (Exception ex)
         {
             logger.LogError(ex, "Error occurred while registering user");
@@ -62,7 +63,7 @@ public class UserRepository(
 
             return user;
         }
-        catch (Exception ex)
+        catch (HttpClientException ex)
         {
             logger.LogError($"Error occurred while updating user: {ex.InnerException?.Message}");
             throw;

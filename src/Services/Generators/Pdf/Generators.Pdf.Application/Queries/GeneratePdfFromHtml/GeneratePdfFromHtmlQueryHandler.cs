@@ -8,6 +8,6 @@ public class GeneratePdfFromHtmlQueryHandler(
 {
     public Task<Stream> Handle(GeneratePdfFromHtmlQuery request, CancellationToken cancellationToken = default)
     {
-        return pdfGeneratorService.GenerateFromHtml(request.Dto);
+        return pdfGeneratorService.GenerateFromHtml(request.Dto, cancellationToken);
     }
 }

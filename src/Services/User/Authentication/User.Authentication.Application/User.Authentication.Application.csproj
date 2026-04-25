@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
     </PropertyGroup>
@@ -13,5 +13,5 @@
       <ProjectReference Include="..\..\..\..\Common\Kernel\ShiftTrack.Kernel\ShiftTrack.Kernel.csproj" />
       <ProjectReference Include="..\User.Authentication.Domain\User.Authentication.Domain.csproj" />
     </ItemGroup>
-
+    
 </Project>

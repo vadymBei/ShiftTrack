@@ -4,5 +4,5 @@ namespace Generators.Pdf.Application.Common.Interfaces;
 
 public interface IPdfGeneratorService
 {
-    Task<Stream> GenerateFromHtml(GeneratePdfDto dto);
+    Task<Stream> GenerateFromHtml(GeneratePdfDto dto, CancellationToken cancellationToken);
 }

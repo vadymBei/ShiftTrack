@@ -4,6 +4,7 @@ using ShiftTrack.Application.Common.Interfaces;
 using ShiftTrack.Client.Enums;
 using ShiftTrack.Client.Http.Extensions;
 using ShiftTrack.Client.Http.Interfaces;
+using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Infrastructure.Common.Repositories;
 
@@ -23,7 +24,7 @@ public class PdfRepository(
             
             return stream;
         }
-        catch (Exception e)
+        catch (HttpClientException e)
         {
             logger.LogError(e, "Error occurred while generating PDF");
             throw;

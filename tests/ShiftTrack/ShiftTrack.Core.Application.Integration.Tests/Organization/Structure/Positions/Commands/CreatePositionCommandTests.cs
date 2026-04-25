@@ -13,7 +13,8 @@ public class CreatePositionCommandTests(
         // Arrange
         var createPositionCommand = new CreatePositionCommand(
             "Адміністратор",
-            "Адміністратор магазину");
+            "Адміністратор магазину",
+            150);
 
         // Act
         var newPosition = await Mediator.Invoke(createPositionCommand);
@@ -26,5 +27,6 @@ public class CreatePositionCommandTests(
 
         position.Name.Should().Be(createPositionCommand.Name);
         position.Description.Should().Be(createPositionCommand.Description);
+        position.HourlyRate.Should().Be(createPositionCommand.HourlyRate);       
     }
 }
