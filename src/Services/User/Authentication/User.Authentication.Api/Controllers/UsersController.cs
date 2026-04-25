@@ -6,7 +6,7 @@ using User.Authentication.Application.Features.oAuth.Users.Queries.GetUsers;
 
 namespace User.Authentication.Api.Controllers;
 
-[Authorize]
+[Authorize(AuthenticationSchemes = "BasicAuthentication")]
 [Route("api/user/authentication/users")]
 public class UsersController : ApiController
 {

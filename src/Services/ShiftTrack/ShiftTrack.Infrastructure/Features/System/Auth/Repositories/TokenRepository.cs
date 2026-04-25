@@ -5,6 +5,7 @@ using ShiftTrack.Client.Enums;
 using ShiftTrack.Client.Http.Extensions;
 using ShiftTrack.Client.Http.Interfaces;
 using ShiftTrack.Domain.Features.System.Auth.Models;
+using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Infrastructure.Features.System.Auth.Repositories;
 
@@ -24,7 +25,7 @@ public class TokenRepository(
 
             return token;
         }
-        catch (Exception e)
+        catch (HttpClientException e)
         {
             logger.LogError(e, "Error occurred while generating token");
             throw;
@@ -43,7 +44,7 @@ public class TokenRepository(
 
             return token;
         }
-        catch (Exception e)
+        catch (HttpClientException e)
         {
             logger.LogError(e, "Error occurred while refreshing token");
             throw;

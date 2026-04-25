@@ -1,39 +1,78 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+﻿# =========================
+# 1. Base runtime
+# =========================
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 WORKDIR /app
+
 EXPOSE 8080
-EXPOSE 8081
 
-# Install dependencies for Chrome
-RUN apt-get update && apt-get install -y wget gnupg ca-certificates fonts-liberation \
-    libasound2 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 \
-    libfontconfig1 libgcc1 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 \
-    libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 \
-    libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 \
-    libxrandr2 libxrender1 libxss1 libxtst6 lsb-release xdg-utils && \
-    rm -rf /var/lib/apt/lists/*
-
-# Install Chrome Stable
-RUN apt-get update && apt-get install -y chromium \
+# Install Google Chrome and its dependencies
+RUN apt-get update && apt-get install -y \
+    wget \
+    gnupg \
+    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor > /usr/share/keyrings/google-archive-keyring.gpg \
+    && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-archive-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google.list \
+    && apt-get update && apt-get install -y \
+    google-chrome-stable \
+    fonts-liberation \
+    fonts-dejavu-core \
+    fonts-freefont-ttf \
+    libasound2t64 \
+    libatk-bridge2.0-0t64 \
+    libatk1.0-0t64 \
+    libcups2t64 \
+    libdrm2 \
+    libxkbcommon0 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxrandr2 \
+    libgbm1 \
+    libgtk-3-0t64 \
+    libnss3 \
+    libxss1 \
+    libxtst6 \
+    xdg-utils \
+    ca-certificates \
+    --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
-USER $APP_UID
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
+ENV ASPNETCORE_URLS=http://+:8080
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+# =========================
+# 2. Build stage
+# =========================
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
+
 WORKDIR /src
+
+# copy csproj (cache optimization)
 COPY ["src/Services/Generators/Pdf/Generators.Pdf.Api/Generators.Pdf.Api.csproj", "src/Services/Generators/Pdf/Generators.Pdf.Api/"]
-COPY ["src/Services/Generators/Pdf/Generators.Pdf.Application/Generators.Pdf.Application.csproj", "src/Services/Generators/Pdf/Generators.Pdf.Application/"]
-COPY ["src/Common/Kernel/ShiftTrack.Kernel.CQRS/ShiftTrack.Kernel.CQRS.csproj", "src/Common/Kernel/ShiftTrack.Kernel.CQRS/"]
-COPY ["src/Common/Kernel/ShiftTrack.Kernel/ShiftTrack.Kernel.csproj", "src/Common/Kernel/ShiftTrack.Kernel/"]
-COPY ["src/Services/Generators/Pdf/Generators.Pdf.Infrastructure/Generators.Pdf.Infrastructure.csproj", "src/Services/Generators/Pdf/Generators.Pdf.Infrastructure/"]
 COPY ["src/Common/Authentication/ShiftTrack.Authentication.Basic/ShiftTrack.Authentication.Basic.csproj", "src/Common/Authentication/ShiftTrack.Authentication.Basic/"]
 COPY ["src/Common/Authentication/ShiftTrack.Authentication/ShiftTrack.Authentication.csproj", "src/Common/Authentication/ShiftTrack.Authentication/"]
-RUN dotnet restore "src/Services/Generators/Pdf/Generators.Pdf.Api/Generators.Pdf.Api.csproj"
-COPY . .
-WORKDIR "/src/src/Services/Generators/Pdf/Generators.Pdf.Api"
-RUN dotnet publish "Generators.Pdf.Api.csproj" -c Release -o /app
+COPY ["src/Common/Kernel/ShiftTrack.Kernel/ShiftTrack.Kernel.csproj", "src/Common/Kernel/ShiftTrack.Kernel/"]
+COPY ["src/Common/Kernel/ShiftTrack.Kernel.CQRS/ShiftTrack.Kernel.CQRS.csproj", "src/Common/Kernel/ShiftTrack.Kernel.CQRS/"]
+COPY ["src/Services/Generators/Pdf/Generators.Pdf.Application/Generators.Pdf.Application.csproj", "src/Services/Generators/Pdf/Generators.Pdf.Application/"]
+COPY ["src/Services/Generators/Pdf/Generators.Pdf.Infrastructure/Generators.Pdf.Infrastructure.csproj", "src/Services/Generators/Pdf/Generators.Pdf.Infrastructure/"]
 
+RUN dotnet restore "src/Services/Generators/Pdf/Generators.Pdf.Api/Generators.Pdf.Api.csproj"
+
+# copy everything else
+COPY . .
+
+WORKDIR "/src/src/Services/Generators/Pdf/Generators.Pdf.Api"
+RUN dotnet publish "Generators.Pdf.Api.csproj" \
+    -c $BUILD_CONFIGURATION \
+    -o /app/publish \
+    /p:UseAppHost=false
+
+# =========================
+# 3. Final image
+# =========================
 FROM base AS final
 WORKDIR /app
-COPY --from=build /app .
+
+COPY --from=build /app/publish .
+
 ENTRYPOINT ["dotnet", "Generators.Pdf.Api.dll"]

@@ -6,6 +6,6 @@ namespace Generators.Pdf.Application.Common.Services;
 public class PdfGeneratorService(
     IPuppeteerSharpRepository puppeteerSharpRepository) : IPdfGeneratorService
 {
-    public Task<Stream> GenerateFromHtml(GeneratePdfDto dto)
-        => puppeteerSharpRepository.GenerateFromHtml(dto);
+    public Task<Stream> GenerateFromHtml(GeneratePdfDto dto, CancellationToken cancellationToken)
+        => puppeteerSharpRepository.GenerateFromHtml(dto, cancellationToken);
 }

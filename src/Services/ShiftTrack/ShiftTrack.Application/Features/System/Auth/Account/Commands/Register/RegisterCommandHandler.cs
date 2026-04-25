@@ -46,7 +46,14 @@ public class RegisterCommandHandler(
         };
 
         applicationDbContext.Employees.Add(employee);
-        await applicationDbContext.SaveChangesAsync(cancellationToken);
+
+        try
+        {
+            await applicationDbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch (Exception ex)
+        {
+        }
 
         return mapper.Map<EmployeeVm>(employee);
     }

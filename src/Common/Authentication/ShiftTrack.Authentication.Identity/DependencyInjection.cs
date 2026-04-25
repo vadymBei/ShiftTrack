@@ -13,9 +13,17 @@ namespace ShiftTrack.Authentication.Identity
         {
             // add identity storage
             services
-                .AddDefaultIdentity<User>()
+                .AddIdentity<User, IdentityRole>(options =>
+                {
+                    options.Password.RequireDigit = true;
+                    options.Password.RequiredLength = 6;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireUppercase = true;
+                    options.Password.RequireLowercase = true;
+                })
                 .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<TContext>();
+                .AddEntityFrameworkStores<TContext>()
+                .AddDefaultTokenProviders();
 
             return services;
         }

@@ -5,6 +5,7 @@ using Location.Infrastructure.Models;
 using Microsoft.Extensions.Logging;
 using ShiftTrack.Client.Http.Extensions;
 using ShiftTrack.Client.Http.Interfaces;
+using ShiftTrack.Kernel.Exceptions;
 
 namespace Location.Infrastructure.Repositories;
 
@@ -23,7 +24,7 @@ public class LocationRepository(
 
             return geoLocations.Select(x => x.ToLocationEntity());
         }
-        catch (Exception ex)
+        catch (HttpClientException ex)
         {
             logger.LogError(ex, "Error occurred while searching for locations");
             throw;

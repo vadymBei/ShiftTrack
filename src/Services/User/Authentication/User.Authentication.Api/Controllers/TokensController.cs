@@ -7,7 +7,7 @@ using User.Authentication.Application.Features.oAuth.Tokens.Commands.RefreshToke
 
 namespace User.Authentication.Api.Controllers;
 
-[Authorize]
+[Authorize(AuthenticationSchemes = "BasicAuthentication")]
 [Route("api/user/authentication/tokens")]
 public class Tokens : ApiController
 {
