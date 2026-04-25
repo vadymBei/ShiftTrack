@@ -6,7 +6,7 @@ This is REST API following the principles of Clean Architecture.
 ShiftTrack is a web application designed for managing employee work schedules.
 
 ## Technologies
-- .NET 8.0
+- .NET 10
 - ASP.NET Core
 - Docker
 - Entity Framework Core
