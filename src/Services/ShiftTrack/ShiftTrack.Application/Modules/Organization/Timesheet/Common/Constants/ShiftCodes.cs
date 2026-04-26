@@ -1,4 +1,4 @@
-﻿namespace ShiftTrack.Application.Modules.Booking.Common.Constants;
+﻿namespace ShiftTrack.Application.Modules.Organization.Timesheet.Common.Constants;
 
 public static class ShiftCodes
 {

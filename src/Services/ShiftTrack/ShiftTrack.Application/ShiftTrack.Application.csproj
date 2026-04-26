@@ -19,6 +19,8 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Folder Include="Modules\Booking\BusinessTrips\Commands\" />
+        <Folder Include="Modules\Booking\BusinessTrips\Queries\" />
         <Folder Include="Modules\Organization\Timesheet\EmployeeShifts\Queries\" />
         <Folder Include="Modules\System\Auth\Tokens\Commands\" />
     </ItemGroup>
