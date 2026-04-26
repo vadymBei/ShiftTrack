@@ -5,7 +5,6 @@ using ShiftTrack.Application.Common.Behaviours;
 using ShiftTrack.Application.Modules.Booking;
 using ShiftTrack.Application.Modules.Organization;
 using ShiftTrack.Application.Modules.System;
-using ShiftTrack.Client.Http;
 using ShiftTrack.Kernel;
 using ShiftTrack.Kernel.CQRS;
 using ShiftTrack.Kernel.CQRS.Interfaces;
