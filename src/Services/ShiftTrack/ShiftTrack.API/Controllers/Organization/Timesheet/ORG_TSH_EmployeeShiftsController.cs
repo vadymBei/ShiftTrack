@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ShiftTrack.Application.Modules.Organization.Timesheet.Common.Dtos;
-using ShiftTrack.Application.Modules.Organization.Timesheet.Common.ViewModels;
-using ShiftTrack.Application.Modules.Organization.Timesheet.EmployeeShifts.Commands.CreateEmployeeShifts;
+using ShiftTrack.Application.Modules.Organization.Timesheet.EmployeeShifts.Dtos;
+using ShiftTrack.Application.Modules.Organization.Timesheet.EmployeeShifts.UseCases.Commands.CreateEmployeeShifts;
+using ShiftTrack.Application.Modules.Organization.Timesheet.EmployeeShifts.ViewModels;
 using ShiftTrack.Kernel.CQRS.Controllers;
 
 namespace ShiftTrack.API.Controllers.Organization.Timesheet;

@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
-using ShiftTrack.Application.Modules.Organization.Structure.Units.Commands.CreateUnit;
-using ShiftTrack.Application.Modules.Organization.Structure.Units.Queries.GetUnits;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.Dtos;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.UseCases.Commands.CreateUnit;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.UseCases.Queries.GetUnits;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
 
 namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.Units.Queries;
@@ -16,19 +17,21 @@ public class GetUnitsQueryTests(
         DbContext.Units.RemoveRange(unitsToDelete);
 
         var firstUnitCreateCommand = new CreateUnitCommand(
-            "Хмельницький",
-            "Хмельницький регіон",
-            "Хм");
+            new UnitToCreateDto(
+                "Хмельницький",
+                "Хмельницький регіон",
+                "Хм"));
 
         await Mediator.Invoke(firstUnitCreateCommand);
 
         var secondUnitCreateCommand = new CreateUnitCommand(
-            "Львів",
-            "Львівський регіон",
-            "Лв");
+            new UnitToCreateDto(
+                "Львів",
+                "Львівський регіон",
+                "Лв"));
 
         await Mediator.Invoke(secondUnitCreateCommand);
-            
+
         var getUnitsQuery = new GetUnitsQuery();
 
         // Act

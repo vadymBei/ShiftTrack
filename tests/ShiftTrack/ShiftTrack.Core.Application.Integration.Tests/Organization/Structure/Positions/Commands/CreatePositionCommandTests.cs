@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
-using ShiftTrack.Application.Modules.Organization.Structure.Positions.Commands.CreatePosition;
+using ShiftTrack.Application.Modules.Organization.Structure.Positions.Dtos;
+using ShiftTrack.Application.Modules.Organization.Structure.Positions.UseCases.Commands.CreatePosition;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
 
 namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.Positions.Commands;
@@ -12,9 +13,10 @@ public class CreatePositionCommandTests(
     {
         // Arrange
         var createPositionCommand = new CreatePositionCommand(
-            "Адміністратор",
-            "Адміністратор магазину",
-            150);
+            new PositionToCreateDto(
+                "Адміністратор",
+                "Адміністратор магазину",
+                150));
 
         // Act
         var newPosition = await Mediator.Invoke(createPositionCommand);
@@ -25,8 +27,8 @@ public class CreatePositionCommandTests(
 
         position.Should().NotBeNull();
 
-        position.Name.Should().Be(createPositionCommand.Name);
-        position.Description.Should().Be(createPositionCommand.Description);
-        position.HourlyRate.Should().Be(createPositionCommand.HourlyRate);       
+        position.Name.Should().Be(createPositionCommand.Data.Name);
+        position.Description.Should().Be(createPositionCommand.Data.Description);
+        position.HourlyRate.Should().Be(createPositionCommand.Data.HourlyRate);
     }
 }

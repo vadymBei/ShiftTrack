@@ -1,10 +1,10 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.Commands.CreateShift;
-using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.Commands.DeleteShift;
+using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.Dtos;
+using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.UseCases.Commands.CreateShift;
+using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.UseCases.Commands.DeleteShift;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
 using ShiftTrack.Domain.Modules.Organization.Timesheet.Shifts.Enums;
-using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Timesheet.Shifts.Commands;
 
@@ -17,7 +17,7 @@ public class DeleteShiftCommandTests(
         // Arrange
         var nonExistentId = 1000;
         var command = new DeleteShiftCommand(nonExistentId);
-        
+
         // Act
         Func<Task> act = () => Mediator.Invoke(command);
 
@@ -30,16 +30,16 @@ public class DeleteShiftCommandTests(
     {
         // Arrange
         var createCommand = new CreateShiftCommand(
-            "ТС3",
-            "Тест 3",
-            "#FFFFF",
-            ShiftType.DayOff,
-            new TimeSpan(09, 30, 00),
-            new TimeSpan(21, 00, 00));
+            new ShiftToCreateDto(
+                "ТС3",
+                "Тест 3",
+                "#FFFFF",
+                ShiftType.DayOff,
+                new TimeSpan(09, 30, 00),
+                new TimeSpan(21, 00, 00)));
 
         var shift = await Mediator.Invoke(createCommand);
-        var initialCount = await DbContext.Shifts.CountAsync();
-        
+
         var deleteCommand = new DeleteShiftCommand(shift.Id);
 
         // Act
@@ -47,7 +47,7 @@ public class DeleteShiftCommandTests(
 
         // Assert
         var deletedShift = await DbContext.Shifts
-            .IgnoreQueryFilters() 
+            .IgnoreQueryFilters()
             .FirstOrDefaultAsync(x => x.Id == shift.Id);
 
         deletedShift.Should().NotBeNull();
@@ -56,7 +56,7 @@ public class DeleteShiftCommandTests(
                 Id = shift.Id,
                 IsDeleted = true,
                 DeletedAt = deletedShift.DeletedAt
-            }, 
+            },
             options => options
                 .ExcludingMissingMembers()
                 .Using<DateTime>(ctx => ctx.Subject.Should()

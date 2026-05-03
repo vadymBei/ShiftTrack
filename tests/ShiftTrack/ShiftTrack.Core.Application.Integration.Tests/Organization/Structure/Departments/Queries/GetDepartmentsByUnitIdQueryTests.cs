@@ -1,8 +1,11 @@
 ﻿using FluentAssertions;
-using ShiftTrack.Application.Modules.Organization.Structure.Common.ViewModels;
-using ShiftTrack.Application.Modules.Organization.Structure.Departments.Commands.CreateDepartment;
-using ShiftTrack.Application.Modules.Organization.Structure.Departments.Queries.GetDepartmentsByUnitId;
-using ShiftTrack.Application.Modules.Organization.Structure.Units.Commands.CreateUnit;
+using ShiftTrack.Application.Modules.Organization.Structure.Departments.Dtos;
+using ShiftTrack.Application.Modules.Organization.Structure.Departments.UseCases.Commands.CreateDepartment;
+using ShiftTrack.Application.Modules.Organization.Structure.Departments.UseCases.Queries.GetDepartmentsByUnitId;
+using ShiftTrack.Application.Modules.Organization.Structure.Departments.ViewModels;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.Dtos;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.UseCases.Commands.CreateUnit;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.ViewModels;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
 using ShiftTrack.Kernel.Exceptions;
 
@@ -33,15 +36,17 @@ public class GetDepartmentsByUnitIdQueryTests(
         DbContext.Departments.RemoveRange(departmentsToRemove);
 
         var createUnitCommand = new CreateUnitCommand(
-           "Хмельницький",
-           "Хмельницький регіон",
-           "Хм");
+            new UnitToCreateDto(
+                "Хмельницький",
+                "Хмельницький регіон",
+                "Хм"));
 
         var unit = await Mediator.Invoke(createUnitCommand);
 
         var createDepartmentCommand = new CreateDepartmentCommand(
-            "ТЦ Либіль Плаза",
-            unit.Id);
+            new DepartmentToCreateDto(
+                "ТЦ Либіль Плаза",
+                unit.Id));
 
         var department = await Mediator.Invoke(createDepartmentCommand);
 

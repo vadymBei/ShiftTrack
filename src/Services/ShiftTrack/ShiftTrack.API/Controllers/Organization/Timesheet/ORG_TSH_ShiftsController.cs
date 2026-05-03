@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ShiftTrack.Application.Modules.Organization.Timesheet.Common.ViewModels;
-using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.Commands.CreateShift;
-using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.Commands.DeleteShift;
-using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.Commands.UpdateShift;
-using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.Queries.GetShiftById;
-using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.Queries.GetShifts;
+using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.Dtos;
+using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.UseCases.Commands.CreateShift;
+using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.UseCases.Commands.DeleteShift;
+using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.UseCases.Commands.UpdateShift;
+using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.UseCases.Queries.GetShiftById;
+using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.UseCases.Queries.GetShifts;
+using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.ViewModels;
 using ShiftTrack.Kernel.CQRS.Controllers;
 
 namespace ShiftTrack.API.Controllers.Organization.Timesheet;
@@ -15,8 +16,8 @@ namespace ShiftTrack.API.Controllers.Organization.Timesheet;
 public class ORG_TSH_ShiftsController : ApiController
 {
     [HttpPost]
-    public async Task<ShiftVm> CreateShift(CreateShiftCommand command)
-        => await Mediator.Invoke(command);
+    public async Task<ShiftVm> CreateShift(ShiftToCreateDto data)
+        => await Mediator.Invoke(new CreateShiftCommand(data));
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteShift(long id)
@@ -27,8 +28,8 @@ public class ORG_TSH_ShiftsController : ApiController
     }
 
     [HttpPut]
-    public async Task<ShiftVm> UpdateShift(UpdateShiftCommand command)
-        => await Mediator.Invoke(command);
+    public async Task<ShiftVm> UpdateShift(ShiftToUpdateDto data)
+        => await Mediator.Invoke(new UpdateShiftCommand(data));
 
     [HttpGet]
     public async Task<IEnumerable<ShiftVm>> GetShifts()

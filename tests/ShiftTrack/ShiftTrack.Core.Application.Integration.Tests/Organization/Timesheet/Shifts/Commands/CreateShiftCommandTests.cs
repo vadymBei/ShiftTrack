@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.Commands.CreateShift;
+using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.Dtos;
+using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.UseCases.Commands.CreateShift;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
 using ShiftTrack.Domain.Modules.Organization.Timesheet.Shifts.Enums;
 
@@ -14,13 +15,14 @@ public class CreateShiftCommandTests(
     {
         // Arrange
         var command = new CreateShiftCommand(
-            "ТС",
-            "Тестова",
-            "#FFFFF",
-            ShiftType.DayOff,
-            new TimeSpan(09, 30, 00),
-            new TimeSpan(21, 00, 00));
-    
+            new ShiftToCreateDto(
+                "ТС",
+                "Тестова",
+                "#FFFFF",
+                ShiftType.DayOff,
+                new TimeSpan(09, 30, 00),
+                new TimeSpan(21, 00, 00)));
+
         var initialCount = await DbContext.Shifts.CountAsync();
 
         // Act
@@ -31,13 +33,13 @@ public class CreateShiftCommandTests(
         result.Should().NotBeNull();
         result.Should().BeEquivalentTo(new
         {
-            command.Code,
-            command.Description,
-            command.Color,
-            command.Type,
-            command.StartTime,
-            command.EndTime,
-            WorkHours = command.EndTime - command.StartTime
+            command.Data.Code,
+            command.Data.Description,
+            command.Data.Color,
+            command.Data.Type,
+            command.Data.StartTime,
+            command.Data.EndTime,
+            WorkHours = command.Data.EndTime - command.Data.StartTime
         });
 
         // Перевірка стану БД
@@ -46,20 +48,20 @@ public class CreateShiftCommandTests(
 
         var shiftInDb = await DbContext.Shifts
             .FirstOrDefaultAsync(x => x.Id == result.Id);
-    
+
         shiftInDb.Should().NotBeNull();
         shiftInDb.Should().BeEquivalentTo(new
             {
                 result.Id,
-                command.Code,
-                command.Description,
-                command.Color,
-                command.Type,
-                command.StartTime,
-                command.EndTime,
+                command.Data.Code,
+                command.Data.Description,
+                command.Data.Color,
+                command.Data.Type,
+                command.Data.StartTime,
+                command.Data.EndTime,
                 IsDeleted = false,
                 DeletedAt = (DateTime?)null,
-                WorkHours = command.EndTime - command.StartTime
+                WorkHours = command.Data.EndTime - command.Data.StartTime
             },
             options => options
                 .ExcludingMissingMembers()
@@ -73,12 +75,13 @@ public class CreateShiftCommandTests(
     {
         // Arrange
         var command = new CreateShiftCommand(
-            "ТС",
-            "Тестова",
-            "#FFFFF",
-            ShiftType.DayOff,
-            new TimeSpan(21, 00, 00),  // EndTime менше ніж StartTime
-            new TimeSpan(09, 30, 00));
+            new ShiftToCreateDto(
+                "ТС",
+                "Тестова",
+                "#FFFFF",
+                ShiftType.DayOff,
+                new TimeSpan(21, 00, 00), // EndTime менше ніж StartTime
+                new TimeSpan(09, 30, 00)));
 
         // Act
         Func<Task> act = () => Mediator.Invoke(command);
@@ -86,5 +89,4 @@ public class CreateShiftCommandTests(
         // Assert
         await act.Should().ThrowAsync<Exception>();
     }
-
 }

@@ -1,0 +1,15 @@
+using FluentValidation;
+
+namespace ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.UseCases.Queries.GetShiftById;
+
+public class GetShiftByIdQueryValidator : AbstractValidator<GetShiftByIdQuery>
+{
+    public GetShiftByIdQueryValidator()
+    {
+        RuleFor(x => x.Id)
+            .NotNull()
+            .WithMessage("Id is required")
+            .Must(x => x > 0)
+            .WithMessage("Id must be bigger than 0");
+    }
+}

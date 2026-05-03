@@ -1,6 +1,6 @@
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
-using ShiftTrack.Application.Modules.System.User.Common.Constants;
+using ShiftTrack.Application.Modules.System.User.Roles.Constants;
 using ShiftTrack.Domain.Modules.Organization.Structure.Entities;
 using ShiftTrack.Domain.Modules.Organization.Timesheet.Shifts.Entities;
 using ShiftTrack.Domain.Modules.Organization.Timesheet.Shifts.Enums;

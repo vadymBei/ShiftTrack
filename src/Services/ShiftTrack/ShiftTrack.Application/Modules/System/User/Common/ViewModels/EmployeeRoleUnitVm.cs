@@ -1,5 +1,5 @@
 using AutoMapper;
-using ShiftTrack.Application.Modules.Organization.Structure.Common.ViewModels;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.ViewModels;
 using ShiftTrack.Domain.Modules.System.User.EmployeeRoles.Entities;
 using ShiftTrack.Domain.Modules.System.User.EmployeeRoles.Enums;
 

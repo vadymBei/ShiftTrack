@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ShiftTrack.Application.Modules.System.Auth.Common.Dtos;
-using ShiftTrack.Application.Modules.System.Auth.Common.ViewModels;
-using ShiftTrack.Application.Modules.System.Auth.Tokens.Commands.GenerateToken;
-using ShiftTrack.Application.Modules.System.Auth.Tokens.Commands.RefreshToken;
+using ShiftTrack.Application.Modules.System.Auth.Tokens.Dtos;
+using ShiftTrack.Application.Modules.System.Auth.Tokens.UseCases.Commands.GenerateToken;
+using ShiftTrack.Application.Modules.System.Auth.Tokens.UseCases.Commands.RefreshToken;
+using ShiftTrack.Application.Modules.System.Auth.Tokens.ViewModels;
 using ShiftTrack.Kernel.CQRS.Controllers;
 
 namespace ShiftTrack.API.Controllers.System.Auth;

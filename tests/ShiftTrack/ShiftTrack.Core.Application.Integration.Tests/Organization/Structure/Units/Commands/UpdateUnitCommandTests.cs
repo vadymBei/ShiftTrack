@@ -1,7 +1,8 @@
 ﻿using FluentAssertions;
-using ShiftTrack.Application.Modules.Organization.Structure.Common.ViewModels;
-using ShiftTrack.Application.Modules.Organization.Structure.Units.Commands.CreateUnit;
-using ShiftTrack.Application.Modules.Organization.Structure.Units.Commands.UpdateUnit;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.Dtos;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.UseCases.Commands.CreateUnit;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.UseCases.Commands.UpdateUnit;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.ViewModels;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
 using ShiftTrack.Kernel.Exceptions;
 
@@ -15,17 +16,19 @@ public class UpdateUnitCommandTests(
     {
         // Arrange
         var createUnitCommand = new CreateUnitCommand(
-            "Хмельницький",
-            "Хмельницький регіон",
-            "Хм");
+            new UnitToCreateDto(
+                "Хмельницький",
+                "Хмельницький регіон",
+                "Хм"));
 
         var newUnit = await Mediator.Invoke(createUnitCommand);
 
         var updateUnitCommand = new UpdateUnitCommand(
-            newUnit.Id,
-            "Хмельницький оновлено",
-            "Хмельницький регіон оновлено",
-            "Хмо");
+            new UnitToUpdateDto(
+                newUnit.Id,
+                "Хмельницький оновлено",
+                "Хмельницький регіон оновлено",
+                "Хмо"));
 
         // Act
         var updatedUnit = await Mediator.Invoke(updateUnitCommand);
@@ -36,11 +39,11 @@ public class UpdateUnitCommandTests(
         updatedUnit.Should().BeEquivalentTo(
             new UnitVm()
             {
-                Id = updateUnitCommand.Id,
-                Name = updateUnitCommand.Name,
-                Description = updateUnitCommand.Description,
-                Code = updateUnitCommand.Code,
-                FullName = updateUnitCommand.Code + " " + updateUnitCommand.Name
+                Id = updateUnitCommand.Data.Id,
+                Name = updateUnitCommand.Data.Name,
+                Description = updateUnitCommand.Data.Description,
+                Code = updateUnitCommand.Data.Code,
+                FullName = updateUnitCommand.Data.Code + " " + updateUnitCommand.Data.Name
             });
     }
 
@@ -49,10 +52,11 @@ public class UpdateUnitCommandTests(
     {
         // Arrange
         var updateUnitCommand = new UpdateUnitCommand(
-            1000,
-            "Хмельницький оновлено",
-            "Хмельницький регіон оновлено",
-            "Хмо");
+            new UnitToUpdateDto(
+                1000,
+                "Хмельницький оновлено",
+                "Хмельницький регіон оновлено",
+                "Хмо"));
 
         // Act
         Func<Task> act = async () => await Mediator.Invoke(updateUnitCommand);

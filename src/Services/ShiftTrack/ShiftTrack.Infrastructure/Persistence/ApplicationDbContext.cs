@@ -9,6 +9,7 @@ using ShiftTrack.Domain.Modules.Organization.Timesheet.Shifts.Entities;
 using ShiftTrack.Domain.Modules.System.User.EmployeeRoles.Entities;
 using ShiftTrack.Domain.Modules.System.User.Employees.Entities;
 using ShiftTrack.Domain.Modules.System.User.Roles.Entities;
+using ShiftTrack.Infrastructure.Common.Interfaces;
 using ShiftTrack.Infrastructure.Interceptors;
 
 namespace ShiftTrack.Infrastructure.Persistence;
@@ -16,16 +17,16 @@ namespace ShiftTrack.Infrastructure.Persistence;
 public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
 {
     private readonly ICurrentUserService _currentUserService;
-    
+
     public ApplicationDbContext(
         ICurrentUserService currentUserService,
         DbContextOptions<ApplicationDbContext> options)
         : base(options)
     {
         _currentUserService = currentUserService;
-        
+
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-            
+
         ChangeTracker.AutoDetectChangesEnabled = true;
     }
 
@@ -34,20 +35,22 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<BusinessTrip> BusinessTrips { get; set; }
     public DbSet<BusinessTripParticipant> BusinessTripParticipants { get; set; }
     public DbSet<BusinessTripLocation> BusinessTripLocations { get; set; }
-    
+
     //Vacations
     public DbSet<Vacation> Vacations { get; set; }
-    
+
     //Organization
     //Structure
     public DbSet<Unit> Units { get; set; }
     public DbSet<Department> Departments { get; set; }
     public DbSet<Position> Positions { get; set; }
-    
+
     //Timesheet
     public DbSet<Shift> Shifts { get; set; }
     public DbSet<EmployeeShift> EmployeeShifts { get; set; }
+
     public DbSet<EmployeeShiftHistory> EmployeeShiftHistories { get; set; }
+
     //System
     //User
     public DbSet<Employee> Employees { get; set; }
@@ -60,10 +63,10 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
     {
         var entries = ChangeTracker.Entries<AuditableEntity>()
             .Where(e => e.State is EntityState.Added or EntityState.Modified);
-    
+
         var currentTime = DateTime.UtcNow;
         var currentUserId = _currentUserService.Employee?.Id;
-    
+
         foreach (var entry in entries)
         {
             switch (entry.State)
@@ -82,7 +85,7 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
                 }
             }
         }
-    
+
         return await base.SaveChangesAsync(cancellationToken);
     }
 

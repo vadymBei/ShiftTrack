@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
-using ShiftTrack.Application.Modules.Organization.Structure.Common.ViewModels;
-using ShiftTrack.Application.Modules.Organization.Structure.Units.Commands.CreateUnit;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.Dtos;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.UseCases.Commands.CreateUnit;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.ViewModels;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
 
 namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.Units.Commands;
@@ -13,9 +14,10 @@ public class CreateUnitCommandTests(
     {
         // Arrange
         var createUnitCommand = new CreateUnitCommand(
-            "Хмельницький",
-            "Хмельницький регіон",
-            "Хм");
+            new UnitToCreateDto(
+                "Хмельницький",
+                "Хмельницький регіон",
+                "Хм"));
 
         // Act
         var newUnit = await Mediator.Invoke(createUnitCommand);
@@ -29,10 +31,10 @@ public class CreateUnitCommandTests(
             new UnitVm()
             {
                 Id = newUnit.Id,
-                Name = createUnitCommand.Name,
-                Description = createUnitCommand.Description,
-                Code = createUnitCommand.Code,
-                FullName = createUnitCommand.Code + " " + createUnitCommand.Name,
+                Name = createUnitCommand.Data.Name,
+                Description = createUnitCommand.Data.Description,
+                Code = createUnitCommand.Data.Code,
+                FullName = createUnitCommand.Data.Code + " " + createUnitCommand.Data.Name,
             });
     }
 }

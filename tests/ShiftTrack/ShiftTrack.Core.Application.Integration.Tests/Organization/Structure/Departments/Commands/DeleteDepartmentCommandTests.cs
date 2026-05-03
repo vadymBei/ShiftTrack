@@ -1,7 +1,9 @@
 ﻿using FluentAssertions;
-using ShiftTrack.Application.Modules.Organization.Structure.Departments.Commands.CreateDepartment;
-using ShiftTrack.Application.Modules.Organization.Structure.Departments.Commands.DeleteDepartment;
-using ShiftTrack.Application.Modules.Organization.Structure.Units.Commands.CreateUnit;
+using ShiftTrack.Application.Modules.Organization.Structure.Departments.Dtos;
+using ShiftTrack.Application.Modules.Organization.Structure.Departments.UseCases.Commands.CreateDepartment;
+using ShiftTrack.Application.Modules.Organization.Structure.Departments.UseCases.Commands.DeleteDepartment;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.Dtos;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.UseCases.Commands.CreateUnit;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
 using ShiftTrack.Kernel.Exceptions;
 
@@ -29,15 +31,17 @@ public class DeleteDepartmentCommandTests(
     {
         // Arrange
         var createUnitCommand = new CreateUnitCommand(
-            "Хмельницький",
-            "Хмельницький регіон",
-            "Хм");
+            new UnitToCreateDto(
+                "Хмельницький",
+                "Хмельницький регіон",
+                "Хм"));
 
         var unit = await Mediator.Invoke(createUnitCommand);
 
         var createDepartmentCommand = new CreateDepartmentCommand(
-            "ТЦ Либіль Плаза",
-            unit.Id);
+            new DepartmentToCreateDto(
+                "ТЦ Либіль Плаза",
+                unit.Id));
 
         var newDepartment = await Mediator.Invoke(createDepartmentCommand);
 

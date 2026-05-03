@@ -3,7 +3,7 @@ using HtmlAgilityPack;
 using Microsoft.Extensions.Hosting;
 using ShiftTrack.Application.Common.Dtos;
 using ShiftTrack.Application.Common.Interfaces;
-using ShiftTrack.Application.Modules.Booking.Vacations.Queries.DownloadVacationRequestPdf;
+using ShiftTrack.Application.Modules.Booking.Vacations.UseCases.Queries.DownloadVacationRequestPdf;
 using ShiftTrack.Domain.Modules.Booking.Vacations.Enums;
 
 namespace ShiftTrack.Infrastructure.Common.Services.Pdf;

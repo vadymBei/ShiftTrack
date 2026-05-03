@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
-using ShiftTrack.Application.Modules.Organization.Structure.Positions.Commands.CreatePosition;
-using ShiftTrack.Application.Modules.Organization.Structure.Positions.Commands.DeletePosition;
+using ShiftTrack.Application.Modules.Organization.Structure.Positions.Dtos;
+using ShiftTrack.Application.Modules.Organization.Structure.Positions.UseCases.Commands.CreatePosition;
+using ShiftTrack.Application.Modules.Organization.Structure.Positions.UseCases.Commands.DeletePosition;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
 using ShiftTrack.Kernel.Exceptions;
 
@@ -13,9 +14,10 @@ public class DeletePositionCommandTests(IntegrationTestWebAppFactory factory) : 
     {
         // Arrange
         var createPositionCommand = new CreatePositionCommand(
-            "Адміністратор",
-            "Адміністратор магазину",
-            150);
+            new PositionToCreateDto(
+                "Адміністратор",
+                "Адміністратор магазину",
+                150));
 
         var newPosition = await Mediator.Invoke(createPositionCommand);
 
@@ -37,7 +39,7 @@ public class DeletePositionCommandTests(IntegrationTestWebAppFactory factory) : 
         var deletePositionCommand = new DeletePositionCommand(1000);
 
         // Act
-        Func<Task> act = async () =>  await Mediator.Invoke(deletePositionCommand);
+        Func<Task> act = async () => await Mediator.Invoke(deletePositionCommand);
 
         // Assert
         await act.Should()

@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
-using ShiftTrack.Application.Modules.Organization.Structure.Positions.Commands.CreatePosition;
-using ShiftTrack.Application.Modules.Organization.Structure.Positions.Queries.GetPositions;
+using ShiftTrack.Application.Modules.Organization.Structure.Positions.Dtos;
+using ShiftTrack.Application.Modules.Organization.Structure.Positions.UseCases.Commands.CreatePosition;
+using ShiftTrack.Application.Modules.Organization.Structure.Positions.UseCases.Queries.GetPositions;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
 
 namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.Positions.Queries;
@@ -16,9 +17,10 @@ public class GetPositionsQueryTests(
         DbContext.Positions.RemoveRange(positionsToRemove);
 
         var createPositionCommand = new CreatePositionCommand(
-            "Адміністратор",
-            "Адміністратор магазину",
-            150);
+            new PositionToCreateDto(
+                "Адміністратор",
+                "Адміністратор магазину",
+                150));
 
         var newPosition = await Mediator.Invoke(createPositionCommand);
 

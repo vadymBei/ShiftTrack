@@ -1,7 +1,8 @@
 ﻿using FluentAssertions;
-using ShiftTrack.Application.Modules.Organization.Timesheet.Common.ViewModels;
-using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.Commands.CreateShift;
-using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.Commands.UpdateShift;
+using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.Dtos;
+using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.UseCases.Commands.CreateShift;
+using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.UseCases.Commands.UpdateShift;
+using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.ViewModels;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
 using ShiftTrack.Domain.Modules.Organization.Timesheet.Shifts.Enums;
 using ShiftTrack.Kernel.Exceptions;
@@ -15,13 +16,14 @@ public class UpdateShiftCommandTests(IntegrationTestWebAppFactory factory) : Bas
     {
         // Arrange
         var updateShiftCommand = new UpdateShiftCommand(
-            1000,
-            "ВХ",
-            "Вихідний",
-            "#FFFFF",
-            ShiftType.DayOff,
-            new TimeSpan(09, 30, 00),
-            new TimeSpan(21, 00, 00));
+            new ShiftToUpdateDto(
+                1000,
+                "ВХ",
+                "Вихідний",
+                "#FFFFF",
+                ShiftType.DayOff,
+                new TimeSpan(09, 30, 00),
+                new TimeSpan(21, 00, 00)));
 
         // Act
         Func<Task> act = async () => await Mediator.Invoke(updateShiftCommand);
@@ -36,23 +38,25 @@ public class UpdateShiftCommandTests(IntegrationTestWebAppFactory factory) : Bas
     {
         // Arrange
         var createShiftCommand = new CreateShiftCommand(
-            "ТС2",
-            "Тест 2",
-            "#FFFFF",
-            ShiftType.DayOff,
-            new TimeSpan(09, 30, 00),
-            new TimeSpan(21, 00, 00));
+            new ShiftToCreateDto(
+                "ТС2",
+                "Тест 2",
+                "#FFFFF",
+                ShiftType.DayOff,
+                new TimeSpan(09, 30, 00),
+                new TimeSpan(21, 00, 00)));
 
         var newShift = await Mediator.Invoke(createShiftCommand);
 
         var updateShiftCommand = new UpdateShiftCommand(
-            newShift.Id,
-            "Р",
-            "Робоча зміна 9 год 30 хв",
-            "#FFF200",
-            ShiftType.Workday,
-            new TimeSpan(10, 00, 00),
-            new TimeSpan(19, 00, 00));
+            new ShiftToUpdateDto(
+                newShift.Id,
+                "Р",
+                "Робоча зміна 9 год 30 хв",
+                "#FFF200",
+                ShiftType.Workday,
+                new TimeSpan(10, 00, 00),
+                new TimeSpan(19, 00, 00)));
 
         // Act
         var updatedShift = await Mediator.Invoke(updateShiftCommand);
@@ -63,14 +67,14 @@ public class UpdateShiftCommandTests(IntegrationTestWebAppFactory factory) : Bas
         updatedShift.Should().BeEquivalentTo(
             new ShiftVm()
             {
-                Id = updateShiftCommand.Id,
-                Code = updateShiftCommand.Code,
-                Description = updateShiftCommand.Description,
-                Color = updateShiftCommand.Color,
-                Type = updateShiftCommand.Type,
-                StartTime = updateShiftCommand.StartTime,
-                EndTime = updateShiftCommand.EndTime,
-                WorkHours = updateShiftCommand.EndTime - updateShiftCommand.StartTime
+                Id = updateShiftCommand.Data.Id,
+                Code = updateShiftCommand.Data.Code,
+                Description = updateShiftCommand.Data.Description,
+                Color = updateShiftCommand.Data.Color,
+                Type = updateShiftCommand.Data.Type,
+                StartTime = updateShiftCommand.Data.StartTime,
+                EndTime = updateShiftCommand.Data.EndTime,
+                WorkHours = updateShiftCommand.Data.EndTime - updateShiftCommand.Data.StartTime
             });
     }
 }

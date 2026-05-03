@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ShiftTrack.Application.Modules.Organization.Timesheet.Common.Dtos;
-using ShiftTrack.Application.Modules.Organization.Timesheet.Common.ViewModels;
-using ShiftTrack.Application.Modules.Organization.Timesheet.UnitTimesheets.Queries.ExportTimesheet;
-using ShiftTrack.Application.Modules.Organization.Timesheet.UnitTimesheets.Queries.GetTimesheet;
+using ShiftTrack.Application.Modules.Organization.Timesheet.UnitTimesheets.Dtos;
+using ShiftTrack.Application.Modules.Organization.Timesheet.UnitTimesheets.UseCases.Queries.ExportUnitTimesheet;
+using ShiftTrack.Application.Modules.Organization.Timesheet.UnitTimesheets.UseCases.Queries.GetUnitTimesheet;
+using ShiftTrack.Application.Modules.Organization.Timesheet.UnitTimesheets.ViewModels;
 using ShiftTrack.Kernel.CQRS.Controllers;
 
 namespace ShiftTrack.API.Controllers.Organization.Timesheet;
@@ -13,11 +13,11 @@ namespace ShiftTrack.API.Controllers.Organization.Timesheet;
 public class ORG_TSH_TimesheetController : ApiController
 {
     [HttpGet]
-    public Task<TimesheetVm> GetTimesheet([FromQuery] TimesheetDto request)
+    public Task<UnitTimesheetVm> GetTimesheet([FromQuery] UnitTimesheetDto request)
         => Mediator.Invoke(new GetTimesheetQuery(request));
 
     [HttpGet("export")]
-    public async Task<IActionResult> ExportTimesheet([FromQuery] ExportTimesheetQuery query)
+    public async Task<IActionResult> ExportTimesheet([FromQuery] ExportUnitTimesheetQuery query)
     {
         var document = await Mediator.Invoke(query);
         

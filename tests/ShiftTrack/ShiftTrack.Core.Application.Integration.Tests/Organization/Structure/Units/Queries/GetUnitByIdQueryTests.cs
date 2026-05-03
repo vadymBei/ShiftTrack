@@ -1,7 +1,8 @@
 ﻿using FluentAssertions;
-using ShiftTrack.Application.Modules.Organization.Structure.Common.ViewModels;
-using ShiftTrack.Application.Modules.Organization.Structure.Units.Commands.CreateUnit;
-using ShiftTrack.Application.Modules.Organization.Structure.Units.Queries.GetUnitById;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.Dtos;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.UseCases.Commands.CreateUnit;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.UseCases.Queries.GetUnitById;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.ViewModels;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
 using ShiftTrack.Kernel.Exceptions;
 
@@ -29,9 +30,10 @@ public class GetUnitByIdQueryTests(
     {
         // Arrange
         var createUnitCommand = new CreateUnitCommand(
-            "Хмельницький",
-            "Хмельницький регіон",
-            "Хм");
+            new UnitToCreateDto(
+                "Хмельницький",
+                "Хмельницький регіон",
+                "Хм"));
 
         var newUnit = await Mediator.Invoke(createUnitCommand);
 

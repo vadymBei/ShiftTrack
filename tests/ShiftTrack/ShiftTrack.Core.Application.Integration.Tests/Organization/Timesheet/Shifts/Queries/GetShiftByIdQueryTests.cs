@@ -1,7 +1,8 @@
 ﻿using FluentAssertions;
-using ShiftTrack.Application.Modules.Organization.Timesheet.Common.ViewModels;
-using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.Commands.CreateShift;
-using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.Queries.GetShiftById;
+using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.Dtos;
+using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.UseCases.Commands.CreateShift;
+using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.UseCases.Queries.GetShiftById;
+using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.ViewModels;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
 using ShiftTrack.Domain.Modules.Organization.Timesheet.Shifts.Enums;
 using ShiftTrack.Kernel.Exceptions;
@@ -30,12 +31,13 @@ public class GetShiftByIdQueryTests(
     {
         // Arrange
         var createShiftCommand = new CreateShiftCommand(
-            "ТС1",
-            "Тест 1",
-            "#FFFFF",
-            ShiftType.DayOff,
-            new TimeSpan(09, 30, 00),
-            new TimeSpan(21, 00, 00));
+            new ShiftToCreateDto(
+                "ТС1",
+                "Тест 1",
+                "#FFFFF",
+                ShiftType.DayOff,
+                new TimeSpan(09, 30, 00),
+                new TimeSpan(21, 00, 00)));
 
         var newShift = await Mediator.Invoke(createShiftCommand);
 

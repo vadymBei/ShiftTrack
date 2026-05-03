@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ShiftTrack.Application.Modules.Organization.Employees.Commands.UpdateEmployee;
-using ShiftTrack.Application.Modules.Organization.Employees.Common.Dtos;
-using ShiftTrack.Application.Modules.Organization.Employees.Common.ViewModels;
-using ShiftTrack.Application.Modules.Organization.Employees.Queries.GetEmployeeById;
-using ShiftTrack.Application.Modules.Organization.Employees.Queries.GetEmployees;
+using ShiftTrack.Application.Modules.Organization.Employees.Dtos;
+using ShiftTrack.Application.Modules.Organization.Employees.UseCases.Commands.UpdateEmployee;
+using ShiftTrack.Application.Modules.Organization.Employees.UseCases.Queries.GetEmployeeById;
+using ShiftTrack.Application.Modules.Organization.Employees.UseCases.Queries.GetEmployees;
+using ShiftTrack.Application.Modules.Organization.Employees.ViewModels;
 using ShiftTrack.Kernel.CQRS.Controllers;
 
 namespace ShiftTrack.API.Controllers.Organization.Employees;

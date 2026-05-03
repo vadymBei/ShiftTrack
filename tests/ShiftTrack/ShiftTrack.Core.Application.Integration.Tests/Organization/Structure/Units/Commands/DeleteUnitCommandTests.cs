@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
-using ShiftTrack.Application.Modules.Organization.Structure.Units.Commands.CreateUnit;
-using ShiftTrack.Application.Modules.Organization.Structure.Units.Commands.DeleteUnit;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.Dtos;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.UseCases.Commands.CreateUnit;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.UseCases.Commands.DeleteUnit;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
 using ShiftTrack.Kernel.Exceptions;
 
@@ -28,9 +29,10 @@ public class DeleteUnitCommandTests(
     {
         // Arrange
         var createUnitCommand = new CreateUnitCommand(
-            "Хмельницький",
-            "Хмельницький регіон",
-            "Хм");
+            new UnitToCreateDto(
+                "Хмельницький",
+                "Хмельницький регіон",
+                "Хм"));
 
         var newUnit = await Mediator.Invoke(createUnitCommand);
 
@@ -43,5 +45,5 @@ public class DeleteUnitCommandTests(
         var deletedUnit = DbContext.Units.FirstOrDefault(x => x.Id == newUnit.Id);
 
         deletedUnit.Should().BeNull();
-    }        
+    }
 }
