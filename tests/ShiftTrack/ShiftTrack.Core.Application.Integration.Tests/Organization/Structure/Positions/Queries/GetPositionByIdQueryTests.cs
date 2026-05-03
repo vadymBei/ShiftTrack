@@ -1,6 +1,4 @@
 ﻿using FluentAssertions;
-using ShiftTrack.Application.Modules.Organization.Structure.Positions.Dtos;
-using ShiftTrack.Application.Modules.Organization.Structure.Positions.UseCases.Commands.CreatePosition;
 using ShiftTrack.Application.Modules.Organization.Structure.Positions.UseCases.Queries.GetPositionById;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
 using ShiftTrack.Kernel.Exceptions;
@@ -14,13 +12,7 @@ public class GetPositionByIdQueryTests(
     public async Task GetById_ShouldReturnPosition_WhenPositionExists()
     {
         // Arrange
-        var createPositionCommand = new CreatePositionCommand(
-            new PositionToCreateDto(
-                "Адміністратор",
-                "Адміністратор магазину",
-                150));
-
-        var newPosition = await Mediator.Invoke(createPositionCommand);
+        var newPosition = await CreatePositionAsync();
 
         var getPositionByIdQuery = new GetPositionByIdQuery(newPosition.Id);
 
@@ -29,6 +21,8 @@ public class GetPositionByIdQueryTests(
 
         // Assert
         position.Should().NotBeNull();
+        position.Id.Should().Be(newPosition.Id);
+        position.Name.Should().Be(newPosition.Name);
     }
 
     [Fact]

@@ -1,9 +1,5 @@
 ﻿using FluentAssertions;
-using ShiftTrack.Application.Modules.Organization.Structure.Departments.Dtos;
-using ShiftTrack.Application.Modules.Organization.Structure.Departments.UseCases.Commands.CreateDepartment;
 using ShiftTrack.Application.Modules.Organization.Structure.Departments.UseCases.Commands.DeleteDepartment;
-using ShiftTrack.Application.Modules.Organization.Structure.Units.Dtos;
-using ShiftTrack.Application.Modules.Organization.Structure.Units.UseCases.Commands.CreateUnit;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
 using ShiftTrack.Kernel.Exceptions;
 
@@ -30,29 +26,16 @@ public class DeleteDepartmentCommandTests(
     public async Task Delete_ShouldRemove_WhenDepartmentExists()
     {
         // Arrange
-        var createUnitCommand = new CreateUnitCommand(
-            new UnitToCreateDto(
-                "Хмельницький",
-                "Хмельницький регіон",
-                "Хм"));
+        var unit = await CreateUnitAsync();
+        var department = await CreateDepartmentAsync(unit.Id);
 
-        var unit = await Mediator.Invoke(createUnitCommand);
-
-        var createDepartmentCommand = new CreateDepartmentCommand(
-            new DepartmentToCreateDto(
-                "ТЦ Либіль Плаза",
-                unit.Id));
-
-        var newDepartment = await Mediator.Invoke(createDepartmentCommand);
-
-        var deleteDepartmentCommand = new DeleteDepartmentCommand(newDepartment.Id);
+        var deleteDepartmentCommand = new DeleteDepartmentCommand(department.Id);
 
         // Act
         await Mediator.Invoke(deleteDepartmentCommand);
 
         // Assert
-        var deletedDepartment = DbContext.Departments.FirstOrDefault(x => x.Id == newDepartment.Id);
-
-        deletedDepartment.Should().BeNull();
+        Func<Task> act = async () => await DepartmentRepository.GetById(department.Id, CancellationToken.None);
+        await act.Should().ThrowAsync<EntityNotFoundException>();
     }
 }

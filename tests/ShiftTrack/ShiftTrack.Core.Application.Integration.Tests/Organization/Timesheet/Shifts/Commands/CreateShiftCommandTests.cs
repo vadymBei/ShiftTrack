@@ -11,25 +11,22 @@ public class CreateShiftCommandTests(
     IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory)
 {
     [Fact]
-    public async Task Create_ShouldAdd_NewShiftToDbContext()
+    public async Task Create_ShouldAdd_NewShiftToDatabase()
     {
         // Arrange
         var command = new CreateShiftCommand(
             new ShiftToCreateDto(
-                "ТС",
-                "Тестова",
-                "#FFFFF",
-                ShiftType.DayOff,
+                Faker.Random.Replace("??").ToUpper(),
+                Faker.Commerce.ProductName(),
+                Faker.Internet.Color(),
+                ShiftType.Workday,
                 new TimeSpan(09, 30, 00),
                 new TimeSpan(21, 00, 00)));
-
-        var initialCount = await DbContext.Shifts.CountAsync();
 
         // Act
         var result = await Mediator.Invoke(command);
 
         // Assert
-        // Перевірка результату команди
         result.Should().NotBeNull();
         result.Should().BeEquivalentTo(new
         {
@@ -42,12 +39,7 @@ public class CreateShiftCommandTests(
             WorkHours = command.Data.EndTime - command.Data.StartTime
         });
 
-        // Перевірка стану БД
-        var currentCount = await DbContext.Shifts.CountAsync();
-        currentCount.Should().Be(initialCount + 1);
-
-        var shiftInDb = await DbContext.Shifts
-            .FirstOrDefaultAsync(x => x.Id == result.Id);
+        var shiftInDb = await ShiftRepository.GetById(result.Id, CancellationToken.None);
 
         shiftInDb.Should().NotBeNull();
         shiftInDb.Should().BeEquivalentTo(new
@@ -76,11 +68,11 @@ public class CreateShiftCommandTests(
         // Arrange
         var command = new CreateShiftCommand(
             new ShiftToCreateDto(
-                "ТС",
-                "Тестова",
-                "#FFFFF",
-                ShiftType.DayOff,
-                new TimeSpan(21, 00, 00), // EndTime менше ніж StartTime
+                Faker.Random.Replace("??").ToUpper(),
+                Faker.Commerce.ProductName(),
+                Faker.Internet.Color(),
+                ShiftType.Workday,
+                new TimeSpan(21, 00, 00),
                 new TimeSpan(09, 30, 00)));
 
         // Act

@@ -16,31 +16,20 @@ public class UpdatePositionCommandTests(
     public async Task Update_ShouldReturnUpdatedPosition_WhenPositionExists()
     {
         // Arrange
-        var createPositionCommand = new CreatePositionCommand(
-            new PositionToCreateDto(
-                "Адміністратор",
-                "Адміністратор магазину",
-                150));
-
-        var newPosition = await Mediator.Invoke(createPositionCommand);
-
-        var getPositionByIdQuery = new GetPositionByIdQuery(newPosition.Id);
-
-        var position = await Mediator.Invoke(getPositionByIdQuery);
+        var position = await CreatePositionAsync();
 
         var updatePositionCommand = new UpdatePositionCommand(
             new PositionToUpdateDto(
                 position.Id,
-                "Адміністратор оновлений",
-                "Адміністратор магазину оновлений",
-                170));
+                Faker.Name.JobTitle(),
+                Faker.Name.JobDescriptor(),
+                Faker.Random.Decimal(100, 500)));
 
         // Act
         var updatedPosition = await Mediator.Invoke(updatePositionCommand);
 
         // Assert
         updatedPosition.Should().NotBeNull();
-
         updatedPosition.Should().BeEquivalentTo(
             new PositionVm()
             {
@@ -58,8 +47,8 @@ public class UpdatePositionCommandTests(
         var updatePositionCommand = new UpdatePositionCommand(
             new PositionToUpdateDto(
                 1000,
-                "Тест",
-                "Тест оновлення посади з помилкою",
+                Faker.Name.JobTitle(),
+                Faker.Name.JobDescriptor(),
                 150));
 
         // Act

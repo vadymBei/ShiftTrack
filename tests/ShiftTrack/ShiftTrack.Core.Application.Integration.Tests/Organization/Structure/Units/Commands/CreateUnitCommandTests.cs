@@ -15,16 +15,15 @@ public class CreateUnitCommandTests(
         // Arrange
         var createUnitCommand = new CreateUnitCommand(
             new UnitToCreateDto(
-                "Хмельницький",
-                "Хмельницький регіон",
-                "Хм"));
+                Faker.Address.City(),
+                Faker.Address.FullAddress(),
+                Faker.Random.Replace("???").ToUpper()));
 
         // Act
         var newUnit = await Mediator.Invoke(createUnitCommand);
 
         // Assert
-        var unit = DbContext.Units
-            .FirstOrDefault(x => x.Id == newUnit.Id);
+        var unit = await UnitRepository.GetById(newUnit.Id, CancellationToken.None);
 
         unit.Should().NotBeNull();
         unit.Should().BeEquivalentTo(

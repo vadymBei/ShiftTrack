@@ -18,10 +18,10 @@ public class UpdateShiftCommandTests(IntegrationTestWebAppFactory factory) : Bas
         var updateShiftCommand = new UpdateShiftCommand(
             new ShiftToUpdateDto(
                 1000,
-                "ВХ",
-                "Вихідний",
-                "#FFFFF",
-                ShiftType.DayOff,
+                Faker.Random.Replace("??"),
+                Faker.Commerce.ProductName(),
+                Faker.Internet.Color(),
+                Faker.PickRandom<ShiftType>(),
                 new TimeSpan(09, 30, 00),
                 new TimeSpan(21, 00, 00)));
 
@@ -37,24 +37,15 @@ public class UpdateShiftCommandTests(IntegrationTestWebAppFactory factory) : Bas
     public async Task Update_ShouldUpdate_WhenShiftExists()
     {
         // Arrange
-        var createShiftCommand = new CreateShiftCommand(
-            new ShiftToCreateDto(
-                "ТС2",
-                "Тест 2",
-                "#FFFFF",
-                ShiftType.DayOff,
-                new TimeSpan(09, 30, 00),
-                new TimeSpan(21, 00, 00)));
-
-        var newShift = await Mediator.Invoke(createShiftCommand);
+        var newShift = await CreateShiftAsync();
 
         var updateShiftCommand = new UpdateShiftCommand(
             new ShiftToUpdateDto(
                 newShift.Id,
-                "Р",
-                "Робоча зміна 9 год 30 хв",
-                "#FFF200",
-                ShiftType.Workday,
+                Faker.Random.Replace("??"),
+                Faker.Commerce.ProductName(),
+                Faker.Internet.Color(),
+                Faker.PickRandom<ShiftType>(),
                 new TimeSpan(10, 00, 00),
                 new TimeSpan(19, 00, 00)));
 

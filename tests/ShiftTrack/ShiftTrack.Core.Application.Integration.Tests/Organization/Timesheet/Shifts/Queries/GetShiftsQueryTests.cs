@@ -1,48 +1,29 @@
-﻿// using Moq;
-// using ShiftTrack.API.Controllers.Organization.Timesheet;
-// using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
-// using ShiftTrack.Core.Application.Organization.Timesheet.Common.ViewModels.Shifts;
-// using ShiftTrack.Core.Application.Organization.Timesheet.Shifts.Queries.GetShifts;
-// using ShiftTrack.Core.Domain.Organization.Timesheet.Shifts.Enums;
-// using ShiftTrack.Kernel.CQRS.Queries;
-//
-// namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Timesheet.Shifts.Queries;
-//
-// public class GetShiftsQueryTests(
-//     IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory)
-// {
-//     [Fact]
-//     public async Task GetShifts_ReturnsExpectedShifts()
-//     {
-//         // Arrange
-//         var mockHandler = new Mock<IQueryHandler<GetShiftsQuery, IEnumerable<ShiftVM>>>();
-//     
-//         var expectedShifts = new List<ShiftVM>
-//         {
-//             new()
-//             {
-//                 Id = 1, 
-//                 Code = "ВХ", 
-//                 Description = "Вихідний",
-//                 Color = "#FFFFF",
-//                 Type = ShiftType.DayOff,
-//                 EndTime = null,
-//                 StartTime = null,
-//                 WorkHours = null
-//             },
-//         };
-//     
-//         mockHandler.Setup(h => h.Handle(It.IsAny<GetShiftsQuery>(), It.IsAny<CancellationToken>()))
-//             .ReturnsAsync(expectedShifts);
-//     
-//         var controller = new ORG_TSH_ShiftsController(mockHandler.Object);
-//     
-//         // Act
-//         var result = await controller.GetShifts();
-//     
-//         // Assert
-//         Assert.Equal(expectedShifts, result);
-//     
-//         mockHandler.Verify(h => h.Handle(It.IsAny<GetShiftsQuery>(), It.IsAny<CancellationToken>()), Times.Once);
-//     }
-// }
+﻿using FluentAssertions;
+using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.UseCases.Queries.GetShifts;
+using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
+
+namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Timesheet.Shifts.Queries;
+
+public class GetShiftsQueryTests(
+    IntegrationTestWebAppFactory factory) : BaseIntegrationTest(factory)
+{
+    [Fact]
+    public async Task GetShifts_ShouldReturnShifts_WhenShiftsExist()
+    {
+        // Arrange
+        var shift = await CreateShiftAsync();
+
+        var query = new GetShiftsQuery();
+
+        // Act
+        var shifts = await Mediator.Invoke(query);
+
+        // Assert
+        shifts.Should().NotBeNull();
+        shifts.Should().Contain(x => x.Id == shift.Id);
+        
+        var foundShift = shifts.First(x => x.Id == shift.Id);
+        foundShift.Code.Should().Be(shift.Code);
+        foundShift.Description.Should().Be(shift.Description);
+    }
+}

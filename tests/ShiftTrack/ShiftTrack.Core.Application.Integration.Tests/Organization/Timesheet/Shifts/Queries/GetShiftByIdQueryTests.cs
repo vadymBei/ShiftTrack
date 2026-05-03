@@ -1,10 +1,7 @@
 ﻿using FluentAssertions;
-using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.Dtos;
-using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.UseCases.Commands.CreateShift;
 using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.UseCases.Queries.GetShiftById;
 using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.ViewModels;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
-using ShiftTrack.Domain.Modules.Organization.Timesheet.Shifts.Enums;
 using ShiftTrack.Kernel.Exceptions;
 
 namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Timesheet.Shifts.Queries;
@@ -30,16 +27,7 @@ public class GetShiftByIdQueryTests(
     public async Task GetById_ShouldReturnShift_WhenShiftExists()
     {
         // Arrange
-        var createShiftCommand = new CreateShiftCommand(
-            new ShiftToCreateDto(
-                "ТС1",
-                "Тест 1",
-                "#FFFFF",
-                ShiftType.DayOff,
-                new TimeSpan(09, 30, 00),
-                new TimeSpan(21, 00, 00)));
-
-        var newShift = await Mediator.Invoke(createShiftCommand);
+        var newShift = await CreateShiftAsync();
 
         var getByIdQuery = new GetShiftByIdQuery(newShift.Id);
 
@@ -59,7 +47,7 @@ public class GetShiftByIdQueryTests(
                 Type = newShift.Type,
                 StartTime = newShift.StartTime,
                 EndTime = newShift.EndTime,
-                WorkHours = newShift.EndTime - newShift.StartTime
+                WorkHours = newShift.WorkHours
             });
     }
 }

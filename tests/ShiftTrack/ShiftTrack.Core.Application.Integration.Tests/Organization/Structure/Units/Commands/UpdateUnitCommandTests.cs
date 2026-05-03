@@ -15,20 +15,14 @@ public class UpdateUnitCommandTests(
     public async Task Update_ShouldReturnUpdatedUnit_WhenUnitExists()
     {
         // Arrange
-        var createUnitCommand = new CreateUnitCommand(
-            new UnitToCreateDto(
-                "Хмельницький",
-                "Хмельницький регіон",
-                "Хм"));
-
-        var newUnit = await Mediator.Invoke(createUnitCommand);
+        var newUnit = await CreateUnitAsync();
 
         var updateUnitCommand = new UpdateUnitCommand(
             new UnitToUpdateDto(
                 newUnit.Id,
-                "Хмельницький оновлено",
-                "Хмельницький регіон оновлено",
-                "Хмо"));
+                Faker.Address.City(),
+                Faker.Address.FullAddress(),
+                Faker.Address.CountryCode()));
 
         // Act
         var updatedUnit = await Mediator.Invoke(updateUnitCommand);
@@ -54,9 +48,9 @@ public class UpdateUnitCommandTests(
         var updateUnitCommand = new UpdateUnitCommand(
             new UnitToUpdateDto(
                 1000,
-                "Хмельницький оновлено",
-                "Хмельницький регіон оновлено",
-                "Хмо"));
+                Faker.Address.City(),
+                Faker.Address.FullAddress(),
+                Faker.Address.CountryCode()));
 
         // Act
         Func<Task> act = async () => await Mediator.Invoke(updateUnitCommand);

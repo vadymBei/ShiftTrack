@@ -13,23 +13,16 @@ public class DeletePositionCommandTests(IntegrationTestWebAppFactory factory) : 
     public async Task Delete_ShouldRemove_WhenPositionExists()
     {
         // Arrange
-        var createPositionCommand = new CreatePositionCommand(
-            new PositionToCreateDto(
-                "Адміністратор",
-                "Адміністратор магазину",
-                150));
+        var position = await CreatePositionAsync();
 
-        var newPosition = await Mediator.Invoke(createPositionCommand);
-
-        var deletePositionCommand = new DeletePositionCommand(newPosition.Id);
+        var deletePositionCommand = new DeletePositionCommand(position.Id);
 
         // Act
         await Mediator.Invoke(deletePositionCommand);
 
         // Assert
-        var deletedPosition = DbContext.Positions.FirstOrDefault(x => x.Id == newPosition.Id);
-
-        deletedPosition.Should().BeNull();
+        Func<Task> act = async () => await PositionRepository.GetById(position.Id, CancellationToken.None);
+        await act.Should().ThrowAsync<EntityNotFoundException>();
     }
 
     [Fact]
