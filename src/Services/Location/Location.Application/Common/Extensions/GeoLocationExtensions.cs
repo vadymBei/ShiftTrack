@@ -1,7 +1,7 @@
-﻿using Location.Domain.Entities;
-using Location.Infrastructure.Models;
+﻿using Location.Application.Common.Models;
+using Location.Domain.Entities;
 
-namespace Location.Infrastructure.Extensions;
+namespace Location.Application.Common.Extensions;
 
 public static class GeoLocationExtensions
 {

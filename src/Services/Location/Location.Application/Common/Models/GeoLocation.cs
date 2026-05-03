@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Location.Infrastructure.Models;
+namespace Location.Application.Common.Models;
 
 public class GeoLocation
 {

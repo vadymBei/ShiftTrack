@@ -1,6 +1,6 @@
 ﻿using Location.Application.Common.ViewModels;
-using Location.Application.UseCases.Commands.GetLocationsByIntegrationIds;
 using Location.Application.UseCases.Commands.SearchLocations;
+using Location.Application.UseCases.Queries.GetLocationsByIntegrationIds;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShiftTrack.Kernel.CQRS.Controllers;

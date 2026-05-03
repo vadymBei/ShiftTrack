@@ -1,31 +1,29 @@
-﻿using Location.Application.Common.Interfaces;
+﻿using Location.Application.Common.Extensions;
+using Location.Application.Common.Interfaces;
 using Location.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace Location.Application.Common.Services;
 
 public class LocationService(
     ILocationRepository locationRepository,
-    IApplicationDbContext applicationDbContext) : ILocationService
+    INominatimRepository nominatimRepository) : ILocationService
 {
     public async Task<IEnumerable<LocationEntity>> Search(string query, CancellationToken cancellationToken)
     {
-        var locations = await applicationDbContext.Locations
-            .AsNoTracking()
-            .Where(x => EF.Functions.ILike(x.Name, $"%{query}%"))
-            .ToListAsync(cancellationToken);
+        var locations = await locationRepository.Search(query, cancellationToken);
 
-        if (locations.Count == 0)
+        if (!locations.Any())
         {
-            locations = (await locationRepository.Search(query, cancellationToken))
+            var geoLocations = await nominatimRepository.Search(query, cancellationToken);
+
+            locations = geoLocations.Select(x => x.ToLocationEntity())
                 .GroupBy(x => x.IntegrationId)
                 .Select(g => g.First())
                 .ToList();
-            
-            applicationDbContext.Locations.AddRange(locations);
-            await applicationDbContext.SaveChangesAsync(cancellationToken);
+
+            await locationRepository.Create(locations, cancellationToken);
         }
-        
+
         return locations;
     }
 }

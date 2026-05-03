@@ -24,6 +24,7 @@ public static class DependencyInjection
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 
         // Repositories
+        services.AddTransient<INominatimRepository, NominatimRepository>();
         services.AddTransient<ILocationRepository, LocationRepository>();
         
         return services;
