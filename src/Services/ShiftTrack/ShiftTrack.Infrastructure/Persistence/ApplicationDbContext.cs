@@ -32,9 +32,9 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
 
     //Booking
     //BusinessTrips
-    public DbSet<BusinessTrip> BusinessTrips { get; set; }
-    public DbSet<BusinessTripParticipant> BusinessTripParticipants { get; set; }
-    public DbSet<BusinessTripLocation> BusinessTripLocations { get; set; }
+    // public DbSet<BusinessTrip> BusinessTrips { get; set; }
+    // public DbSet<BusinessTripParticipant> BusinessTripParticipants { get; set; }
+    // public DbSet<BusinessTripLocation> BusinessTripLocations { get; set; }
 
     //Vacations
     public DbSet<Vacation> Vacations { get; set; }
