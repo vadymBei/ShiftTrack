@@ -13,8 +13,8 @@ public interface IApplicationDbContext
 {
     //Booking
     //BusinessTrips
-    // DbSet<BusinessTrip> BusinessTrips { get; set; }
-    // DbSet<BusinessTripParticipant> BusinessTripParticipants { get; set; }
+    DbSet<BusinessTrip> BusinessTrips { get; set; }
+    DbSet<BusinessTripLocation> BusinessTripLocations { get; set; }
     
     //Vacations
     DbSet<Vacation> Vacations { get; set; }
