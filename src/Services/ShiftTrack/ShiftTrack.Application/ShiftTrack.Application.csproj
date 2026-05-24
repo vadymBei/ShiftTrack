@@ -14,8 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Modules\Booking\BusinessTrips\Commands\" />
-        <Folder Include="Modules\Booking\BusinessTrips\Queries\" />
+        <Folder Include="Modules\Booking\BusinessTrips\UseCases\Queries\" />
         <Folder Include="Modules\Booking\Vacations\UseCases\" />
         <Folder Include="Modules\Organization\Employees\UseCases\" />
         <Folder Include="Modules\Organization\Structure\Departments\UseCases\" />

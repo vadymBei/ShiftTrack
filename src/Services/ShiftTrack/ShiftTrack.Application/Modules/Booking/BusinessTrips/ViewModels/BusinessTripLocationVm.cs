@@ -1,5 +1,9 @@
-﻿namespace ShiftTrack.Application.Modules.Booking.BusinessTrips.ViewModels;
+﻿using AutoMapper;
+using ShiftTrack.Domain.Modules.Booking.BusinessTrips.Entities;
 
+namespace ShiftTrack.Application.Modules.Booking.BusinessTrips.ViewModels;
+
+[AutoMap(typeof(BusinessTripLocation))]
 public class BusinessTripLocationVm
 {
     public string LocationIntegrationId { get; set; }

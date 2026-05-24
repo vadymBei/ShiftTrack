@@ -27,7 +27,7 @@ public class EmployeeService(
             await departmentRepository.GetById((long)filter.DepartmentId, cancellationToken);
         }
 
-        var employees = await employeesRepository.GetEmployees(filter, cancellationToken);
+        var employees = await employeesRepository.GetFiltered(filter, cancellationToken);
 
         return employees;
     }

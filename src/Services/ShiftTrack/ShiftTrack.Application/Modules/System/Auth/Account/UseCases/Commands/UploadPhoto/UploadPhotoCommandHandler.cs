@@ -22,7 +22,7 @@ public class UploadPhotoCommandHandler(
             DeletePreviousPhoto(employee.PhotoFullName);
         }
 
-        await employeeRepository.UpdateEmployeePhoto(
+        await employeeRepository.UpdatePhoto(
             new UploadEmployeePhotoDto(
                 employee.Id,
                 document.Name),

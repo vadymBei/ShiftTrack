@@ -26,7 +26,7 @@ public class EmployeeShiftService(
             .Select(x => x.EmployeeId)
             .Distinct();
 
-        var employees = (await employeeRepository.GetEmployeesByIds(
+        var employees = (await employeeRepository.GetListByIds(
             employeeIds,
             cancellationToken)).ToDictionary(x => x.Id);
 

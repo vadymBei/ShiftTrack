@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ShiftTrack.Application.Common.Interfaces;
 using ShiftTrack.Application.Modules.Organization.Employees.Dtos;
 using ShiftTrack.Application.Modules.Organization.Employees.Interfaces;
 using ShiftTrack.Domain.Modules.System.User.Employees.Entities;
@@ -84,18 +83,17 @@ public class EmployeeRepository(
         return employee;
     }
 
-    public async Task<IEnumerable<Employee>> GetEmployeesByIds(IEnumerable<long> ids,
+    public async Task<IEnumerable<Employee>> GetListByIds(IEnumerable<long> ids,
         CancellationToken cancellationToken)
     {
         var employees = await applicationDbContext.Employees
-            .AsNoTracking()
             .Where(x => ids.Contains(x.Id))
             .ToListAsync(cancellationToken);
 
         return employees;
     }
 
-    public async Task<IEnumerable<Employee>> GetEmployees(EmployeesFilterDto filter,
+    public async Task<IEnumerable<Employee>> GetFiltered(EmployeesFilterDto filter,
         CancellationToken cancellationToken)
     {
         var employeeQuery = applicationDbContext.Employees
@@ -155,7 +153,7 @@ public class EmployeeRepository(
         return employee;
     }
 
-    public async Task UpdateEmployeePhoto(UploadEmployeePhotoDto uploadEmployeePhotoDto, CancellationToken cancellationToken)
+    public async Task UpdatePhoto(UploadEmployeePhotoDto uploadEmployeePhotoDto, CancellationToken cancellationToken)
     {
         var employee = await applicationDbContext.Employees
                            .FindAsync([uploadEmployeePhotoDto.EmployeeId], cancellationToken)
