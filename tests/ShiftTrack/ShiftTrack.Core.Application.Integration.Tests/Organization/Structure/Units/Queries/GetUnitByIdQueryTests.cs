@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
-using ShiftTrack.Application.Features.Organization.Structure.Common.ViewModels;
-using ShiftTrack.Application.Features.Organization.Structure.Units.Commands.CreateUnit;
-using ShiftTrack.Application.Features.Organization.Structure.Units.Queries.GetUnitById;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.UseCases.Queries.GetUnitById;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.ViewModels;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
 using ShiftTrack.Kernel.Exceptions;
 
@@ -28,12 +27,7 @@ public class GetUnitByIdQueryTests(
     public async Task GetById_ShouldReturnUnit_WhenUnitExists()
     {
         // Arrange
-        var createUnitCommand = new CreateUnitCommand(
-            "Хмельницький",
-            "Хмельницький регіон",
-            "Хм");
-
-        var newUnit = await Mediator.Invoke(createUnitCommand);
+        var newUnit = await CreateUnitAsync();
 
         var getUnitByIdQuery = new GetUnitByIdQuery(newUnit.Id);
 
@@ -50,7 +44,7 @@ public class GetUnitByIdQueryTests(
                 Code = newUnit.Code,
                 Name = newUnit.Name,
                 Description = newUnit.Description,
-                FullName = newUnit.Code + " " + newUnit.Name
+                FullName = newUnit.FullName
             });
     }
 }

@@ -1,8 +1,7 @@
 ﻿using FluentAssertions;
-using ShiftTrack.Application.Features.Organization.Structure.Common.ViewModels;
-using ShiftTrack.Application.Features.Organization.Structure.Departments.Commands.CreateDepartment;
-using ShiftTrack.Application.Features.Organization.Structure.Departments.Commands.UpdateDepartment;
-using ShiftTrack.Application.Features.Organization.Structure.Units.Commands.CreateUnit;
+using ShiftTrack.Application.Modules.Organization.Structure.Departments.Dtos;
+using ShiftTrack.Application.Modules.Organization.Structure.Departments.UseCases.Commands.UpdateDepartment;
+using ShiftTrack.Application.Modules.Organization.Structure.Departments.ViewModels;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
 using ShiftTrack.Kernel.Exceptions;
 
@@ -16,8 +15,9 @@ public class UpdateDepartmentCommandTests(
     {
         // Arrange
         var updateDepartmentCommand = new UpdateDepartmentCommand(
-            1000,
-            "ТЦ Либідь плаза оновлений");
+            new DepartmentToUpdateDto(
+                1000,
+                Faker.Company.CompanyName()));
 
         // Act
         Func<Task> act = async () => await Mediator.Invoke(updateDepartmentCommand);
@@ -31,22 +31,13 @@ public class UpdateDepartmentCommandTests(
     public async Task Update_ShouldReturnUpdatedDepartment_WhenDepartmentExists()
     {
         // Arrange
-        var createUnitCommand = new CreateUnitCommand(
-            "Хмельницький",
-            "Хмельницький регіон",
-            "Хм");
-
-        var unit = await Mediator.Invoke(createUnitCommand);
-
-        var createDepartmentCommand = new CreateDepartmentCommand(
-            "ТЦ Либіль Плаза", 
-            unit.Id);
-
-        var newDepartment = await Mediator.Invoke(createDepartmentCommand);
+        var unit = await CreateUnitAsync();
+        var department = await CreateDepartmentAsync(unit.Id);
 
         var updateDepartmentCommand = new UpdateDepartmentCommand(
-            newDepartment.Id,
-            "Либіль Плаза");
+            new DepartmentToUpdateDto(
+                department.Id,
+                Faker.Company.CompanyName()));
 
         // Act
         var updatedDepartment = await Mediator.Invoke(updateDepartmentCommand);
@@ -56,17 +47,10 @@ public class UpdateDepartmentCommandTests(
         updatedDepartment.Should().BeEquivalentTo(
             new DepartmentVm()
             {
-                Id = updateDepartmentCommand.Id,
-                Name = updateDepartmentCommand.Name,
-                UnitId = newDepartment.UnitId,
-                Unit = new UnitVm()
-                {
-                    Id = newDepartment.Unit.Id,
-                    Name = newDepartment.Unit.Name,
-                    Code = newDepartment.Unit.Code,
-                    Description = newDepartment.Unit.Description,
-                    FullName = newDepartment.Unit.FullName
-                }
+                Id = updateDepartmentCommand.Data.Id,
+                Name = updateDepartmentCommand.Data.Name,
+                UnitId = unit.Id,
+                Unit = unit
             });
     }
 }

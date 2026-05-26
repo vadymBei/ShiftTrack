@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
-using ShiftTrack.Application.Features.Organization.Structure.Units.Commands.CreateUnit;
-using ShiftTrack.Application.Features.Organization.Structure.Units.Queries.GetUnits;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.UseCases.Queries.GetUnits;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
 
 namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.Units.Queries;
@@ -12,23 +11,9 @@ public class GetUnitsQueryTests(
     public async Task GetAll_ShouldReturnUnits_WhenUnitsExists()
     {
         // Arrange
-        var unitsToDelete = DbContext.Units.ToList();
-        DbContext.Units.RemoveRange(unitsToDelete);
+        var firstUnit = await CreateUnitAsync();
+        var secondUnit = await CreateUnitAsync();
 
-        var firstUnitCreateCommand = new CreateUnitCommand(
-            "Хмельницький",
-            "Хмельницький регіон",
-            "Хм");
-
-        await Mediator.Invoke(firstUnitCreateCommand);
-
-        var secondUnitCreateCommand = new CreateUnitCommand(
-            "Львів",
-            "Львівський регіон",
-            "Лв");
-
-        await Mediator.Invoke(secondUnitCreateCommand);
-            
         var getUnitsQuery = new GetUnitsQuery();
 
         // Act
@@ -36,14 +21,17 @@ public class GetUnitsQueryTests(
 
         // Assert
         units.Should().NotBeNull();
-        units.Should().HaveCount(2);
+        units.Should().Contain(x => x.Id == firstUnit.Id);
+        units.Should().Contain(x => x.Id == secondUnit.Id);
 
-        units.Should().Contain(x => x.Name == "Хмельницький");
-        units.Should().Contain(x => x.Description == "Хмельницький регіон");
-        units.Should().Contain(x => x.Code == "Хм");
+        var unit1 = units.First(x => x.Id == firstUnit.Id);
+        unit1.Name.Should().Be(firstUnit.Name);
+        unit1.Description.Should().Be(firstUnit.Description);
+        unit1.Code.Should().Be(firstUnit.Code);
 
-        units.Should().Contain(x => x.Name == "Львів");
-        units.Should().Contain(x => x.Description == "Львівський регіон");
-        units.Should().Contain(x => x.Code == "Лв");
+        var unit2 = units.First(x => x.Id == secondUnit.Id);
+        unit2.Name.Should().Be(secondUnit.Name);
+        unit2.Description.Should().Be(secondUnit.Description);
+        unit2.Code.Should().Be(secondUnit.Code);
     }
 }

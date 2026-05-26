@@ -1,0 +1,29 @@
+using ShiftTrack.Application.Common.Interfaces;
+using ShiftTrack.Application.Modules.System.User.EmployeeRoles.Interfaces;
+using ShiftTrack.Application.Modules.System.User.Roles.Constants;
+
+namespace ShiftTrack.Application.Modules.System.User.EmployeeRoles.Services;
+
+public sealed class EmployeeRoleChecker(
+    ICurrentUserService currentUserService) : IEmployeeRoleChecker
+{
+    public bool HasCurrentUserSysAdminRole()
+    {
+        return HasCurrentUserRole(DefaultRolesCatalog.SYS_ADMIN);
+    }
+
+    public bool HasCurrentUserUnitDirectorRole()
+    {
+        return HasCurrentUserRole(DefaultRolesCatalog.UNIT_DIRECTOR);
+    }
+
+    public bool HasCurrentUserDepartmentDirectorRole()
+    {
+        return HasCurrentUserRole(DefaultRolesCatalog.DEPARTMENT_DIRECTOR);
+    }
+
+    private bool HasCurrentUserRole(string roleName)
+    {
+        return currentUserService.Employee.EmployeeRoles.Any(x => x.Role.Name == roleName);
+    }
+}

@@ -1,8 +1,9 @@
 ﻿using FluentAssertions;
-using ShiftTrack.Application.Features.Organization.Structure.Common.ViewModels;
-using ShiftTrack.Application.Features.Organization.Structure.Positions.Commands.CreatePosition;
-using ShiftTrack.Application.Features.Organization.Structure.Positions.Commands.UpdatePosition;
-using ShiftTrack.Application.Features.Organization.Structure.Positions.Queries.GetPositionById;
+using ShiftTrack.Application.Modules.Organization.Structure.Positions.Dtos;
+using ShiftTrack.Application.Modules.Organization.Structure.Positions.UseCases.Commands.CreatePosition;
+using ShiftTrack.Application.Modules.Organization.Structure.Positions.UseCases.Commands.UpdatePosition;
+using ShiftTrack.Application.Modules.Organization.Structure.Positions.UseCases.Queries.GetPositionById;
+using ShiftTrack.Application.Modules.Organization.Structure.Positions.ViewModels;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
 using ShiftTrack.Kernel.Exceptions;
 
@@ -15,36 +16,27 @@ public class UpdatePositionCommandTests(
     public async Task Update_ShouldReturnUpdatedPosition_WhenPositionExists()
     {
         // Arrange
-        var createPositionCommand = new CreatePositionCommand(
-            "Адміністратор",
-            "Адміністратор магазину",
-            150);
-
-        var newPosition = await Mediator.Invoke(createPositionCommand);
-
-        var getPositionByIdQuery = new GetPositionByIdQuery(newPosition.Id);
-
-        var position = await Mediator.Invoke(getPositionByIdQuery);
+        var position = await CreatePositionAsync();
 
         var updatePositionCommand = new UpdatePositionCommand(
-            position.Id,
-            "Адміністратор оновлений",
-            "Адміністратор магазину оновлений",
-            170);
+            new PositionToUpdateDto(
+                position.Id,
+                Faker.Name.JobTitle(),
+                Faker.Name.JobDescriptor(),
+                Faker.Random.Decimal(100, 500)));
 
         // Act
         var updatedPosition = await Mediator.Invoke(updatePositionCommand);
 
         // Assert
         updatedPosition.Should().NotBeNull();
-
         updatedPosition.Should().BeEquivalentTo(
             new PositionVm()
             {
                 Id = position.Id,
-                Name = updatePositionCommand.Name,
-                Description = updatePositionCommand.Description,
-                HourlyRate = updatePositionCommand.HourlyRate
+                Name = updatePositionCommand.Data.Name,
+                Description = updatePositionCommand.Data.Description,
+                HourlyRate = updatePositionCommand.Data.HourlyRate
             });
     }
 
@@ -53,10 +45,11 @@ public class UpdatePositionCommandTests(
     {
         // Arrange
         var updatePositionCommand = new UpdatePositionCommand(
-            1000,
-            "Тест",
-            "Тест оновлення посади з помилкою",
-            150);
+            new PositionToUpdateDto(
+                1000,
+                Faker.Name.JobTitle(),
+                Faker.Name.JobDescriptor(),
+                150));
 
         // Act
         Func<Task> act = async () => await Mediator.Invoke(updatePositionCommand);

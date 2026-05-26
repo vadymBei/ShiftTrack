@@ -1,15 +1,15 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ShiftTrack.Application.Features.Booking.Common.Dtos;
-using ShiftTrack.Application.Features.Booking.Common.ViewModels;
-using ShiftTrack.Application.Features.Booking.Vacations.Commands.ApproveVacation;
-using ShiftTrack.Application.Features.Booking.Vacations.Commands.CreateVacation;
-using ShiftTrack.Application.Features.Booking.Vacations.Commands.DeleteVacation;
-using ShiftTrack.Application.Features.Booking.Vacations.Commands.RejectVacation;
-using ShiftTrack.Application.Features.Booking.Vacations.Commands.UpdateVacation;
-using ShiftTrack.Application.Features.Booking.Vacations.Queries.DownloadVacationRequestPdf;
-using ShiftTrack.Application.Features.Booking.Vacations.Queries.GetVacationById;
-using ShiftTrack.Application.Features.Booking.Vacations.Queries.GetVacations;
+using ShiftTrack.Application.Modules.Booking.Vacations.Dtos;
+using ShiftTrack.Application.Modules.Booking.Vacations.UseCases.Commands.ApproveVacation;
+using ShiftTrack.Application.Modules.Booking.Vacations.UseCases.Commands.CreateVacation;
+using ShiftTrack.Application.Modules.Booking.Vacations.UseCases.Commands.DeleteVacation;
+using ShiftTrack.Application.Modules.Booking.Vacations.UseCases.Commands.RejectVacation;
+using ShiftTrack.Application.Modules.Booking.Vacations.UseCases.Commands.UpdateVacation;
+using ShiftTrack.Application.Modules.Booking.Vacations.UseCases.Queries.DownloadVacationRequestPdf;
+using ShiftTrack.Application.Modules.Booking.Vacations.UseCases.Queries.GetVacationById;
+using ShiftTrack.Application.Modules.Booking.Vacations.UseCases.Queries.GetVacations;
+using ShiftTrack.Application.Modules.Booking.Vacations.ViewModels;
 using ShiftTrack.Kernel.CQRS.Controllers;
 
 namespace ShiftTrack.API.Controllers.Booking.Vacations;
@@ -54,7 +54,7 @@ public class BKG_VCN_VacationsController : ApiController
     public async Task<FileResult> DownloadVacationRequestPdfQuery(long id)
     {
         var documentVm = await Mediator.Invoke(new DownloadVacationRequestPdfQuery(id));
-        
+
         return File(documentVm.StreamContent, documentVm.MimeType, documentVm.Name);
     }
 }

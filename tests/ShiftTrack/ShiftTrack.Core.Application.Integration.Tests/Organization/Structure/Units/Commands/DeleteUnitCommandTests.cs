@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
-using ShiftTrack.Application.Features.Organization.Structure.Units.Commands.CreateUnit;
-using ShiftTrack.Application.Features.Organization.Structure.Units.Commands.DeleteUnit;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.Dtos;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.UseCases.Commands.CreateUnit;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.UseCases.Commands.DeleteUnit;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
 using ShiftTrack.Kernel.Exceptions;
 
@@ -27,21 +28,15 @@ public class DeleteUnitCommandTests(
     public async Task Delete_ShouldRemove_WhenUnitExists()
     {
         // Arrange
-        var createUnitCommand = new CreateUnitCommand(
-            "Хмельницький",
-            "Хмельницький регіон",
-            "Хм");
+        var unit = await CreateUnitAsync();
 
-        var newUnit = await Mediator.Invoke(createUnitCommand);
-
-        var deleteUnitCommand = new DeleteUnitCommand(newUnit.Id);
+        var deleteUnitCommand = new DeleteUnitCommand(unit.Id);
 
         // Act 
         await Mediator.Invoke(deleteUnitCommand);
 
         // Assert
-        var deletedUnit = DbContext.Units.FirstOrDefault(x => x.Id == newUnit.Id);
-
-        deletedUnit.Should().BeNull();
-    }        
+        Func<Task> act = async () => await UnitRepository.GetById(unit.Id, CancellationToken.None);
+        await act.Should().ThrowAsync<EntityNotFoundException>();
+    }
 }

@@ -8,19 +8,28 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\Common\Authentication\ShiftTrack.Authentication\ShiftTrack.Authentication.csproj"/>
-        <ProjectReference Include="..\..\..\Common\Client\ShiftTrack.Client.Http\ShiftTrack.Client.Http.csproj"/>
         <ProjectReference Include="..\..\..\Common\Data\ShiftTrack.Data\ShiftTrack.Data.csproj"/>
         <ProjectReference Include="..\..\..\Common\Kernel\ShiftTrack.Kernel.CQRS\ShiftTrack.Kernel.CQRS.csproj"/>
         <ProjectReference Include="..\ShiftTrack.Domain\ShiftTrack.Domain.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Folder Include="Features\Organization\Timesheet\EmployeeShifts\Queries\"/>
-        <Folder Include="Features\System\Auth\Tokens\Commands\"/>
+        <Folder Include="Modules\Booking\Vacations\UseCases\" />
+        <Folder Include="Modules\Organization\Employees\UseCases\" />
+        <Folder Include="Modules\Organization\Structure\Departments\UseCases\" />
+        <Folder Include="Modules\Organization\Structure\Positions\UseCases\" />
+        <Folder Include="Modules\Organization\Structure\Units\UseCases\" />
+        <Folder Include="Modules\Organization\Timesheet\EmployeeShiftHistories\UseCases\" />
+        <Folder Include="Modules\Organization\Timesheet\EmployeeShifts\UseCases\" />
+        <Folder Include="Modules\Organization\Timesheet\Shifts\UseCases\" />
+        <Folder Include="Modules\Organization\Timesheet\UnitTimesheets\UseCases\" />
+        <Folder Include="Modules\System\Auth\Account\UseCases\" />
+        <Folder Include="Modules\System\Auth\Tokens\UseCases\" />
+        <Folder Include="Modules\System\Data\Initializations\UseCases\" />
+        <Folder Include="Modules\System\User\EmployeeRoles\UseCases\" />
+        <Folder Include="Modules\System\User\EmployeeRoleUnitDepartments\UseCases\" />
+        <Folder Include="Modules\System\User\EmployeeRoleUnits\UseCases\" />
+        <Folder Include="Modules\System\User\Roles\UseCases\" />
     </ItemGroup>
 
 </Project>

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ShiftTrack.Application.Features.System.User.Common.ViewModels;
-using ShiftTrack.Application.Features.System.User.Roles.Queries.GetRoles;
+using ShiftTrack.Application.Modules.System.User.Roles.UseCases.Queries.GetRoles;
+using ShiftTrack.Application.Modules.System.User.Roles.ViewModels;
 using ShiftTrack.Kernel.CQRS.Controllers;
 
 namespace ShiftTrack.API.Controllers.System.User;

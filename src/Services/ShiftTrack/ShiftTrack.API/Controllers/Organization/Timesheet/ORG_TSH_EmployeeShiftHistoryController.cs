@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ShiftTrack.Application.Features.Organization.Timesheet.Common.ViewModels;
-using ShiftTrack.Application.Features.Organization.Timesheet.EmployeeShiftHistories.Queries.
-    GetEmployeeShiftHistoryByEmployeeShiftId;
+using ShiftTrack.Application.Modules.Organization.Timesheet.EmployeeShiftHistories.UseCases.Queries.GetEmployeeShiftHistoryByEmployeeShiftId;
+using ShiftTrack.Application.Modules.Organization.Timesheet.EmployeeShiftHistories.ViewModels;
 using ShiftTrack.Kernel.CQRS.Controllers;
 
 namespace ShiftTrack.API.Controllers.Organization.Timesheet;

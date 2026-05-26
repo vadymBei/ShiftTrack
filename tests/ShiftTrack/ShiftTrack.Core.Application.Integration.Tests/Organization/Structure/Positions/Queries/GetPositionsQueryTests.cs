@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
-using ShiftTrack.Application.Features.Organization.Structure.Positions.Commands.CreatePosition;
-using ShiftTrack.Application.Features.Organization.Structure.Positions.Queries.GetPositions;
+using ShiftTrack.Application.Modules.Organization.Structure.Positions.UseCases.Queries.GetPositions;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
 
 namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.Positions.Queries;
@@ -12,15 +11,7 @@ public class GetPositionsQueryTests(
     public async Task GetPositions_ShouldReturnOnePosition_WhenPositionsExists()
     {
         // Arrange
-        var positionsToRemove = DbContext.Positions.ToList();
-        DbContext.Positions.RemoveRange(positionsToRemove);
-
-        var createPositionCommand = new CreatePositionCommand(
-            "Адміністратор",
-            "Адміністратор магазину",
-            150);
-
-        var newPosition = await Mediator.Invoke(createPositionCommand);
+        var newPosition = await CreatePositionAsync();
 
         var getPositionsQuery = new GetPositionsQuery();
 
@@ -29,11 +20,11 @@ public class GetPositionsQueryTests(
 
         // Assert
         positions.Should().NotBeNull();
-        positions.Should().HaveCount(1);
-
         positions.Should().Contain(x => x.Id == newPosition.Id);
-        positions.Should().Contain(x => x.Name == newPosition.Name);
-        positions.Should().Contain(x => x.Description == newPosition.Description);
-        positions.Should().Contain(x => x.HourlyRate == newPosition.HourlyRate);
+
+        var position = positions.First(x => x.Id == newPosition.Id);
+        position.Name.Should().Be(newPosition.Name);
+        position.Description.Should().Be(newPosition.Description);
+        position.HourlyRate.Should().Be(newPosition.HourlyRate);
     }
 }

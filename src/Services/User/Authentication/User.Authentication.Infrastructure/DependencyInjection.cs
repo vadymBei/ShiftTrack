@@ -5,8 +5,8 @@ using ShiftTrack.Kernel;
 using ShiftTrack.Kernel.Attributes;
 using ShiftTrack.Kernel.CQRS;
 using User.Authentication.Application.Common.Interfaces;
-using User.Authentication.Application.Features.oAuth.Common.Interfaces;
-using User.Authentication.Infrastructure.Features.OAuth.Repositories;
+using User.Authentication.Application.Modules.oAuth.Common.Interfaces;
+using User.Authentication.Infrastructure.Modules.OAuth.Repositories;
 using User.Authentication.Infrastructure.Persistence;
 
 namespace User.Authentication.Infrastructure;

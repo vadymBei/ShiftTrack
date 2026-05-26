@@ -1,8 +1,7 @@
 ﻿using FluentAssertions;
-using ShiftTrack.Application.Features.Organization.Structure.Common.ViewModels;
-using ShiftTrack.Application.Features.Organization.Structure.Departments.Commands.CreateDepartment;
-using ShiftTrack.Application.Features.Organization.Structure.Departments.Queries.GetDepartmentsByUnitId;
-using ShiftTrack.Application.Features.Organization.Structure.Units.Commands.CreateUnit;
+using ShiftTrack.Application.Modules.Organization.Structure.Departments.UseCases.Queries.GetDepartmentsByUnitId;
+using ShiftTrack.Application.Modules.Organization.Structure.Departments.ViewModels;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.ViewModels;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
 using ShiftTrack.Kernel.Exceptions;
 
@@ -29,31 +28,20 @@ public class GetDepartmentsByUnitIdQueryTests(
     public async Task GetDepartmentsByUnitId_ShouldReturnOneDepartment_WhenUnitAndDepartmentExists()
     {
         // Arrange
-        var departmentsToRemove = DbContext.Departments.ToList();
-        DbContext.Departments.RemoveRange(departmentsToRemove);
-
-        var createUnitCommand = new CreateUnitCommand(
-           "Хмельницький",
-           "Хмельницький регіон",
-           "Хм");
-
-        var unit = await Mediator.Invoke(createUnitCommand);
-
-        var createDepartmentCommand = new CreateDepartmentCommand(
-            "ТЦ Либіль Плаза",
-            unit.Id);
-
-        var department = await Mediator.Invoke(createDepartmentCommand);
+        var unit = await CreateUnitAsync();
+        var department = await CreateDepartmentAsync(unit.Id);
 
         var getDepartmentsByUnitIdQuery = new GetDepartmentsByUnitIdQuery(unit.Id);
 
         // Act
-        var departments = await Mediator.Invoke(getDepartmentsByUnitIdQuery);
+        var departments = (await Mediator.Invoke(getDepartmentsByUnitIdQuery)).ToList();
 
         // Assert
         departments.Should().NotBeNull();
         departments.Should().NotBeEmpty();
-        departments.FirstOrDefault().Should().BeEquivalentTo(
+        var foundDepartment = departments.FirstOrDefault(x => x.Id == department.Id);
+        foundDepartment.Should().NotBeNull();
+        foundDepartment.Should().BeEquivalentTo(
             new DepartmentVm()
             {
                 Id = department.Id,

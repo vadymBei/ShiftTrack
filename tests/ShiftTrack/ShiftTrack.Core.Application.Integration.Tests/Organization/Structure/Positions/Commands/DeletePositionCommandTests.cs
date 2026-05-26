@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
-using ShiftTrack.Application.Features.Organization.Structure.Positions.Commands.CreatePosition;
-using ShiftTrack.Application.Features.Organization.Structure.Positions.Commands.DeletePosition;
+using ShiftTrack.Application.Modules.Organization.Structure.Positions.Dtos;
+using ShiftTrack.Application.Modules.Organization.Structure.Positions.UseCases.Commands.CreatePosition;
+using ShiftTrack.Application.Modules.Organization.Structure.Positions.UseCases.Commands.DeletePosition;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
 using ShiftTrack.Kernel.Exceptions;
 
@@ -12,22 +13,16 @@ public class DeletePositionCommandTests(IntegrationTestWebAppFactory factory) : 
     public async Task Delete_ShouldRemove_WhenPositionExists()
     {
         // Arrange
-        var createPositionCommand = new CreatePositionCommand(
-            "Адміністратор",
-            "Адміністратор магазину",
-            150);
+        var position = await CreatePositionAsync();
 
-        var newPosition = await Mediator.Invoke(createPositionCommand);
-
-        var deletePositionCommand = new DeletePositionCommand(newPosition.Id);
+        var deletePositionCommand = new DeletePositionCommand(position.Id);
 
         // Act
         await Mediator.Invoke(deletePositionCommand);
 
         // Assert
-        var deletedPosition = DbContext.Positions.FirstOrDefault(x => x.Id == newPosition.Id);
-
-        deletedPosition.Should().BeNull();
+        Func<Task> act = async () => await PositionRepository.GetById(position.Id, CancellationToken.None);
+        await act.Should().ThrowAsync<EntityNotFoundException>();
     }
 
     [Fact]
@@ -37,7 +32,7 @@ public class DeletePositionCommandTests(IntegrationTestWebAppFactory factory) : 
         var deletePositionCommand = new DeletePositionCommand(1000);
 
         // Act
-        Func<Task> act = async () =>  await Mediator.Invoke(deletePositionCommand);
+        Func<Task> act = async () => await Mediator.Invoke(deletePositionCommand);
 
         // Assert
         await act.Should()

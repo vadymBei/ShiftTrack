@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShiftTrack.Kernel.CQRS.Controllers;
-using User.Authentication.Application.Features.oAuth.Account.Commands.ChangePassword;
-using User.Authentication.Application.Features.oAuth.Account.Commands.Register;
-using User.Authentication.Application.Features.oAuth.Account.Commands.UpdateAccount;
-using User.Authentication.Application.Features.oAuth.Common.Dtos;
-using User.Authentication.Application.Features.oAuth.Common.ViewModels;
+using User.Authentication.Application.Modules.oAuth.Account.Commands.ChangePassword;
+using User.Authentication.Application.Modules.oAuth.Account.Commands.Register;
+using User.Authentication.Application.Modules.oAuth.Account.Commands.UpdateAccount;
+using User.Authentication.Application.Modules.oAuth.Common.Dtos;
+using User.Authentication.Application.Modules.oAuth.Common.ViewModels;
 
 namespace User.Authentication.Api.Controllers;
 

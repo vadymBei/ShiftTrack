@@ -1,8 +1,7 @@
 ﻿using FluentAssertions;
-using ShiftTrack.Application.Features.Organization.Structure.Common.ViewModels;
-using ShiftTrack.Application.Features.Organization.Structure.Departments.Commands.CreateDepartment;
-using ShiftTrack.Application.Features.Organization.Structure.Departments.Queries.GetDepartmentById;
-using ShiftTrack.Application.Features.Organization.Structure.Units.Commands.CreateUnit;
+using ShiftTrack.Application.Modules.Organization.Structure.Departments.UseCases.Queries.GetDepartmentById;
+using ShiftTrack.Application.Modules.Organization.Structure.Departments.ViewModels;
+using ShiftTrack.Application.Modules.Organization.Structure.Units.ViewModels;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
 using ShiftTrack.Kernel.Exceptions;
 
@@ -29,18 +28,8 @@ public class GetDepartmentByIdQueryTests(
     public async Task GetById_ShouldReturnDepartment_WhenDepartmentExists()
     {
         // Arrange
-        var createUnitCommand = new CreateUnitCommand(
-            "Хмельницький",
-            "Хмельницький регіон",
-            "Хм");
-
-        var unit = await Mediator.Invoke(createUnitCommand);
-
-        var createDepartmentCommand = new CreateDepartmentCommand(
-            "ТЦ Либіль Плаза", 
-            unit.Id);
-
-        var newDepartment = await Mediator.Invoke(createDepartmentCommand);
+        var unit = await CreateUnitAsync();
+        var newDepartment = await CreateDepartmentAsync(unit.Id);
 
         var getDepartmentByIdQuery = new GetDepartmentByIdQuery(newDepartment.Id);
 

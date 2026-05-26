@@ -1,10 +1,10 @@
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
-using ShiftTrack.Application.Features.System.User.Common.Constants;
-using ShiftTrack.Domain.Features.Organization.Structure.Entities;
-using ShiftTrack.Domain.Features.Organization.Timesheet.Shifts.Entities;
-using ShiftTrack.Domain.Features.Organization.Timesheet.Shifts.Enums;
-using ShiftTrack.Domain.Features.System.User.Roles.Entities;
+using ShiftTrack.Application.Modules.System.User.Roles.Constants;
+using ShiftTrack.Domain.Modules.Organization.Structure.Entities;
+using ShiftTrack.Domain.Modules.Organization.Timesheet.Shifts.Entities;
+using ShiftTrack.Domain.Modules.Organization.Timesheet.Shifts.Enums;
+using ShiftTrack.Domain.Modules.System.User.Roles.Entities;
 
 namespace ShiftTrack.Infrastructure.Persistence;
 

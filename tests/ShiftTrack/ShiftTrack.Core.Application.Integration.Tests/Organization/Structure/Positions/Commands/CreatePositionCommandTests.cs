@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
-using ShiftTrack.Application.Features.Organization.Structure.Positions.Commands.CreatePosition;
+using ShiftTrack.Application.Modules.Organization.Structure.Positions.Dtos;
+using ShiftTrack.Application.Modules.Organization.Structure.Positions.UseCases.Commands.CreatePosition;
 using ShiftTrack.Core.Application.Integration.Tests.Abstractions;
 
 namespace ShiftTrack.Core.Application.Integration.Tests.Organization.Structure.Positions.Commands;
@@ -12,21 +13,20 @@ public class CreatePositionCommandTests(
     {
         // Arrange
         var createPositionCommand = new CreatePositionCommand(
-            "Адміністратор",
-            "Адміністратор магазину",
-            150);
+            new PositionToCreateDto(
+                Faker.Name.JobTitle(),
+                Faker.Name.JobDescriptor(),
+                Faker.Random.Decimal(100, 500)));
 
         // Act
         var newPosition = await Mediator.Invoke(createPositionCommand);
 
         // Assert
-        var position = DbContext.Positions
-            .FirstOrDefault(x => x.Id == newPosition.Id);
+        var position = await PositionRepository.GetById(newPosition.Id, CancellationToken.None);
 
         position.Should().NotBeNull();
-
-        position.Name.Should().Be(createPositionCommand.Name);
-        position.Description.Should().Be(createPositionCommand.Description);
-        position.HourlyRate.Should().Be(createPositionCommand.HourlyRate);       
+        position.Name.Should().Be(createPositionCommand.Data.Name);
+        position.Description.Should().Be(createPositionCommand.Data.Description);
+        position.HourlyRate.Should().Be(createPositionCommand.Data.HourlyRate);
     }
 }

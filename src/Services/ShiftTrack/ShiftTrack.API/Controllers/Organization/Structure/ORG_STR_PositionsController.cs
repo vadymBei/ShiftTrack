@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ShiftTrack.Application.Features.Organization.Structure.Common.ViewModels;
-using ShiftTrack.Application.Features.Organization.Structure.Positions.Commands.CreatePosition;
-using ShiftTrack.Application.Features.Organization.Structure.Positions.Commands.DeletePosition;
-using ShiftTrack.Application.Features.Organization.Structure.Positions.Commands.UpdatePosition;
-using ShiftTrack.Application.Features.Organization.Structure.Positions.Queries.GetPositionById;
-using ShiftTrack.Application.Features.Organization.Structure.Positions.Queries.GetPositions;
+using ShiftTrack.Application.Modules.Organization.Structure.Positions.Dtos;
+using ShiftTrack.Application.Modules.Organization.Structure.Positions.UseCases.Commands.CreatePosition;
+using ShiftTrack.Application.Modules.Organization.Structure.Positions.UseCases.Commands.DeletePosition;
+using ShiftTrack.Application.Modules.Organization.Structure.Positions.UseCases.Commands.UpdatePosition;
+using ShiftTrack.Application.Modules.Organization.Structure.Positions.UseCases.Queries.GetPositionById;
+using ShiftTrack.Application.Modules.Organization.Structure.Positions.UseCases.Queries.GetPositions;
+using ShiftTrack.Application.Modules.Organization.Structure.Positions.ViewModels;
 using ShiftTrack.Kernel.CQRS.Controllers;
 
 namespace ShiftTrack.API.Controllers.Organization.Structure;
@@ -15,12 +16,12 @@ namespace ShiftTrack.API.Controllers.Organization.Structure;
 public class ORG_STR_PositionsController : ApiController
 {
     [HttpPost]
-    public async Task<PositionVm> CreatePosition(CreatePositionCommand command)
-        => await Mediator.Invoke(command);
+    public async Task<PositionVm> CreatePosition(PositionToCreateDto data)
+        => await Mediator.Invoke(new CreatePositionCommand(data));
 
     [HttpPut]
-    public async Task<PositionVm> UpdatePosition(UpdatePositionCommand command)
-        => await Mediator.Invoke(command);
+    public async Task<PositionVm> UpdatePosition(PositionToUpdateDto data)
+        => await Mediator.Invoke(new UpdatePositionCommand(data));
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeletePosition(long id)

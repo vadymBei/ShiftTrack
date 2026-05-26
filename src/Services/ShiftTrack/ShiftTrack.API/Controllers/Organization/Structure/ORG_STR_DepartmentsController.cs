@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ShiftTrack.Application.Features.Organization.Structure.Common.ViewModels;
-using ShiftTrack.Application.Features.Organization.Structure.Departments.Commands.CreateDepartment;
-using ShiftTrack.Application.Features.Organization.Structure.Departments.Commands.DeleteDepartment;
-using ShiftTrack.Application.Features.Organization.Structure.Departments.Commands.UpdateDepartment;
-using ShiftTrack.Application.Features.Organization.Structure.Departments.Queries.GetDepartmentById;
-using ShiftTrack.Application.Features.Organization.Structure.Departments.Queries.GetDepartmentsByRoles;
-using ShiftTrack.Application.Features.Organization.Structure.Departments.Queries.GetDepartmentsByUnitId;
-using ShiftTrack.Application.Features.Organization.Structure.Departments.Queries.GetGroupedDepartmentsByUnit;
+using ShiftTrack.Application.Modules.Organization.Structure.Departments.Dtos;
+using ShiftTrack.Application.Modules.Organization.Structure.Departments.UseCases.Commands.CreateDepartment;
+using ShiftTrack.Application.Modules.Organization.Structure.Departments.UseCases.Commands.DeleteDepartment;
+using ShiftTrack.Application.Modules.Organization.Structure.Departments.UseCases.Commands.UpdateDepartment;
+using ShiftTrack.Application.Modules.Organization.Structure.Departments.UseCases.Queries.GetDepartmentById;
+using ShiftTrack.Application.Modules.Organization.Structure.Departments.UseCases.Queries.GetDepartmentsByRoles;
+using ShiftTrack.Application.Modules.Organization.Structure.Departments.UseCases.Queries.GetDepartmentsByUnitId;
+using ShiftTrack.Application.Modules.Organization.Structure.Departments.UseCases.Queries.GetGroupedDepartmentsByUnit;
+using ShiftTrack.Application.Modules.Organization.Structure.Departments.ViewModels;
 using ShiftTrack.Kernel.CQRS.Controllers;
 
 namespace ShiftTrack.API.Controllers.Organization.Structure;
@@ -17,12 +18,12 @@ namespace ShiftTrack.API.Controllers.Organization.Structure;
 public class ORG_STR_DepartmentsController : ApiController
 {
     [HttpPost]
-    public Task<DepartmentVm> Create(CreateDepartmentCommand command)
-        => Mediator.Invoke(command);
+    public Task<DepartmentVm> Create(DepartmentToCreateDto data)
+        => Mediator.Invoke(new CreateDepartmentCommand(data));
 
     [HttpPut]
-    public Task<DepartmentVm> UpdateDepartment(UpdateDepartmentCommand command)
-        => Mediator.Invoke(command);
+    public Task<DepartmentVm> UpdateDepartment(DepartmentToUpdateDto data)
+        => Mediator.Invoke(new UpdateDepartmentCommand(data));
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteDepartment(long id)

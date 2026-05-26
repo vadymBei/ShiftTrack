@@ -1,4 +1,4 @@
-using ShiftTrack.Domain.Features.System.User.Employees.Entities;
+using ShiftTrack.Domain.Modules.System.User.Employees.Entities;
 
 namespace ShiftTrack.Application.Common.Interfaces;
 

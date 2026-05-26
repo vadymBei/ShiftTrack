@@ -1,0 +1,29 @@
+﻿using AutoMapper;
+using ShiftTrack.Application.Modules.Organization.Employees.ViewModels;
+using ShiftTrack.Application.Modules.Organization.Timesheet.EmployeeShifts.ViewModels;
+using ShiftTrack.Application.Modules.Organization.Timesheet.Shifts.ViewModels;
+using ShiftTrack.Domain.Modules.Organization.Timesheet.Shifts.Entities;
+
+namespace ShiftTrack.Application.Modules.Organization.Timesheet.EmployeeShiftHistories.ViewModels;
+
+[AutoMap(typeof(EmployeeShiftHistory))]
+public class EmployeeShiftHistoryVm
+{
+    public long Id { get; set; }
+    public TimeSpan? PreviousStartTime { get; set; }
+    public TimeSpan? PreviousEndTime { get; set; }
+    public TimeSpan? NewStartTime { get; set; }
+    public TimeSpan? NewEndTime { get; set; }
+    public DateTime CreatedAt { get; set; }
+    
+    public long EmployeeShiftId { get; set; }
+    public EmployeeShiftVm EmployeeShift { get; set; }
+
+    public long? PreviousShiftId { get; set; }
+    public ShiftVm PreviousShift { get; set; }
+    
+    public long? NewShiftId { get; set; }
+    public ShiftVm NewShift { get; set; }
+    
+    public EmployeeVm Author { get; set; }
+}

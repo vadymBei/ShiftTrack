@@ -1,5 +1,5 @@
 ﻿using Generators.Pdf.Application.Common.Dto;
-using Generators.Pdf.Application.Queries.GeneratePdfFromHtml;
+using Generators.Pdf.Application.UseCases.Queries.GeneratePdfFromHtml;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShiftTrack.Kernel.CQRS.Controllers;

@@ -7,12 +7,22 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ShiftTrack.Application\ShiftTrack.Application.csproj" />
+        <ProjectReference Include="..\..\..\Common\Client\ShiftTrack.Client.Http\ShiftTrack.Client.Http.csproj"/>
+        <ProjectReference Include="..\ShiftTrack.Application\ShiftTrack.Application.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="EPPlusFree" Version="4.5.3.8" />
-      <PackageReference Include="HtmlAgilityPack" Version="1.12.4" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1"/>
+        <PackageReference Include="EPPlusFree" Version="4.5.3.8"/>
+        <PackageReference Include="HtmlAgilityPack" Version="1.12.4"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.1">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Modules\System\Auth\Tokens\"/>
     </ItemGroup>
 
 </Project>

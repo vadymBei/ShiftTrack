@@ -3,13 +3,13 @@ using System.Globalization;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using ShiftTrack.Application.Common.Interfaces;
-using ShiftTrack.Application.Features.Organization.Timesheet.UnitTimesheets.Queries.ExportTimesheet;
-using ShiftTrack.Domain.Features.Organization.Timesheet.Shifts.Enums;
+using ShiftTrack.Application.Modules.Organization.Timesheet.UnitTimesheets.UseCases.Queries.ExportUnitTimesheet;
+using ShiftTrack.Domain.Modules.Organization.Timesheet.Shifts.Enums;
 using ShiftTrack.Infrastructure.Common.Extensions;
 
 namespace ShiftTrack.Infrastructure.Common.Services.Excel;
 
-public class TimesheetPlanExporter : IExcelExporter<TimesheetExportData>
+public class TimesheetPlanExporter : IExcelExporter<UnitTimesheetExportData>
 {
     #region Colors
 
@@ -19,7 +19,7 @@ public class TimesheetPlanExporter : IExcelExporter<TimesheetExportData>
 
     #endregion
 
-    public byte[] Export(TimesheetExportData data)
+    public byte[] Export(UnitTimesheetExportData data)
     {
         using var package = new ExcelPackage();
         var worksheet = package.Workbook.Worksheets.Add("Timesheet");

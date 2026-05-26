@@ -3,9 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 using ShiftTrack.Kernel;
 using ShiftTrack.Kernel.Attributes;
 using ShiftTrack.Kernel.CQRS;
-using User.Authentication.Application.Features.oAuth.Common.Interfaces;
-using User.Authentication.Application.Features.oAuth.Common.Services;
-using User.Authentication.Domain.Features.oAuth.Options;
+using User.Authentication.Application.Modules.oAuth.Common.Interfaces;
+using User.Authentication.Application.Modules.oAuth.Common.Services;
+using User.Authentication.Domain.Models.oAuth.Options;
 
 namespace User.Authentication.Application;
 

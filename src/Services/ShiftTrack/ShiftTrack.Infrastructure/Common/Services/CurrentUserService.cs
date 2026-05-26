@@ -1,5 +1,5 @@
 using ShiftTrack.Application.Common.Interfaces;
-using ShiftTrack.Domain.Features.System.User.Employees.Entities;
+using ShiftTrack.Domain.Modules.System.User.Employees.Entities;
 
 namespace ShiftTrack.Infrastructure.Common.Services;
 
