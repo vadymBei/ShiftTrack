@@ -1,11 +1,14 @@
 ﻿using FluentValidation;
 
-namespace ShiftTrack.Application.Modules.Booking.BusinessTrips.UseCases.Commands.CreateBusinessTrip;
+namespace ShiftTrack.Application.Modules.Booking.BusinessTrips.UseCases.Commands.UpdateBusinessTrip;
 
-public class CreateBusinessTripCommandValidator : AbstractValidator<CreateBusinessTripCommand>
+public class UpdateBusinessTripCommandValidator : AbstractValidator<UpdateBusinessTripCommand>
 {
-    public CreateBusinessTripCommandValidator()
+    public UpdateBusinessTripCommandValidator()
     {
+        RuleFor(x => x.Data.Id)
+            .GreaterThan(0);
+        
         RuleFor(x => x.Data.StartDate)
             .NotEmpty()
             .Must(x => x.Date >= DateTime.Today)
