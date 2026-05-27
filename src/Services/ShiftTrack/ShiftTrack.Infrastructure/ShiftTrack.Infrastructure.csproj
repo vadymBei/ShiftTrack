@@ -22,6 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Folder Include="Modules\Organization\Payrolls\" />
         <Folder Include="Modules\System\Auth\Tokens\"/>
     </ItemGroup>
 
