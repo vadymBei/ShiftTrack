@@ -4,6 +4,7 @@ using ShiftTrack.Application.Common.Interfaces;
 using ShiftTrack.Domain.Common.Abstractions;
 using ShiftTrack.Domain.Modules.Booking.BusinessTrips.Entities;
 using ShiftTrack.Domain.Modules.Booking.Vacations.Entities;
+using ShiftTrack.Domain.Modules.Organization.Payrolls.Entities;
 using ShiftTrack.Domain.Modules.Organization.Structure.Entities;
 using ShiftTrack.Domain.Modules.Organization.Timesheet.Shifts.Entities;
 using ShiftTrack.Domain.Modules.System.User.EmployeeRoles.Entities;
@@ -47,8 +48,10 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
     //Timesheet
     public DbSet<Shift> Shifts { get; set; }
     public DbSet<EmployeeShift> EmployeeShifts { get; set; }
-
     public DbSet<EmployeeShiftHistory> EmployeeShiftHistories { get; set; }
+    
+    //Payrolls
+    public DbSet<Payroll> Payrolls { get; set; }
 
     //System
     //User

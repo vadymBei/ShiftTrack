@@ -6,6 +6,7 @@ using ShiftTrack.Application.Modules.Booking.BusinessTrips.Interfaces;
 using ShiftTrack.Application.Modules.Booking.Vacations.Interfaces;
 using ShiftTrack.Application.Modules.Booking.Vacations.UseCases.Queries.DownloadVacationRequestPdf;
 using ShiftTrack.Application.Modules.Organization.Employees.Interfaces;
+using ShiftTrack.Application.Modules.Organization.Payrolls.Interfaces;
 using ShiftTrack.Application.Modules.Organization.Structure.Departments.Interfaces;
 using ShiftTrack.Application.Modules.Organization.Structure.Positions.Interfaces;
 using ShiftTrack.Application.Modules.Organization.Structure.Units.Interfaces;
@@ -28,6 +29,7 @@ using ShiftTrack.Infrastructure.Common.Services.Pdf;
 using ShiftTrack.Infrastructure.Modules.Booking.BusinessTrips.Repositories;
 using ShiftTrack.Infrastructure.Modules.Booking.Vacations.Repositories;
 using ShiftTrack.Infrastructure.Modules.Organization.Employees.Repositories;
+using ShiftTrack.Infrastructure.Modules.Organization.Payrolls.Repositories;
 using ShiftTrack.Infrastructure.Modules.Organization.Structure.Departments.Repositories;
 using ShiftTrack.Infrastructure.Modules.Organization.Structure.Positions.Repositories;
 using ShiftTrack.Infrastructure.Modules.Organization.Structure.Units.Repositories;
@@ -92,6 +94,9 @@ public static class DependencyInjection
         services.AddTransient<IShiftRepository, ShiftRepository>();
         services.AddTransient<IEmployeeShiftHistoryRepository, EmployeeShiftHistoryRepository>();
         services.AddTransient<IEmployeeShiftRepository, EmployeeShiftRepository>();
+        
+        //Payrolls
+        services.AddTransient<IPayrollRepository, PayrollRepository>();
         
         //System
         //Auth
