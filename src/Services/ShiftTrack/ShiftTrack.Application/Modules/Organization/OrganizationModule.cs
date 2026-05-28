@@ -1,6 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using ShiftTrack.Application.Modules.Organization.Employees.Interfaces;
 using ShiftTrack.Application.Modules.Organization.Employees.Services;
+using ShiftTrack.Application.Modules.Organization.Payrolls.Interfaces;
+using ShiftTrack.Application.Modules.Organization.Payrolls.Services;
 using ShiftTrack.Application.Modules.Organization.Structure.Departments.Interfaces;
 using ShiftTrack.Application.Modules.Organization.Structure.Departments.Services;
 using ShiftTrack.Application.Modules.Organization.Structure.Positions.Interfaces;
@@ -25,6 +27,9 @@ public static class OrganizationModule
         //Employees
         services.AddTransient<IEmployeeService, EmployeeService>();
 
+        //Payrolls
+        services.AddTransient<IPayrollService, PayrollService>();
+        
         //Structure
         services.AddTransient<IUnitService, UnitService>();
         services.AddTransient<IPositionService, PositionService>();

@@ -16,7 +16,6 @@
     <ItemGroup>
         <Folder Include="Modules\Booking\Vacations\UseCases\" />
         <Folder Include="Modules\Organization\Employees\UseCases\" />
-        <Folder Include="Modules\Organization\Payrolls\" />
         <Folder Include="Modules\Organization\Structure\Departments\UseCases\" />
         <Folder Include="Modules\Organization\Structure\Positions\UseCases\" />
         <Folder Include="Modules\Organization\Structure\Units\UseCases\" />
