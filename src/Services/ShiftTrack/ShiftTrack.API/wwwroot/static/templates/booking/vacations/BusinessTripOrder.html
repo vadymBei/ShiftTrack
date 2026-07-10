@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Наказ про відрядження</title>
+    <style>
+        body {
+            font-family: "Times New Roman", serif;
+            font-size: 14pt;
+            color: #000;
+        }
+
+        .title {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .section-heading {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .content {
+            text-align: justify;
+            line-height: 1.8;
+        }
+
+        .content ol {
+            padding-left: 0;
+            list-style: none;
+            counter-reset: item;
+        }
+
+        .content ol li {
+            counter-increment: item;
+            margin-bottom: 16px;
+            text-indent: 0;
+        }
+
+        .content ol li::before {
+            content: counter(item) ". ";
+            font-weight: normal;
+        }
+
+        .standard-item {
+            margin-bottom: 16px;
+            line-height: 1.8;
+        }
+
+        .signatures-block {
+            margin-top: 60px;
+        }
+
+        .signatures-label {
+            margin-bottom: 16px;
+            font-size: 12pt;
+        }
+
+        .signatures-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px 40px;
+        }
+
+        .signature-item {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            min-width: 280px;
+        }
+
+        .signature-line {
+            border-bottom: 1px solid black;
+            min-width: 140px;
+            display: inline-block;
+            vertical-align: bottom;
+        }
+
+        .signature-name {
+            white-space: nowrap;
+            font-weight: normal;
+        }
+    </style>
+</head>
+<body>
+<div>
+
+    <div class="title">
+        НАКАЗ № <span id="order_number"></span>
+    </div>
+
+    <div class="section-heading">
+        НАКАЗУЮ:
+    </div>
+
+    <div class="content">
+        <ol id="employees_list">
+        </ol>
+
+        <div class="standard-item">
+            4. Працівникам, зазначеним в п. 1 по <span id="employees_count"></span> наказу, після повернення
+            прозвітувати про витрачені на відрядження кошти.
+        </div>
+
+        <div class="standard-item">
+            5. Відділу бухгалтерського обліку і звітності відшкодувати витрати, що понесли працівники під час
+            відрядження, відповідно до наданих підтвердних документів, а також виплатити добові за цей період в розмірі,
+            передбаченому законодавством.
+        </div>
+    </div>
+
+    <div class="signatures-block">
+        <div class="signatures-label">з наказом ознайомлені:</div>
+        <div class="signatures-grid" id="signatures_list">
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

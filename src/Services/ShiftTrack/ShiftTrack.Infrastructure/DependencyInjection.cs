@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using ShiftTrack.Application.Common.Interfaces;
 using ShiftTrack.Application.Modules.Booking.BusinessTrips.Interfaces;
 using ShiftTrack.Application.Modules.Booking.Vacations.Interfaces;
+using ShiftTrack.Application.Modules.Booking.BusinessTrips.UseCases.Queries.DownloadBusinessTripOrderPdf;
 using ShiftTrack.Application.Modules.Booking.Vacations.UseCases.Queries.DownloadVacationRequestPdf;
 using ShiftTrack.Application.Modules.Organization.Employees.Interfaces;
 using ShiftTrack.Application.Modules.Organization.Payrolls.Interfaces;
@@ -65,6 +66,7 @@ public static class DependencyInjection
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddTransient<IExcelExporter<UnitTimesheetExportData>, TimesheetPlanExporter>();
         services.AddTransient<IPdfExporter<VacationRequestData>, VacationRequestExporter>();
+        services.AddTransient<IPdfExporter<BusinessTripOrderData>, BusinessTripOrderExporter>();
 
         //Repositories
         services.AddTransient<IPdfRepository, PdfRepository>();

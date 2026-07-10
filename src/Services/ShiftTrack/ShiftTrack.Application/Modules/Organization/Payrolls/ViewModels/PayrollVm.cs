@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using ShiftTrack.Application.Modules.Organization.Employees.ViewModels;
-using ShiftTrack.Application.Modules.Organization.Timesheet.EmployeeShifts.ViewModels;
 using ShiftTrack.Domain.Modules.Organization.Payrolls.Entities;
 using ShiftTrack.Domain.Modules.Organization.Payrolls.Enums;
 
@@ -20,6 +19,4 @@ public class PayrollVm
 
     public long EmployeeId { get; set; }
     public EmployeeVm Employee { get; set; }
-
-    public IEnumerable<EmployeeShiftVm> EmployeeShifts { get; set; }
 }

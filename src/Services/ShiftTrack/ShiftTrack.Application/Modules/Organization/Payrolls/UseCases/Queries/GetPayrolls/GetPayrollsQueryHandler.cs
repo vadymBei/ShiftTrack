@@ -48,9 +48,7 @@ public class GetPayrollsQueryHandler(
                     WorkedHours = et.TotalWorkHours,
                     HourlyRate = hourlyRate,
                     TotalAmount = et.TotalWorkHours * hourlyRate,
-                    Status = payroll?.Status ?? PayrollStatus.Pending,
-                    EmployeeShifts = mapper.Map<IEnumerable<EmployeeShiftVm>>(
-                        et.EmployeeShifts.OrderBy(x => x.Date))
+                    Status = payroll?.Status ?? PayrollStatus.Pending
                 };
             })
             .ToList();

@@ -51,8 +51,12 @@ public class BusinessTripRepository(
     public async Task<BusinessTrip> GetById(long id, CancellationToken cancellationToken)
     {
         var businessTrip = await applicationDbContext.BusinessTrips
+                               .Include(x => x.Author)
+                               .ThenInclude(x => x.Department)
+                               .ThenInclude(x => x.Unit)
                                .Include(x => x.Locations)
                                .Include(x => x.Participants)
+                               .ThenInclude(x => x.Position)
                                .FirstOrDefaultAsync(x => x.Id == id, cancellationToken)
                            ?? throw new EntityNotFoundException(typeof(BusinessTrip), id);
 
