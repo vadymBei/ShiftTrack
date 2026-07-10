@@ -6,6 +6,7 @@ using ShiftTrack.Application.Modules.Booking.BusinessTrips.UseCases.Commands.Cre
 using ShiftTrack.Application.Modules.Booking.BusinessTrips.UseCases.Commands.DeleteBusinessTrip;
 using ShiftTrack.Application.Modules.Booking.BusinessTrips.UseCases.Commands.RejectBusinessTrip;
 using ShiftTrack.Application.Modules.Booking.BusinessTrips.UseCases.Commands.UpdateBusinessTrip;
+using ShiftTrack.Application.Modules.Booking.BusinessTrips.UseCases.Queries.DownloadBusinessTripOrderPdf;
 using ShiftTrack.Application.Modules.Booking.BusinessTrips.UseCases.Queries.GetBusinessTripById;
 using ShiftTrack.Application.Modules.Booking.BusinessTrips.UseCases.Queries.GetBusinessTrips;
 using ShiftTrack.Application.Modules.Booking.BusinessTrips.ViewModels;
@@ -48,4 +49,12 @@ public class BKG_BST_BusinessTripsController : ApiController
     [HttpGet("{id:long}")]
     public async Task<BusinessTripVm> GetById(long id)
         => await Mediator.Invoke(new GetBusinessTripByIdQuery(id));
+    
+    [HttpGet("download/order/{id}")]
+    public async Task<FileResult> DownloadVacationRequestPdfQuery(long id)
+    {
+        var documentVm = await Mediator.Invoke(new DownloadBusinessTripOrderQuery(id));
+
+        return File(documentVm.StreamContent, documentVm.MimeType, documentVm.Name);
+    }
 }

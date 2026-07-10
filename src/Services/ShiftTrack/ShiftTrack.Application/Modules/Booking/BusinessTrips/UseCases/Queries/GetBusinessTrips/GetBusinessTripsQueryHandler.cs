@@ -16,6 +16,9 @@ public class GetBusinessTripsQueryHandler(
         var businessTrips = await businessTripService
             .GetFiltered(request.Filter, cancellationToken);
         
+        if(!businessTrips.Any())
+            return [];
+        
         var locationIntegrationIds = businessTrips
             .SelectMany(x => x.Locations)
             .Select(x => x.LocationIntegrationId)
