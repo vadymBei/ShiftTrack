@@ -17,25 +17,25 @@ public class ORG_TSH_ShiftsController : ApiController
 {
     [HttpPost]
     public async Task<ShiftVm> CreateShift(ShiftToCreateDto data)
-        => await Mediator.Invoke(new CreateShiftCommand(data));
+        => await Mediator.Send(new CreateShiftCommand(data));
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteShift(long id)
     {
-        await Mediator.Invoke(new DeleteShiftCommand(id));
+        await Mediator.Send(new DeleteShiftCommand(id));
 
         return Ok();
     }
 
     [HttpPut]
     public async Task<ShiftVm> UpdateShift(ShiftToUpdateDto data)
-        => await Mediator.Invoke(new UpdateShiftCommand(data));
+        => await Mediator.Send(new UpdateShiftCommand(data));
 
     [HttpGet]
     public async Task<IEnumerable<ShiftVm>> GetShifts()
-        => await Mediator.Invoke(new GetShiftsQuery());
+        => await Mediator.Send(new GetShiftsQuery());
 
     [HttpGet("{id}")]
     public async Task<ShiftVm> GetShiftById(long id)
-        => await Mediator.Invoke(new GetShiftByIdQuery(id));
+        => await Mediator.Send(new GetShiftByIdQuery(id));
 }

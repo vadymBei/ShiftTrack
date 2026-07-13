@@ -13,5 +13,5 @@ public class ORG_TSH_EmployeeShiftsController : ApiController
 {
     [HttpPost("list")]
     public Task<IEnumerable<EmployeeShiftVm>> CreateEmployeeShifts([FromBody] IEnumerable<EmployeeShiftToCreateDto> request)
-        =>  Mediator.Invoke(new CreateEmployeeShiftsCommand(request));
+        =>  Mediator.Send(new CreateEmployeeShiftsCommand(request));
 }

@@ -14,16 +14,16 @@ public class SYS_USR_EmployeeRoleUnitDepartmentsController : ApiController
 {
     [HttpPost]
     public Task<EmployeeRoleUnitDepartmentVm> CreateEmployeeRoleUnitDepartment([FromBody] CreateEmployeeRoleUnitDepartmentCommand command)
-        => Mediator.Invoke(command);
+        => Mediator.Send(command);
     
     [HttpGet("by-employeeRoleUnitId/{employeeRoleUnitId}")]
     public Task<IEnumerable<EmployeeRoleUnitDepartmentVm>> GetEmployeeRoleUnitDepartmentsByEmployeeRoleUnitId(long employeeRoleUnitId)
-        => Mediator.Invoke(new GetEmployeeRoleUnitDepartmentsByEmployeeRoleUnitIdQuery(employeeRoleUnitId));
+        => Mediator.Send(new GetEmployeeRoleUnitDepartmentsByEmployeeRoleUnitIdQuery(employeeRoleUnitId));
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteEmployeeRoleUnitDepartment(long id)
     {
-        await Mediator.Invoke(new DeleteEmployeeRoleUnitDepartmentCommand(id));
+        await Mediator.Send(new DeleteEmployeeRoleUnitDepartmentCommand(id));
         
         return Ok();
     }

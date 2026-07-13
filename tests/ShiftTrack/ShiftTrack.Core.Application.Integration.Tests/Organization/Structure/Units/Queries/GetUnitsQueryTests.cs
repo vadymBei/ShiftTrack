@@ -17,7 +17,7 @@ public class GetUnitsQueryTests(
         var getUnitsQuery = new GetUnitsQuery();
 
         // Act
-        var units = await Mediator.Invoke(getUnitsQuery);
+        var units = await Mediator.Send(getUnitsQuery);
 
         // Assert
         units.Should().NotBeNull();

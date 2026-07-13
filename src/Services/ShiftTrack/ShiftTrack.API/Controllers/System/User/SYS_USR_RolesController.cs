@@ -12,5 +12,5 @@ public class SYS_USR_RolesController : ApiController
 {
     [HttpGet]
     public async Task<IEnumerable<RoleVm>> GetRoles()
-        => await Mediator.Invoke(new GetRolesQuery());
+        => await Mediator.Send(new GetRolesQuery());
 }

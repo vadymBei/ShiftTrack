@@ -15,13 +15,13 @@ public class ORG_EMP_EmployeesController : ApiController
 {
     [HttpGet]
     public async Task<IEnumerable<EmployeeVm>> GetEmployees([FromQuery] EmployeesFilterDto filter)
-        => await Mediator.Invoke(new GetEmployeesQuery(filter));
+        => await Mediator.Send(new GetEmployeesQuery(filter));
 
     [HttpGet("{id}")]
     public async Task<EmployeeVm> GetEmployeeById(long id)
-        => await Mediator.Invoke(new GetEmployeeByIdQuery(id));
+        => await Mediator.Send(new GetEmployeeByIdQuery(id));
     
     [HttpPut]
     public async Task<EmployeeVm> UpdateEmployee(UpdateEmployeeCommand command)
-        => await Mediator.Invoke(command);
+        => await Mediator.Send(command);
 }

@@ -19,7 +19,7 @@ public class CreatePositionCommandTests(
                 Faker.Random.Decimal(100, 500)));
 
         // Act
-        var newPosition = await Mediator.Invoke(createPositionCommand);
+        var newPosition = await Mediator.Send(createPositionCommand);
 
         // Assert
         var position = await PositionRepository.GetById(newPosition.Id, CancellationToken.None);

@@ -12,5 +12,5 @@ public class UserRolesController : ApiController
 {
     [HttpPost]
     public async Task CreateUserRole(UserRoleToCreateDto commandData)
-        => await Mediator.Invoke(new CreateUserRoleCommand(commandData));
+        => await Mediator.Send(new CreateUserRoleCommand(commandData));
 }

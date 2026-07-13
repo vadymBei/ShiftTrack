@@ -55,7 +55,7 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
             Faker.Address.FullAddress(),
             Faker.Random.Replace("???").ToUpper());
 
-        return await Mediator.Invoke(new CreateUnitCommand(dto));
+        return await Mediator.Send(new CreateUnitCommand(dto));
     }
 
     protected async Task<DepartmentVm> CreateDepartmentAsync(long unitId, DepartmentToCreateDto dto = null)
@@ -64,7 +64,7 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
             Faker.Company.CompanyName(),
             unitId);
 
-        return await Mediator.Invoke(new CreateDepartmentCommand(dto));
+        return await Mediator.Send(new CreateDepartmentCommand(dto));
     }
 
     protected async Task<PositionVm> CreatePositionAsync(PositionToCreateDto dto = null)
@@ -74,7 +74,7 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
             Faker.Name.JobDescriptor(),
             Faker.Random.Decimal(100, 500));
 
-        return await Mediator.Invoke(new CreatePositionCommand(dto));
+        return await Mediator.Send(new CreatePositionCommand(dto));
     }
 
     protected async Task<ShiftVm> CreateShiftAsync(ShiftToCreateDto dto = null)
@@ -87,6 +87,6 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
             new TimeSpan(08, 00, 00),
             new TimeSpan(20, 00, 00));
 
-        return await Mediator.Invoke(new CreateShiftCommand(dto));
+        return await Mediator.Send(new CreateShiftCommand(dto));
     }
 }

@@ -15,12 +15,12 @@ public class ORG_PRL_PayrollsController : ApiController
     [HttpPut("mark-as-paid")]
     public async Task<IActionResult> MarkPayrollAsPaid([FromBody] MarkPayrollAsPaidDto request)
     {
-        await Mediator.Invoke(new MarkPayrollAsPaidCommand(request));
+        await Mediator.Send(new MarkPayrollAsPaidCommand(request));
 
         return Ok();
     }
 
     [HttpGet("by-period")]
     public async Task<PayrollSummaryVm> GetPayrollsByPeriod(DateTime period, long departmentId)
-        => await Mediator.Invoke(new GetPayrollsQuery(period, departmentId));
+        => await Mediator.Send(new GetPayrollsQuery(period, departmentId));
 }

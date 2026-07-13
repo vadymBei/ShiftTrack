@@ -17,7 +17,7 @@ public class DeleteUnitCommandTests(
         var deleteUnitCommand = new DeleteUnitCommand(1000);
 
         // Act
-        Func<Task> act = async () => await Mediator.Invoke(deleteUnitCommand);
+        Func<Task> act = async () => await Mediator.Send(deleteUnitCommand);
 
         // Assert
         await act.Should()
@@ -33,7 +33,7 @@ public class DeleteUnitCommandTests(
         var deleteUnitCommand = new DeleteUnitCommand(unit.Id);
 
         // Act 
-        await Mediator.Invoke(deleteUnitCommand);
+        await Mediator.Send(deleteUnitCommand);
 
         // Assert
         Func<Task> act = async () => await UnitRepository.GetById(unit.Id, CancellationToken.None);

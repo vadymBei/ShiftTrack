@@ -13,7 +13,7 @@ public class PdfGeneratorController : ApiController
     [HttpPost("generate/from-html")]
     public async Task<Stream> GenerateFromHtml([FromBody] GeneratePdfDto dto)
     {
-        var pdfStream = await Mediator.Invoke(new GeneratePdfFromHtmlQuery(dto));
+        var pdfStream = await Mediator.Send(new GeneratePdfFromHtmlQuery(dto));
 
         return pdfStream;
     }
@@ -21,7 +21,7 @@ public class PdfGeneratorController : ApiController
     [HttpPost("generate/from-html/file")]
     public async Task<FileResult> GenerateFromHtmlAsFile([FromBody] GeneratePdfDto dto)
     {
-        var pdfStream = await Mediator.Invoke(new GeneratePdfFromHtmlQuery(dto));
+        var pdfStream = await Mediator.Send(new GeneratePdfFromHtmlQuery(dto));
 
         return File(pdfStream, "application/pdf", "document.pdf");
     }

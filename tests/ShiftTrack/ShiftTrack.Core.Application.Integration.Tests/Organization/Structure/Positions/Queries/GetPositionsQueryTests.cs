@@ -16,7 +16,7 @@ public class GetPositionsQueryTests(
         var getPositionsQuery = new GetPositionsQuery();
 
         // Act
-        var positions = await Mediator.Invoke(getPositionsQuery);
+        var positions = await Mediator.Send(getPositionsQuery);
 
         // Assert
         positions.Should().NotBeNull();

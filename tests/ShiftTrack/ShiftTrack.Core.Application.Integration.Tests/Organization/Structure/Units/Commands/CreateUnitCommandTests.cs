@@ -20,7 +20,7 @@ public class CreateUnitCommandTests(
                 Faker.Random.Replace("???").ToUpper()));
 
         // Act
-        var newUnit = await Mediator.Invoke(createUnitCommand);
+        var newUnit = await Mediator.Send(createUnitCommand);
 
         // Assert
         var unit = await UnitRepository.GetById(newUnit.Id, CancellationToken.None);

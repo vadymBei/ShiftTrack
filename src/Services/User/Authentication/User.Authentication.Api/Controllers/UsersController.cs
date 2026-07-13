@@ -12,5 +12,5 @@ public class UsersController : ApiController
 {
     [HttpGet]
     public async Task<IEnumerable<UserVm>> GetAllUsers()
-        => await Mediator.Invoke(new GetUsersQuery());
+        => await Mediator.Send(new GetUsersQuery());
 }

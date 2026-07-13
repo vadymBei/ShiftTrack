@@ -22,31 +22,31 @@ public class SYS_AUTH_AccountController : ApiController
 {
     [HttpGet("current-user")]
     public Task<CurrentUserVm> GetCurrentUser()
-        => Mediator.Invoke(new GetCurrentUserQuery());
+        => Mediator.Send(new GetCurrentUserQuery());
 
     [HttpPost("register")]
     [AllowAnonymous]
     public async Task<TokenVm> CreateEmployee(RegisterCommand command)
     {
-        var employee = await Mediator.Invoke(command);
+        var employee = await Mediator.Send(command);
 
-        return await Mediator.Invoke(
+        return await Mediator.Send(
             new GenerateTokenCommand(
                 new GenerateTokenDto(command.PhoneNumber, command.Password)));
     }
 
     [HttpPost("password/change")]
     public async Task<TokenVm> ChangePassword(ChangePasswordDto commandData)
-        => await Mediator.Invoke(new ChangePasswordCommand(commandData));
+        => await Mediator.Send(new ChangePasswordCommand(commandData));
     
     [HttpPut]
     public Task<EmployeeVm> UpdateAccount(UpdateAccountCommand command)
-        => Mediator.Invoke(command);
+        => Mediator.Send(command);
 
     [HttpPost("upload-photo")]
     public async Task<IActionResult> UploadPhoto([FromForm] UploadPhotoCommand command)
     {
-        var document = await Mediator.Invoke(command);
+        var document = await Mediator.Send(command);
 
         return PhysicalFile(document.Path, document.MimeType);
     }
@@ -54,7 +54,7 @@ public class SYS_AUTH_AccountController : ApiController
     [HttpGet("photo")]
     public async Task<IActionResult> GetPhoto([FromQuery] GetUserPhotoQuery query)
     {
-        var document = await Mediator.Invoke(query);
+        var document = await Mediator.Send(query);
 
         return PhysicalFile(document.Path, document.MimeType);
     }

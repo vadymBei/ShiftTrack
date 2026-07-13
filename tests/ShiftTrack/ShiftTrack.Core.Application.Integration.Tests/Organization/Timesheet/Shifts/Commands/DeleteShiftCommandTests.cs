@@ -19,7 +19,7 @@ public class DeleteShiftCommandTests(
         var command = new DeleteShiftCommand(nonExistentId);
 
         // Act
-        Func<Task> act = () => Mediator.Invoke(command);
+        Func<Task> act = () => Mediator.Send(command);
 
         // Assert
         await act.Should().ThrowAsync<EntityNotFoundException>();
@@ -34,7 +34,7 @@ public class DeleteShiftCommandTests(
         var deleteCommand = new DeleteShiftCommand(shift.Id);
 
         // Act
-        await Mediator.Invoke(deleteCommand);
+        await Mediator.Send(deleteCommand);
 
         // Assert
         Func<Task> act = async () => await ShiftRepository.GetById(shift.Id, CancellationToken.None);

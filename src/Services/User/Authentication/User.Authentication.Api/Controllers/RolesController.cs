@@ -14,9 +14,9 @@ public class RolesController : ApiController
 {
     [HttpPost]
     public async Task<RoleVm> CreateRole(RoleToCreateDto commandData)
-        => await Mediator.Invoke(new CreateRoleCommand(commandData));
+        => await Mediator.Send(new CreateRoleCommand(commandData));
 
     [HttpGet]
     public async Task<IEnumerable<RoleVm>> GetRoles()
-        => await Mediator.Invoke(new GetRolesQuery());
+        => await Mediator.Send(new GetRolesQuery());
 }

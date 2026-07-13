@@ -12,7 +12,7 @@ public class SYS_DATA_InitializationsController : ApiController
     [HttpPost("sys-admin")]
     public async Task<IActionResult> InitializeSystemAdmin()
     {
-        await Mediator.Invoke(new InitializeSysAdminCommand());
+        await Mediator.Send(new InitializeSysAdminCommand());
         
         return Ok();
     }

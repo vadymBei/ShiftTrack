@@ -11,37 +11,56 @@ namespace ShiftTrack.Kernel.CQRS;
 [ShiftTrackMember]
 public static class DependencyInjection
 {
-    public static IServiceCollection AddCqrs(this IServiceCollection services)
+    /// <summary>
+    /// Registers Mediator, handlers, validators, and validation decorators.
+    /// </summary>
+    /// <param name="services">Колекція сервісів DI.</param>
+    /// <param name="assemblies">
+    /// Явно передайте збірки з handlers/validators.
+    /// Якщо не вказано — шукає збірки з <see cref="MediatorMemberAttribute"/>.
+    /// </param>
+    public static IServiceCollection AddCqrs(
+        this IServiceCollection services,
+        params Assembly[] assemblies)
     {
-        services.AddScoped<IMediator, Mediator>();
+        // Mediator не має стану — Transient безпечний і швидший за Scoped
+        services.AddTransient<IMediator, Mediator>();
 
-        var assemblies = AppDomain.CurrentDomain
-            .GetAssemblies()
-            .Where(assembly => assembly.GetTypes().Any(t => t.IsDefined(typeof(ShiftTrackMemberAttribute))))
-            .Distinct()
-            .ToArray();
+        // Автоматично читає CancellationToken з HttpContext.RequestAborted
+        services.AddHttpContextAccessor();
+        services.AddTransient<ICancellationTokenProvider, HttpContextCancellationTokenProvider>();
+
+        var targetAssemblies = assemblies.Length > 0
+            ? assemblies
+            : AppDomain.CurrentDomain
+                .GetAssemblies()
+                .Where(a => a.GetTypes().Any(t => t.IsDefined(typeof(ShiftTrackMemberAttribute), false)))
+                .ToArray();
+
+        if (targetAssemblies.Length == 0)
+            throw new InvalidOperationException(
+                "No assemblies found. Either pass assemblies explicitly to AddCqrs() " +
+                $"or mark a class with [{nameof(ShiftTrackMemberAttribute)}].");
 
         // Register validators
         services.Scan(scan => scan
-            .FromAssemblies(assemblies)
+            .FromAssemblies(targetAssemblies)
             .AddClasses(classes => classes.AssignableTo(typeof(IValidator<>)))
             .AsImplementedInterfaces()
             .WithScopedLifetime());
 
-        // Combined registration for both types of handlers
+        // Register handlers
         services.Scan(scan => scan
-            .FromAssemblies(assemblies)
-            
-            .AddClasses(classes => classes.AssignableTo(typeof(IDomainEventHandler<>)), publicOnly: false)
+            .FromAssemblies(targetAssemblies)
+
+            // INotificationHandler<> охоплює і IDomainEventHandler<> (через наслідування),
+            // тому окремий рядок для IDomainEventHandler більше не потрібен
+            .AddClasses(classes => classes.AssignableTo(typeof(INotificationHandler<>)), publicOnly: false)
             .AsImplementedInterfaces()
             .WithScopedLifetime()
-
-            // Register handlers without response
             .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<>)))
             .AsImplementedInterfaces()
             .WithScopedLifetime()
-
-            // Register handlers with response
             .AddClasses(classes => classes.AssignableTo(typeof(IRequestHandler<,>)))
             .AsImplementedInterfaces()
             .WithScopedLifetime());
@@ -49,9 +68,7 @@ public static class DependencyInjection
         // Register validation decorators
         services.TryDecorate(typeof(IRequestHandler<>), typeof(ValidationDecorator<>));
         services.TryDecorate(typeof(IRequestHandler<,>), typeof(ValidationDecorator<,>));
-        
-        // Register domain events dispatcher
-        services.AddTransient<IDomainEventsDispatcher, DomainEventsDispatcher>();
+
         return services;
     }
 }

@@ -16,7 +16,7 @@ public class GetShiftByIdQueryTests(
         var getByIdQuery = new GetShiftByIdQuery(1000);
 
         // Act
-        Func<Task> act = async () => await Mediator.Invoke(getByIdQuery);
+        Func<Task> act = async () => await Mediator.Send(getByIdQuery);
 
         // Assert
         await act.Should()
@@ -32,7 +32,7 @@ public class GetShiftByIdQueryTests(
         var getByIdQuery = new GetShiftByIdQuery(newShift.Id);
 
         // Act
-        var shift = await Mediator.Invoke(getByIdQuery);
+        var shift = await Mediator.Send(getByIdQuery);
 
         // Assert
         shift.Should().NotBeNull();
