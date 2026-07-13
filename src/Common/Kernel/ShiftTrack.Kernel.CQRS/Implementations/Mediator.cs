@@ -40,7 +40,7 @@ public class Mediator(
     // ── Expression compilers ──────────────────────────────────────────────────
 
     /// <summary>
-    /// Будує і компілює expression:
+    /// Builds and compiles the expression:
     /// <c>(handler, request, ct) => ((IRequestHandler&lt;TReq, TRes&gt;)handler).Handle((TReq)request, ct)</c>
     /// </summary>
     private static Func<object, object, CancellationToken, Task> CompileHandlerInvoker(
@@ -64,7 +64,7 @@ public class Mediator(
     }
 
     /// <summary>
-    /// Будує і компілює expression:
+    /// Builds and compiles the expression:
     /// <c>(handler, request, ct) => ((IRequestHandler&lt;TReq&gt;)handler).Handle((TReq)request, ct)</c>
     /// </summary>
     private static Func<object, object, CancellationToken, Task> CompileVoidHandlerInvoker(Type requestType)
@@ -87,7 +87,7 @@ public class Mediator(
     }
 
     /// <summary>
-    /// Будує і компілює expression:
+    /// Builds and compiles the expression:
     /// <c>(pipe, request, next, ct) => ((IPipelineBehaviour&lt;TReq, TRes&gt;)pipe).Handle((TReq)request, (RequestHandlerDelegate&lt;TRes&gt;)next, ct)</c>
     /// </summary>
     private static Func<object, object, object, CancellationToken, Task> CompilePipelineInvoker(
@@ -114,7 +114,7 @@ public class Mediator(
     }
 
     /// <summary>
-    /// Будує і компілює expression:
+    /// Builds and compiles the expression:
     /// <c>(pipe, request, next, ct) => ((IPipelineBehaviour&lt;TReq&gt;)pipe).Handle((TReq)request, (RequestHandlerDelegate)next, ct)</c>
     /// </summary>
     private static Func<object, object, object, CancellationToken, Task> CompileVoidPipelineInvoker(Type requestType)
@@ -139,7 +139,7 @@ public class Mediator(
     }
 
     /// <summary>
-    /// Будує і компілює expression:
+    /// Builds and compiles the expression:
     /// <c>(handler, notification, ct) => ((INotificationHandler&lt;TNotif&gt;)handler).Handle((TNotif)notification, ct)</c>
     /// </summary>
     private static Func<object, object, CancellationToken, Task> CompileNotificationInvoker(Type notificationType)
@@ -164,7 +164,7 @@ public class Mediator(
     // ── Helpers ───────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Якщо токен не переданий явно (default) — автоматично бере з HttpContext.RequestAborted.
+    /// If no token is provided explicitly (default), it is automatically taken from HttpContext.RequestAborted.
     /// </summary>
     private CancellationToken ResolveToken(CancellationToken cancellationToken) =>
         cancellationToken == default ? cancellationTokenProvider.Token : cancellationToken;

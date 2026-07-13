@@ -1,9 +1,9 @@
 ﻿namespace ShiftTrack.Kernel.CQRS.Interfaces;
 
 /// <summary>
-/// Надає поточний <see cref="CancellationToken"/> для використання в Mediator.
-/// В контексті HTTP — це <c>HttpContext.RequestAborted</c>, 
-/// який ASP.NET Core скасовує при від'єднанні клієнта.
+/// Provides the current <see cref="CancellationToken"/> for use in Mediator.
+/// In an HTTP context, this is <c>HttpContext.RequestAborted</c>,
+/// which ASP.NET Core cancels when the client disconnects.
 /// </summary>
 public interface ICancellationTokenProvider
 {

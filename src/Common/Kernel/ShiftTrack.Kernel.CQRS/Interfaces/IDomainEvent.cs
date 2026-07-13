@@ -1,8 +1,8 @@
 ﻿namespace ShiftTrack.Kernel.CQRS.Interfaces;
 
 /// <summary>
-/// Доменна подія (DDD). Розширює <see cref="INotification"/>,
-/// тому будь-який <see cref="IDomainEventHandler{T}"/> автоматично
-/// є <see cref="INotificationHandler{T}"/> і публікується через <see cref="IMediator.Publish"/>.
+/// Domain event (DDD). Extends <see cref="INotification"/>,
+/// so any <see cref="IDomainEventHandler{T}"/> is automatically
+/// an <see cref="INotificationHandler{T}"/> and is published via <see cref="IMediator.Publish"/>.
 /// </summary>
 public interface IDomainEvent : INotification;

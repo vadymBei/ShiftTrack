@@ -6,13 +6,13 @@ public interface IMediator
     Task Send(IRequest request, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Публікує одне повідомлення всім зареєстрованим <see cref="INotificationHandler{T}"/>.
-    /// Обробники виконуються паралельно.
+    /// Publishes a single notification to all registered <see cref="INotificationHandler{T}"/>.
+    /// Handlers are executed in parallel.
     /// </summary>
     Task Publish(INotification notification, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Публікує декілька повідомлень. Кожне повідомлення обробляється паралельно.
+    /// Publishes multiple notifications. Each notification is processed in parallel.
     /// </summary>
     Task Publish(IEnumerable<INotification> notifications, CancellationToken cancellationToken = default);
 }

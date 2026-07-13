@@ -4,8 +4,8 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 namespace ShiftTrack.Kernel.CQRS.Implementations;
 
 /// <summary>
-/// Читає <see cref="CancellationToken"/> з поточного HTTP-запиту.
-/// Автоматично скасовується коли клієнт від'єднується або запит завершується.
+/// Reads the <see cref="CancellationToken"/> from the current HTTP request.
+/// It is automatically canceled when the client disconnects or the request completes.
 /// </summary>
 internal sealed class HttpContextCancellationTokenProvider(IHttpContextAccessor httpContextAccessor)
     : ICancellationTokenProvider

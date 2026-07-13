@@ -13,10 +13,10 @@ public abstract class ApiController : ControllerBase
         _mediator ??= base.HttpContext.RequestServices.GetRequiredService<IMediator>();
 
     /// <summary>
-    /// Токен з <c>HttpContext.RequestAborted</c>.
-    /// Передається автоматично через <see cref="ICancellationTokenProvider"/> —
-    /// явно передавати його в <c>Mediator.Send()</c> більше не потрібно.
-    /// Використовуй лише якщо хочеш явно перевизначити токен.
+    /// Token from <c>HttpContext.RequestAborted</c>.
+    /// It is passed automatically through <see cref="ICancellationTokenProvider"/>,
+    /// so explicitly passing it to <c>Mediator.Send()</c> is no longer required.
+    /// Use this only if you want to explicitly override the token.
     /// </summary>
     protected CancellationToken CancellationToken => HttpContext.RequestAborted;
 }

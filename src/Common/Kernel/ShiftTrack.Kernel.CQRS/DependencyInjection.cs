@@ -12,7 +12,7 @@ namespace ShiftTrack.Kernel.CQRS;
 public static class DependencyInjection
 {
     /// <summary>
-    /// Реєструє Mediator, handlers, validators та декоратори валідації.
+    /// Registers Mediator, handlers, validators, and validation decorators.
     /// </summary>
     /// <param name="services">Колекція сервісів DI.</param>
     /// <param name="assemblies">
