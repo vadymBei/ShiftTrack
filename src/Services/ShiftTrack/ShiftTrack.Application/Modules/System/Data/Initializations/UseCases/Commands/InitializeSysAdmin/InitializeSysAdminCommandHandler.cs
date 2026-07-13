@@ -31,7 +31,7 @@ public sealed class InitializeSysAdminCommandHandler(
                 "+380977450521",
                 EmployeeGender.Male);
 
-            var sysAdmin = await mediator.Invoke(createEmployeeCommand, cancellationToken);
+            var sysAdmin = await mediator.Send(createEmployeeCommand, cancellationToken);
 
             var sysAdminRole = await roleRepository.GetByName(DefaultRolesCatalog.SYS_ADMIN, cancellationToken);
             

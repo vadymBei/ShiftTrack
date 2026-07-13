@@ -13,9 +13,9 @@ public class Tokens : ApiController
 {
     [HttpPost("generate")]
     public async Task<TokenVm> GenerateToken(GenerateTokenCommand command)
-        => await Mediator.Invoke(command);
+        => await Mediator.Send(command);
 
     [HttpPost("refresh")]
     public async Task<TokenVm> RefreshToken(RefreshTokenCommand command)
-        => await Mediator.Invoke(command);
+        => await Mediator.Send(command);
 }

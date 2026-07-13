@@ -17,7 +17,7 @@ public class GetPositionByIdQueryTests(
         var getPositionByIdQuery = new GetPositionByIdQuery(newPosition.Id);
 
         // Act
-        var position = await Mediator.Invoke(getPositionByIdQuery);
+        var position = await Mediator.Send(getPositionByIdQuery);
 
         // Assert
         position.Should().NotBeNull();
@@ -32,7 +32,7 @@ public class GetPositionByIdQueryTests(
         var getPositionByIdQuery = new GetPositionByIdQuery(1000);
 
         // Act
-        Func<Task> act = async () => await Mediator.Invoke(getPositionByIdQuery);
+        Func<Task> act = async () => await Mediator.Send(getPositionByIdQuery);
 
         // Assert
         await act.Should()

@@ -20,40 +20,40 @@ public class BKG_VCN_VacationsController : ApiController
 {
     [HttpPost]
     public Task<VacationVm> CreateVacation(CreateVacationCommand command)
-        => Mediator.Invoke(command);
+        => Mediator.Send(command);
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteVacation(long id)
     {
-        await Mediator.Invoke(new DeleteVacationCommand(id));
+        await Mediator.Send(new DeleteVacationCommand(id));
 
         return Ok();
     }
 
     [HttpGet]
     public Task<IEnumerable<VacationVm>> GetVacations([FromQuery] VacationsFilterDto filter)
-        => Mediator.Invoke(new GetVacationsQuery(filter));
+        => Mediator.Send(new GetVacationsQuery(filter));
 
     [HttpGet("{id}")]
     public Task<VacationVm> GetVacationById(long id)
-        => Mediator.Invoke(new GetVacationByIdQuery(id));
+        => Mediator.Send(new GetVacationByIdQuery(id));
 
     [HttpPut]
     public Task<VacationVm> UpdateVacation([FromBody] UpdateVacationCommand command)
-        => Mediator.Invoke(command);
+        => Mediator.Send(command);
 
     [HttpPut("approve/{id}")]
     public Task<VacationVm> ApproveVacation(long id)
-        => Mediator.Invoke(new ApproveVacationCommand(id));
+        => Mediator.Send(new ApproveVacationCommand(id));
 
     [HttpPut("reject/{id}")]
     public Task<VacationVm> RejectVacation(long id)
-        => Mediator.Invoke(new RejectVacationCommand(id));
+        => Mediator.Send(new RejectVacationCommand(id));
 
     [HttpGet("download/request/pdf/{id}")]
     public async Task<FileResult> DownloadVacationRequestPdfQuery(long id)
     {
-        var documentVm = await Mediator.Invoke(new DownloadVacationRequestPdfQuery(id));
+        var documentVm = await Mediator.Send(new DownloadVacationRequestPdfQuery(id));
 
         return File(documentVm.StreamContent, documentVm.MimeType, documentVm.Name);
     }

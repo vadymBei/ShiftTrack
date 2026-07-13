@@ -12,5 +12,5 @@ public class ORG_TSH_EmployeeShiftHistoryController : ApiController
 {
     [HttpGet("by-employeeShiftId/{employeeShiftId}")]
     public Task<IEnumerable<EmployeeShiftHistoryVm>> GetByEmployeeShiftId(long employeeShiftId)
-        => Mediator.Invoke(new GetEmployeeShiftHistoryByEmployeeShiftIdQuery(employeeShiftId));
+        => Mediator.Send(new GetEmployeeShiftHistoryByEmployeeShiftIdQuery(employeeShiftId));
 }

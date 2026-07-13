@@ -8,7 +8,11 @@ public interface IPipelineBehaviour<in TRequest, TResponse>
         CancellationToken cancellationToken);
 }
 
-public delegate Task<TResponse> RequestHandlerDelegate<TResponse>();
+/// <summary>
+/// Делегат, що передає CancellationToken через ланцюжок pipeline,
+/// дозволяючи кожному behavior перехопити або замінити токен.
+/// </summary>
+public delegate Task<TResponse> RequestHandlerDelegate<TResponse>(CancellationToken cancellationToken = default);
 
 public interface IPipelineBehaviour<in TRequest>
 {
@@ -18,5 +22,5 @@ public interface IPipelineBehaviour<in TRequest>
         CancellationToken cancellationToken);
 }
 
-public delegate Task RequestHandlerDelegate();
-
+/// <inheritdoc cref="RequestHandlerDelegate{TResponse}"/>
+public delegate Task RequestHandlerDelegate(CancellationToken cancellationToken = default);

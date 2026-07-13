@@ -17,25 +17,25 @@ public class ORG_STR_PositionsController : ApiController
 {
     [HttpPost]
     public async Task<PositionVm> CreatePosition(PositionToCreateDto data)
-        => await Mediator.Invoke(new CreatePositionCommand(data));
+        => await Mediator.Send(new CreatePositionCommand(data));
 
     [HttpPut]
     public async Task<PositionVm> UpdatePosition(PositionToUpdateDto data)
-        => await Mediator.Invoke(new UpdatePositionCommand(data));
+        => await Mediator.Send(new UpdatePositionCommand(data));
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeletePosition(long id)
     {
-        await Mediator.Invoke(new DeletePositionCommand(id));
+        await Mediator.Send(new DeletePositionCommand(id));
 
         return Ok();
     }
 
     [HttpGet]
     public async Task<IEnumerable<PositionVm>> GetPositions()
-        => await Mediator.Invoke(new GetPositionsQuery());
+        => await Mediator.Send(new GetPositionsQuery());
 
     [HttpGet("{id}")]
     public async Task<PositionVm> GetPositionById(long id)
-        => await Mediator.Invoke(new GetPositionByIdQuery(id));
+        => await Mediator.Send(new GetPositionByIdQuery(id));
 }

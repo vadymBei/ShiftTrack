@@ -20,40 +20,40 @@ public class BKG_BST_BusinessTripsController : ApiController
 {
     [HttpPost]
     public async Task<BusinessTripVm> Create([FromBody] BusinessTripToCreateDto request)
-        => await Mediator.Invoke(new CreateBusinessTripCommand(request));
+        => await Mediator.Send(new CreateBusinessTripCommand(request));
 
     [HttpPut]
     public async Task<BusinessTripVm> Update([FromBody] BusinessTripToUpdateDto request)
-        => await Mediator.Invoke(new UpdateBusinessTripCommand(request));
+        => await Mediator.Send(new UpdateBusinessTripCommand(request));
 
     [HttpPut("approve/{id:long}")]
     public async Task<BusinessTripVm> Approve(long id)
-        => await Mediator.Invoke(new ApproveBusinessTripCommand(id));
+        => await Mediator.Send(new ApproveBusinessTripCommand(id));
     
     [HttpPut("reject/{id:long}")]
     public async Task<BusinessTripVm> Reject(long id)
-        => await Mediator.Invoke(new RejectBusinessTripCommand(id));
+        => await Mediator.Send(new RejectBusinessTripCommand(id));
     
     [HttpDelete("{id:long}")]
     public async Task<IActionResult> Delete(long id)
     {
-        await Mediator.Invoke(new DeleteBusinessTripCommand(id));
+        await Mediator.Send(new DeleteBusinessTripCommand(id));
 
         return Ok();
     }
 
     [HttpGet("filtered")]
     public async Task<IEnumerable<BusinessTripVm>> GetFiltered([FromQuery] BusinessTripFilterDto filter)
-        => await Mediator.Invoke(new GetBusinessTripsQuery(filter));
+        => await Mediator.Send(new GetBusinessTripsQuery(filter));
     
     [HttpGet("{id:long}")]
     public async Task<BusinessTripVm> GetById(long id)
-        => await Mediator.Invoke(new GetBusinessTripByIdQuery(id));
+        => await Mediator.Send(new GetBusinessTripByIdQuery(id));
     
     [HttpGet("download/order/{id}")]
     public async Task<FileResult> DownloadVacationRequestPdfQuery(long id)
     {
-        var documentVm = await Mediator.Invoke(new DownloadBusinessTripOrderQuery(id));
+        var documentVm = await Mediator.Send(new DownloadBusinessTripOrderQuery(id));
 
         return File(documentVm.StreamContent, documentVm.MimeType, documentVm.Name);
     }

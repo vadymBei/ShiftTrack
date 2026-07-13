@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShiftTrack.Application.Modules.Organization.Timesheet.UnitTimesheets.Dtos;
 using ShiftTrack.Application.Modules.Organization.Timesheet.UnitTimesheets.UseCases.Queries.ExportUnitTimesheet;
@@ -14,13 +15,13 @@ public class ORG_TSH_TimesheetController : ApiController
 {
     [HttpGet]
     public Task<UnitTimesheetVm> GetTimesheet([FromQuery] UnitTimesheetDto request)
-        => Mediator.Invoke(new GetTimesheetQuery(request));
+        => Mediator.Send(new GetTimesheetQuery(request));
 
     [HttpGet("export")]
     public async Task<IActionResult> ExportTimesheet([FromQuery] ExportUnitTimesheetQuery query)
     {
-        var document = await Mediator.Invoke(query);
-        
+        var document = await Mediator.Send(query);
+
         return File(document.Content, document.MimeType, document.Name);
     }
 }

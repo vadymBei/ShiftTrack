@@ -14,9 +14,9 @@ public class SYS_AUTH_TokensController : ApiController
 {
     [HttpPost("generate")]
     public Task<TokenVm> Generate(GenerateTokenDto data)
-        => Mediator.Invoke(new GenerateTokenCommand(data));
+        => Mediator.Send(new GenerateTokenCommand(data));
 
     [HttpPost("refresh")]
     public Task<TokenVm> Refresh(RefreshTokenDto data)
-        => Mediator.Invoke(new RefreshTokenCommand(data));
+        => Mediator.Send(new RefreshTokenCommand(data));
 }

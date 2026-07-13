@@ -15,13 +15,13 @@ public class AccountController: ApiController
 {
     [HttpPost("register")]
     public async Task<UserVm> CreateUser(RegisterCommand command)
-        => await Mediator.Invoke(command);
+        => await Mediator.Send(command);
 
     [HttpPut]
     public async Task<UserVm> UpdateUser(UpdateAccountCommand command)
-        => await Mediator.Invoke(command);
+        => await Mediator.Send(command);
 
     [HttpPost("change-password")]
     public async Task<TokenVm> ChangePassword(ChangePasswordDto commandData)
-        => await Mediator.Invoke(new ChangePasswordCommand(commandData));
+        => await Mediator.Send(new ChangePasswordCommand(commandData));
 }

@@ -20,7 +20,7 @@ public class UpdateDepartmentCommandTests(
                 Faker.Company.CompanyName()));
 
         // Act
-        Func<Task> act = async () => await Mediator.Invoke(updateDepartmentCommand);
+        Func<Task> act = async () => await Mediator.Send(updateDepartmentCommand);
 
         // Assert
         await act.Should()
@@ -40,7 +40,7 @@ public class UpdateDepartmentCommandTests(
                 Faker.Company.CompanyName()));
 
         // Act
-        var updatedDepartment = await Mediator.Invoke(updateDepartmentCommand);
+        var updatedDepartment = await Mediator.Send(updateDepartmentCommand);
 
         // Assert
         updatedDepartment.Should().NotBeNull();

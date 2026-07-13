@@ -24,7 +24,7 @@ public class CreateShiftCommandTests(
                 new TimeSpan(21, 00, 00)));
 
         // Act
-        var result = await Mediator.Invoke(command);
+        var result = await Mediator.Send(command);
 
         // Assert
         result.Should().NotBeNull();
@@ -76,7 +76,7 @@ public class CreateShiftCommandTests(
                 new TimeSpan(09, 30, 00)));
 
         // Act
-        Func<Task> act = () => Mediator.Invoke(command);
+        Func<Task> act = () => Mediator.Send(command);
 
         // Assert
         await act.Should().ThrowAsync<Exception>();

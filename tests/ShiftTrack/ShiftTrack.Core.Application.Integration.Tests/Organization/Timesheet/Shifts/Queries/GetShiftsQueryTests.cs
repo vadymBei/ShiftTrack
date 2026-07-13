@@ -16,7 +16,7 @@ public class GetShiftsQueryTests(
         var query = new GetShiftsQuery();
 
         // Act
-        var shifts = await Mediator.Invoke(query);
+        var shifts = await Mediator.Send(query);
 
         // Assert
         shifts.Should().NotBeNull();

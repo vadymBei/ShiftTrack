@@ -13,9 +13,9 @@ public class LocationsController : ApiController
 {
     [HttpPost("search")]
     public Task<IEnumerable<LocationVm>> Search([FromBody] SearchLocationsCommand command)
-        => Mediator.Invoke(command);
+        => Mediator.Send(command);
     
     [HttpGet("by-integrationIds")]
     public Task<IEnumerable<LocationVm>> GetLocationsByIntegrationIds([FromQuery] GetLocationsByIntegrationIdsQuery query)
-        => Mediator.Invoke(query);
+        => Mediator.Send(query);
 }

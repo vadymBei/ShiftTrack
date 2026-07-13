@@ -26,7 +26,7 @@ public class UpdateShiftCommandTests(IntegrationTestWebAppFactory factory) : Bas
                 new TimeSpan(21, 00, 00)));
 
         // Act
-        Func<Task> act = async () => await Mediator.Invoke(updateShiftCommand);
+        Func<Task> act = async () => await Mediator.Send(updateShiftCommand);
 
         // Assert
         await act.Should()
@@ -50,7 +50,7 @@ public class UpdateShiftCommandTests(IntegrationTestWebAppFactory factory) : Bas
                 new TimeSpan(19, 00, 00)));
 
         // Act
-        var updatedShift = await Mediator.Invoke(updateShiftCommand);
+        var updatedShift = await Mediator.Send(updateShiftCommand);
 
         // Assert
         updatedShift.Should().NotBeNull();

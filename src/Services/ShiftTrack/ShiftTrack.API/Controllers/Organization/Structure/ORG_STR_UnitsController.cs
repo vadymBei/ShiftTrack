@@ -18,29 +18,29 @@ public class ORG_STR_UnitsController : ApiController
 {
     [HttpPost]
     public async Task<UnitVm> CreateUnit(UnitToCreateDto data)
-        => await Mediator.Invoke(new CreateUnitCommand(data));
+        => await Mediator.Send(new CreateUnitCommand(data));
 
     [HttpPut]
     public async Task<UnitVm> UpdateUnit(UnitToUpdateDto data)
-        => await Mediator.Invoke(new UpdateUnitCommand(data));
+        => await Mediator.Send(new UpdateUnitCommand(data));
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUnit(long id)
     {
-        await Mediator.Invoke(new DeleteUnitCommand(id));
+        await Mediator.Send(new DeleteUnitCommand(id));
 
         return Ok();
     }
 
     [HttpGet]
     public async Task<IEnumerable<UnitVm>> GetUnits()
-        => await Mediator.Invoke(new GetUnitsQuery());
+        => await Mediator.Send(new GetUnitsQuery());
 
     [HttpGet("by-roles")]
     public async Task<IEnumerable<UnitVm>> GetUnitsByRoles()
-        => await Mediator.Invoke(new GetUnitsByRolesQuery());
+        => await Mediator.Send(new GetUnitsByRolesQuery());
 
     [HttpGet("{id}")]
     public async Task<UnitVm> GetUnitById(long id)
-        => await Mediator.Invoke(new GetUnitByIdQuery(id));
+        => await Mediator.Send(new GetUnitByIdQuery(id));
 }

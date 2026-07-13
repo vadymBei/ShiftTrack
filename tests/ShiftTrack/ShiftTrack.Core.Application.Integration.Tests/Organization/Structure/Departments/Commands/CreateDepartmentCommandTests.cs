@@ -21,7 +21,7 @@ public class CreateDepartmentCommandTests(
                 unit.Id));
 
         // Act
-        var newDepartment = await Mediator.Invoke(createDepartmentCommand);
+        var newDepartment = await Mediator.Send(createDepartmentCommand);
 
         // Assert
         var department = await DepartmentRepository.GetById(newDepartment.Id, CancellationToken.None);

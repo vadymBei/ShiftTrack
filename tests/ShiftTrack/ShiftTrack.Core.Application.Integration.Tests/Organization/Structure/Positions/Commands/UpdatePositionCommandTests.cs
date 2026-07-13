@@ -26,7 +26,7 @@ public class UpdatePositionCommandTests(
                 Faker.Random.Decimal(100, 500)));
 
         // Act
-        var updatedPosition = await Mediator.Invoke(updatePositionCommand);
+        var updatedPosition = await Mediator.Send(updatePositionCommand);
 
         // Assert
         updatedPosition.Should().NotBeNull();
@@ -52,7 +52,7 @@ public class UpdatePositionCommandTests(
                 150));
 
         // Act
-        Func<Task> act = async () => await Mediator.Invoke(updatePositionCommand);
+        Func<Task> act = async () => await Mediator.Send(updatePositionCommand);
 
         // Assert
         await act.Should()

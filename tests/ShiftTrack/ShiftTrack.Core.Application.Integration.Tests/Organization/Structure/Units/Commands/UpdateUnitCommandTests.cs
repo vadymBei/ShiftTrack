@@ -25,7 +25,7 @@ public class UpdateUnitCommandTests(
                 Faker.Address.CountryCode()));
 
         // Act
-        var updatedUnit = await Mediator.Invoke(updateUnitCommand);
+        var updatedUnit = await Mediator.Send(updateUnitCommand);
 
         // Assert
         updatedUnit.Should().NotBeNull();
@@ -53,7 +53,7 @@ public class UpdateUnitCommandTests(
                 Faker.Address.CountryCode()));
 
         // Act
-        Func<Task> act = async () => await Mediator.Invoke(updateUnitCommand);
+        Func<Task> act = async () => await Mediator.Send(updateUnitCommand);
 
         // Assert
         await act.Should()

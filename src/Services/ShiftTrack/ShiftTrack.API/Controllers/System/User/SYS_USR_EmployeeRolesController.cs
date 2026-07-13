@@ -16,21 +16,21 @@ public class SYS_USR_EmployeeRolesController : ApiController
 {
     [HttpPost]
     public async Task<EmployeeRoleVm> CreateEmployeeRole([FromBody] EmployeeRoleToCreateDto dto)
-        => await Mediator.Invoke(new CreateEmployeeRoleCommand(dto));
+        => await Mediator.Send(new CreateEmployeeRoleCommand(dto));
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteEmployeeRole(long id)
     {
-        await Mediator.Invoke(new DeleteEmployeeRoleCommand(id));
+        await Mediator.Send(new DeleteEmployeeRoleCommand(id));
 
         return Ok();
     }
 
     [HttpGet("{id}")]
     public Task<EmployeeRoleVm> GetEmployeeRoleById(long id)
-        => Mediator.Invoke(new GetEmployeeRoleByIdQuery(id));
+        => Mediator.Send(new GetEmployeeRoleByIdQuery(id));
 
     [HttpGet("by-employeeId/{employeeId}")]
     public Task<IEnumerable<EmployeeRoleVm>> GetEmployeeRolesByEmployeeId(long employeeId)
-        => Mediator.Invoke(new GetEmployeeRolesByEmployeeIdQuery(employeeId));
+        => Mediator.Send(new GetEmployeeRolesByEmployeeIdQuery(employeeId));
 }
