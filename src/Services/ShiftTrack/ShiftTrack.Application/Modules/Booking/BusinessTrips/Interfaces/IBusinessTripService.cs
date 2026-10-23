@@ -12,4 +12,7 @@ public interface IBusinessTripService
     Task Reject(long id, CancellationToken cancellationToken);
     Task<IEnumerable<BusinessTrip>> GetFiltered(BusinessTripFilterDto filter, CancellationToken cancellationToken);
     Task<BusinessTrip> GetById(long id, CancellationToken cancellationToken);
+    Task<IEnumerable<BusinessTrip>> GetMy(CancellationToken cancellationToken);
+    Task<IEnumerable<BusinessTrip>> GetPendingApprovals(int take, CancellationToken cancellationToken);
+    Task<int> CountPendingApprovals(CancellationToken cancellationToken);
 }

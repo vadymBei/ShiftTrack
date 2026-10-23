@@ -5,4 +5,6 @@ public static class BusinessTripExceptionsLocalization
     public const string CAN_NOT_DELETE_BUSINESS_TRIP = "You can not delete a business trip.";
     public const string CAN_NOT_UPDATE_BUSINESS_TRIP = "You can not update a business trip.";
     public const string CAN_NOT_APPROVE_BUSINESS_TRIP = "You can not approve a business trip.";
+    public const string CAN_NOT_VIEW_BUSINESS_TRIP = "You can not view this business trip.";
+    public const string CAN_NOT_DOWNLOAD_NOT_APPROVED_BUSINESS_TRIP = "The order is available only after the business trip is approved.";
 }

@@ -7,6 +7,7 @@ using ShiftTrack.Application.Modules.Booking.Vacations.UseCases.Commands.DeleteV
 using ShiftTrack.Application.Modules.Booking.Vacations.UseCases.Commands.RejectVacation;
 using ShiftTrack.Application.Modules.Booking.Vacations.UseCases.Commands.UpdateVacation;
 using ShiftTrack.Application.Modules.Booking.Vacations.UseCases.Queries.DownloadVacationRequestPdf;
+using ShiftTrack.Application.Modules.Booking.Vacations.UseCases.Queries.GetVacationBalanceByEmployeeId;
 using ShiftTrack.Application.Modules.Booking.Vacations.UseCases.Queries.GetVacationById;
 using ShiftTrack.Application.Modules.Booking.Vacations.UseCases.Queries.GetVacations;
 using ShiftTrack.Application.Modules.Booking.Vacations.ViewModels;
@@ -57,4 +58,8 @@ public class BKG_VCN_VacationsController : ApiController
 
         return File(documentVm.StreamContent, documentVm.MimeType, documentVm.Name);
     }
+
+    [HttpGet("balance/by-employeeId/{employeeId}")]
+    public Task<VacationBalanceVm> GetBalanceByEmployeeId(long employeeId)
+        => Mediator.Send(new GetVacationBalanceByEmployeeIdQuery(employeeId));
 }

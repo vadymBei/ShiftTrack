@@ -49,7 +49,9 @@ public class VacationRepository(
     {
         var vacationsQuery = applicationDbContext.Vacations
             .AsNoTracking()
+            .Include(x => x.Author)
             .Include(x => x.Employee)
+            .ThenInclude(x => x.Department)
             .Where(x => x.Employee.Department.UnitId == filter.UnitId
                         && x.Employee.DepartmentId == filter.DepartmentId);
 
@@ -75,6 +77,51 @@ public class VacationRepository(
         }
 
         return await vacationsQuery.ToListAsync(cancellationToken);
+    }
+
+    public async Task<IEnumerable<Vacation>> GetByEmployeeOrAuthor(long employeeId, CancellationToken cancellationToken)
+    {
+        return await applicationDbContext.Vacations
+            .AsNoTracking()
+            .Where(x => x.EmployeeId == employeeId || x.AuthorId == employeeId)
+            .OrderByDescending(x => x.CreatedAt)
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<IEnumerable<Vacation>> GetForApproval(
+        VacationApprovalFilterDto filter,
+        int take,
+        CancellationToken cancellationToken)
+    {
+        return await ApplyApprovalFilter(filter)
+            .Include(x => x.Employee)
+            .ThenInclude(x => x.Position)
+            .OrderBy(x => x.CreatedAt)
+            .Take(take)
+            .ToListAsync(cancellationToken);
+    }
+
+    public Task<int> CountForApproval(VacationApprovalFilterDto filter, CancellationToken cancellationToken)
+    {
+        return ApplyApprovalFilter(filter).CountAsync(cancellationToken);
+    }
+
+    private IQueryable<Vacation> ApplyApprovalFilter(VacationApprovalFilterDto filter)
+    {
+        var query = applicationDbContext.Vacations
+            .AsNoTracking()
+            .Where(x => filter.Statuses.Contains(x.Status));
+
+        if (filter.UnitId is not null)
+            query = query.Where(x => x.Employee.Department.UnitId == filter.UnitId);
+
+        if (filter.DepartmentId is not null)
+            query = query.Where(x => x.Employee.DepartmentId == filter.DepartmentId);
+
+        if (filter.ExcludeEmployeeId is not null)
+            query = query.Where(x => x.EmployeeId != filter.ExcludeEmployeeId);
+
+        return query;
     }
 
     public async Task Delete(long id, CancellationToken cancellationToken)

@@ -1,7 +1,7 @@
 using AutoMapper;
+using ShiftTrack.Application.Modules.Organization.Employees.ViewModels;
 using ShiftTrack.Domain.Modules.Booking.Vacations.Entities;
 using ShiftTrack.Domain.Modules.Booking.Vacations.Enums;
-using ShiftTrack.Domain.Modules.System.User.Employees.Entities;
 
 namespace ShiftTrack.Application.Modules.Booking.Vacations.ViewModels;
 
@@ -18,10 +18,12 @@ public class VacationVm
     public int DaysBalanceAtCreation { get; set; }
     public VacationType Type { get; set; }
     public VacationStatus Status { get; set; }
-
+    
+    public long? AuthorId { get; set; }
+    
     public long EmployeeId { get; set; }
-    public Employee Employee { get; set; }
+    public EmployeeVm Employee { get; set; }
 
     public long? ApprovedEmployeeId { get; set; }
-    public Employee ApprovedEmployee { get; set; }
+    public EmployeeVm ApprovedEmployee { get; set; }
 }

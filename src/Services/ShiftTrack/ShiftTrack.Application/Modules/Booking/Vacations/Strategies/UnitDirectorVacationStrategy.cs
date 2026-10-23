@@ -33,7 +33,7 @@ public class UnitDirectorVacationStrategy(
 
     private void ValidateVacationForStatusChange(Vacation vacation)
     {
-        if (vacation.Employee.Department.UnitId != currentUserService.Employee.Department.UnitId)
+        if (!IsFromCurrentUnit(vacation))
         {
             throw new VacationException(
                 VacationExceptionsLocalization.CANNOT_CHANGE_VACATION_STATUS_FROM_OTHER_UNIT,
@@ -65,7 +65,7 @@ public class UnitDirectorVacationStrategy(
     {
         var vacation = await vacationRepository.GetById(id, cancellationToken);
 
-        if (vacation.Employee.Department.UnitId != currentUserService.Employee.Department.UnitId)
+        if (!IsFromCurrentUnit(vacation))
         {
             throw new VacationException(
                 VacationExceptionsLocalization.CANNOT_VIEW_VACATION_FROM_OTHER_UNIT,
@@ -79,12 +79,35 @@ public class UnitDirectorVacationStrategy(
         VacationsFilterDto filter,
         CancellationToken cancellationToken)
     {
-        var vacations = await vacationRepository.GetFiltered(filter, cancellationToken);
+        var currentUnitId = currentUserService.Employee.Department?.UnitId;
 
-        vacations = vacations
-            .Where(x => x.Author.Department.UnitId == currentUserService.Employee.Department.UnitId)
-            .ToList();
+        if (currentUnitId is null || filter.UnitId != currentUnitId)
+        {
+            return [];
+        }
 
-        return vacations;
+        return await vacationRepository.GetFiltered(filter, cancellationToken);
+    }
+
+    public VacationApprovalFilterDto GetApprovalFilter()
+    {
+        var currentUnitId = currentUserService.Employee.Department?.UnitId;
+
+        if (currentUnitId is null)
+            return null;
+
+        return new VacationApprovalFilterDto(
+            [VacationStatus.PendingApproval, VacationStatus.ApprovedByDepartmentDirector],
+            currentUnitId,
+            null,
+            null);
+    }
+
+    private bool IsFromCurrentUnit(Vacation vacation)
+    {
+        var currentUnitId = currentUserService.Employee.Department?.UnitId;
+
+        return currentUnitId is not null
+               && vacation.Employee.Department?.UnitId == currentUnitId;
     }
 }

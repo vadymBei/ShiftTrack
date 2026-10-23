@@ -20,7 +20,6 @@
         <Folder Include="Modules\Organization\Structure\Positions\UseCases\" />
         <Folder Include="Modules\Organization\Structure\Units\UseCases\" />
         <Folder Include="Modules\Organization\Timesheet\EmployeeShiftHistories\UseCases\" />
-        <Folder Include="Modules\Organization\Timesheet\EmployeeShifts\UseCases\" />
         <Folder Include="Modules\Organization\Timesheet\Shifts\UseCases\" />
         <Folder Include="Modules\Organization\Timesheet\UnitTimesheets\UseCases\" />
         <Folder Include="Modules\System\Auth\Account\UseCases\" />
