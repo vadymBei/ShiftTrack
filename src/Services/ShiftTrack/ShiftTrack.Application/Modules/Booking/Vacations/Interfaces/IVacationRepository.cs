@@ -11,4 +11,7 @@ public interface IVacationRepository
     Task<IEnumerable<Vacation>> GetFiltered(VacationsFilterDto filter, CancellationToken cancellationToken);
     Task Delete(long id, CancellationToken cancellationToken);
     Task<Vacation> Update(Vacation vacation, CancellationToken cancellationToken);
+    Task<IEnumerable<Vacation>> GetByEmployeeOrAuthor(long employeeId, CancellationToken cancellationToken);
+    Task<IEnumerable<Vacation>> GetForApproval(VacationApprovalFilterDto filter, int take, CancellationToken cancellationToken);
+    Task<int> CountForApproval(VacationApprovalFilterDto filter, CancellationToken cancellationToken);
 }

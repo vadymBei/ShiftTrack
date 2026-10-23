@@ -56,15 +56,20 @@ public class DefaultVacationStrategy(
         return vacation;
     }
 
+    public VacationApprovalFilterDto GetApprovalFilter() => null;
+
     public async Task<IEnumerable<Vacation>> GetVacations(
         VacationsFilterDto filter,
         CancellationToken cancellationToken)
     {
         var vacations = await vacationRepository.GetFiltered(filter, cancellationToken);
 
+        var currentEmployee = currentUserService.Employee;
+
         vacations = vacations
-            .Where(x => x.AuthorId == currentUserService.Employee.Id
-                        || x.Author.DepartmentId == currentUserService.Employee.DepartmentId)
+            .Where(x => x.AuthorId == currentEmployee.Id
+                        || (currentEmployee.DepartmentId is not null
+                            && x.Employee.DepartmentId == currentEmployee.DepartmentId))
             .ToList();
         
         return vacations;

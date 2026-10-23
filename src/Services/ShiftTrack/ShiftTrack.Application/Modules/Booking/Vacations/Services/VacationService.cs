@@ -3,13 +3,16 @@ using ShiftTrack.Application.Modules.Booking.Vacations.Constants;
 using ShiftTrack.Application.Modules.Booking.Vacations.Dtos;
 using ShiftTrack.Application.Modules.Booking.Vacations.Exceptions;
 using ShiftTrack.Application.Modules.Booking.Vacations.Interfaces;
+using ShiftTrack.Application.Modules.Organization.Employees.Interfaces;
 using ShiftTrack.Application.Modules.System.User.EmployeeRoles.Interfaces;
 using ShiftTrack.Domain.Modules.Booking.Vacations.Entities;
 using ShiftTrack.Domain.Modules.Booking.Vacations.Enums;
+using ShiftTrack.Domain.Modules.Booking.Vacations.Models;
 
 namespace ShiftTrack.Application.Modules.Booking.Vacations.Services;
 
 public class VacationService(
+    IEmployeeRepository employeeRepository,
     ICurrentUserService currentUserService,
     IVacationRepository vacationRepository,
     IEmployeeRoleChecker employeeRoleChecker,
@@ -46,8 +49,8 @@ public class VacationService(
         var vacation = await vacationRepository.GetById(id, cancellationToken);
 
         if (!employeeRoleChecker.HasCurrentUserSysAdminRole()
-            && vacation.AuthorId != currentUserService.Employee.Id
-            && vacation.Status == VacationStatus.PendingApproval)
+            && (vacation.AuthorId != currentUserService.Employee.Id
+                || vacation.Status is not (VacationStatus.None or VacationStatus.PendingApproval)))
         {
             throw new VacationException(
                 VacationExceptionsLocalization.CANNOT_DELETE_OTHERS_VACATION,
@@ -55,5 +58,42 @@ public class VacationService(
         }
 
         await vacationRepository.Delete(vacation.Id, cancellationToken);
+    }
+
+    public Task<IEnumerable<Vacation>> GetMy(CancellationToken cancellationToken)
+    {
+        return vacationRepository.GetByEmployeeOrAuthor(currentUserService.Employee.Id, cancellationToken);
+    }
+
+    public async Task<IEnumerable<Vacation>> GetPendingApprovals(int take, CancellationToken cancellationToken)
+    {
+        var filter = VacationStrategy.GetApprovalFilter();
+
+        if (filter is null)
+            return [];
+
+        return await vacationRepository.GetForApproval(filter, take, cancellationToken);
+    }
+
+    public async Task<int> CountPendingApprovals(CancellationToken cancellationToken)
+    {
+        var filter = VacationStrategy.GetApprovalFilter();
+
+        if (filter is null)
+            return 0;
+
+        return await vacationRepository.CountForApproval(filter, cancellationToken);
+    }
+
+    public async Task<VacationBalance> GetVacationBalanceByEmployeeId(long employeeId, CancellationToken cancellationToken)
+    {
+        var employee = await employeeRepository.GetById(employeeId, cancellationToken);
+
+        return new VacationBalance()
+        {
+            PlannedDays = 14,
+            TotalDays = 24,
+            UsedDays = 6
+        };
     }
 }

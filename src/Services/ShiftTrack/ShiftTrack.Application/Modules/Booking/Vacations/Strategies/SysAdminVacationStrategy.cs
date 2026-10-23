@@ -1,3 +1,4 @@
+using ShiftTrack.Application.Common.Interfaces;
 using ShiftTrack.Application.Modules.Booking.Vacations.Dtos;
 using ShiftTrack.Application.Modules.Booking.Vacations.Interfaces;
 using ShiftTrack.Application.Modules.Organization.Timesheet.EmployeeShifts.Dtos;
@@ -8,6 +9,7 @@ using ShiftTrack.Domain.Modules.Booking.Vacations.Enums;
 namespace ShiftTrack.Application.Modules.Booking.Vacations.Strategies;
 
 public class SysAdminVacationStrategy(
+    ICurrentUserService currentUserService,
     IVacationRepository vacationRepository,
     IEmployeeShiftService employeeShiftService,
     IVacationShiftService vacationShiftService) : IVacationStrategy
@@ -48,6 +50,15 @@ public class SysAdminVacationStrategy(
         var vacation = await vacationRepository.GetById(id, cancellationToken);
 
         return vacation;
+    }
+
+    public VacationApprovalFilterDto GetApprovalFilter()
+    {
+        return new VacationApprovalFilterDto(
+            [VacationStatus.PendingApproval, VacationStatus.ApprovedByDepartmentDirector],
+            null,
+            null,
+            currentUserService.Employee.Id);
     }
 
     public async Task<IEnumerable<Vacation>> GetVacations(

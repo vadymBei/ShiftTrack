@@ -10,4 +10,7 @@ public interface IBusinessTripRepository
     Task<BusinessTrip> GetById(long id, CancellationToken cancellationToken);
     Task Update(BusinessTrip businessTrip, CancellationToken cancellationToken);
     Task Delete(long id, CancellationToken cancellationToken);
+    Task<IEnumerable<BusinessTrip>> GetByParticipantOrAuthor(long employeeId, CancellationToken cancellationToken);
+    Task<IEnumerable<BusinessTrip>> GetForApproval(BusinessTripApprovalFilterDto filter, int take, CancellationToken cancellationToken);
+    Task<int> CountForApproval(BusinessTripApprovalFilterDto filter, CancellationToken cancellationToken);
 }

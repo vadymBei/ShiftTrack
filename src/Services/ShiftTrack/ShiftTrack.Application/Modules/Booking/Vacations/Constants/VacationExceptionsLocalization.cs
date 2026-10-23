@@ -13,6 +13,8 @@ public static class VacationExceptionsLocalization
     public const string CANNOT_CHANGE_VACATION_STATUS_FROM_OTHER_DEPARTMENT = "You can only change vacation status for employees from your department.";
     public const string CANNOT_CHANGE_VACATION_STATUS_FROM_OTHER_UNIT = "You can only change vacation status for employees from your unit.";
     public const string CANNOT_VIEW_VACATION_FROM_OTHER_UNIT = "You can only view vacations from your unit.";
+    public const string CANNOT_APPROVE_OWN_VACATION = "You cannot approve your own vacation.";
+    public const string CANNOT_DOWNLOAD_NOT_APPROVED_VACATION = "The document is available only after final approval of the vacation.";
 
 
 }

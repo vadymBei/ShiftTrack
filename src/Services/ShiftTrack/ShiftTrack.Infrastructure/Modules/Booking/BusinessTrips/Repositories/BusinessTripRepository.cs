@@ -2,6 +2,7 @@
 using ShiftTrack.Application.Modules.Booking.BusinessTrips.Dtos;
 using ShiftTrack.Application.Modules.Booking.BusinessTrips.Interfaces;
 using ShiftTrack.Domain.Modules.Booking.BusinessTrips.Entities;
+using ShiftTrack.Domain.Modules.Booking.BusinessTrips.Enums;
 using ShiftTrack.Infrastructure.Common.Interfaces;
 using ShiftTrack.Kernel.Exceptions;
 
@@ -25,6 +26,7 @@ public class BusinessTripRepository(
             .AsNoTracking()
             .Include(x => x.Locations)
             .Include(x => x.Participants)
+            .ThenInclude(x => x.Department)
             .Where(x => x.StartDate.Date >= filter.StartDate.Date
                         && x.EndDate.Date <= filter.EndDate.Date);
 
@@ -46,6 +48,58 @@ public class BusinessTripRepository(
         return await businessTripQuery
             .OrderByDescending(x => x.StartDate)
             .ToListAsync(cancellationToken);
+    }
+
+    public async Task<IEnumerable<BusinessTrip>> GetByParticipantOrAuthor(long employeeId,
+        CancellationToken cancellationToken)
+    {
+        return await applicationDbContext.BusinessTrips
+            .AsNoTracking()
+            .Include(x => x.Locations)
+            .Where(x => x.AuthorId == employeeId || x.Participants.Any(p => p.Id == employeeId))
+            .OrderByDescending(x => x.CreatedAt)
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<IEnumerable<BusinessTrip>> GetForApproval(
+        BusinessTripApprovalFilterDto filter,
+        int take,
+        CancellationToken cancellationToken)
+    {
+        return await ApplyApprovalFilter(filter)
+            .Include(x => x.Locations)
+            .Include(x => x.Participants)
+            .ThenInclude(x => x.Position)
+            .OrderBy(x => x.CreatedAt)
+            .Take(take)
+            .ToListAsync(cancellationToken);
+    }
+
+    public Task<int> CountForApproval(BusinessTripApprovalFilterDto filter, CancellationToken cancellationToken)
+    {
+        return ApplyApprovalFilter(filter).CountAsync(cancellationToken);
+    }
+
+    private IQueryable<BusinessTrip> ApplyApprovalFilter(BusinessTripApprovalFilterDto filter)
+    {
+        var query = applicationDbContext.BusinessTrips
+            .AsNoTracking()
+            .Where(x => x.Status == BusinessTripStatus.PendingApproval);
+
+        if (filter.ParticipantDepartmentIds is not null)
+        {
+            var departmentIds = filter.ParticipantDepartmentIds;
+            query = query.Where(x => x.Participants.Any(p => p.DepartmentId != null
+                                                             && departmentIds.Contains(p.DepartmentId.Value)));
+        }
+
+        if (filter.ExcludeParticipantId is not null)
+        {
+            var excludeId = filter.ExcludeParticipantId.Value;
+            query = query.Where(x => !x.Participants.Any(p => p.Id == excludeId));
+        }
+
+        return query;
     }
 
     public async Task<BusinessTrip> GetById(long id, CancellationToken cancellationToken)

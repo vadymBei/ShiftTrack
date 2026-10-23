@@ -193,4 +193,15 @@ public class EmployeeShiftService(
                 dto.EndDate),
             cancellationToken);
     }
+
+    public Task<IEnumerable<EmployeeShift>> GetEmployeeShiftsByEmployeeId(EmployeeShiftsByEmployeeIdDto dto, CancellationToken cancellationToken)
+    {
+        return employeeShiftRepository.GetEmployeeShifts(
+            new EmployeeShiftsFilterDto(
+                [dto.EmployeeId],
+                dto.DateFrom,
+                dto.DateTo,
+                true),
+            cancellationToken);
+    }
 }

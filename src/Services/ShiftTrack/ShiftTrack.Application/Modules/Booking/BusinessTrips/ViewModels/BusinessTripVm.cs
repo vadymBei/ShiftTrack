@@ -14,6 +14,7 @@ public class BusinessTripVm
     public string Description { get; set; }
     public decimal EstimatedBudget { get; set; }
     public BusinessTripStatus Status { get; set; }
+    public long? AuthorId { get; set; }
 
     public IEnumerable<EmployeeVm> Participants { get; set; }
     public IEnumerable<BusinessTripLocationVm> Locations { get; set; }
