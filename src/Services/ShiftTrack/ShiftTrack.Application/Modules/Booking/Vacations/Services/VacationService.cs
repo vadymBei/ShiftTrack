@@ -5,7 +5,6 @@ using ShiftTrack.Application.Modules.Booking.Vacations.Events;
 using ShiftTrack.Application.Modules.Booking.Vacations.Exceptions;
 using ShiftTrack.Application.Modules.Booking.Vacations.Interfaces;
 using ShiftTrack.Application.Modules.Organization.Employees.Interfaces;
-using ShiftTrack.Application.Modules.System.User.EmployeeRoles.Interfaces;
 using ShiftTrack.Domain.Modules.Booking.Vacations.Entities;
 using ShiftTrack.Domain.Modules.Booking.Vacations.Enums;
 using ShiftTrack.Domain.Modules.Booking.Vacations.Models;
@@ -17,8 +16,8 @@ public class VacationService(
     IEmployeeRepository employeeRepository,
     ICurrentUserService currentUserService,
     IVacationRepository vacationRepository,
-    IEmployeeRoleChecker employeeRoleChecker,
     IVacationStrategyFactory vacationStrategyFactory,
+    IVacationPermissionService vacationPermissionService,
     IMediator mediator) : IVacationService
 {
     private IVacationStrategy VacationStrategy => vacationStrategyFactory.GetStrategy();
@@ -74,9 +73,7 @@ public class VacationService(
     {
         var vacation = await vacationRepository.GetById(id, cancellationToken);
 
-        if (!employeeRoleChecker.HasCurrentUserSysAdminRole()
-            && (vacation.AuthorId != currentUserService.Employee.Id
-                || vacation.Status is not (VacationStatus.None or VacationStatus.PendingApproval)))
+        if (!vacationPermissionService.CanDelete(vacation))
         {
             throw new VacationException(
                 VacationExceptionsLocalization.CANNOT_DELETE_OTHERS_VACATION,

@@ -41,6 +41,8 @@ public class DepartmentDirectorVacationStrategy(
                 nameof(VacationExceptionsLocalization.CANNOT_APPROVE_OWN_VACATION));
         }
 
+        EnsureCanApprove(vacation);
+
         await vacationRepository.UpdateVacationStatus(
             new UpdateVacationStatusDto(
                 vacation.Id,
@@ -72,6 +74,7 @@ public class DepartmentDirectorVacationStrategy(
         var vacation = await vacationRepository.GetById(id, cancellationToken);
         
         ValidateVacationForStatusChange(vacation);
+        EnsureCanReject(vacation);
 
         await vacationRepository.UpdateVacationStatus(
             new UpdateVacationStatusDto(
@@ -127,6 +130,48 @@ public class DepartmentDirectorVacationStrategy(
             null,
             currentEmployee.DepartmentId,
             currentEmployee.Id);
+    }
+
+    public VacationAccessDto GetAccess(Vacation vacation)
+    {
+        var currentEmployeeId = currentUserService.Employee.Id;
+        var isOwnDraft = vacation.AuthorId == currentEmployeeId && vacation.Status == VacationStatus.None;
+        var isFromDepartment = IsFromCurrentDepartment(vacation);
+
+        var canApprove = isOwnDraft
+                         || (isFromDepartment
+                             && vacation.EmployeeId != currentEmployeeId
+                             && vacation.Status is not (VacationStatus.ApprovedByDepartmentDirector
+                                 or VacationStatus.ApprovedByUnitDirector));
+
+        var canReject = isFromDepartment
+                        && vacation.Status is not (VacationStatus.ApprovedByUnitDirector or VacationStatus.Rejected);
+
+        return new VacationAccessDto(
+            CanView: isFromDepartment,
+            CanApprove: canApprove,
+            CanReject: canReject,
+            ApproveSubmitsForApproval: isOwnDraft);
+    }
+
+    private void EnsureCanApprove(Vacation vacation)
+    {
+        if (!GetAccess(vacation).CanApprove)
+        {
+            throw new VacationException(
+                VacationExceptionsLocalization.CANNOT_APPROVE_VACATION,
+                nameof(VacationExceptionsLocalization.CANNOT_APPROVE_VACATION));
+        }
+    }
+
+    private void EnsureCanReject(Vacation vacation)
+    {
+        if (!GetAccess(vacation).CanReject)
+        {
+            throw new VacationException(
+                VacationExceptionsLocalization.CANNOT_REJECT_VACATION,
+                nameof(VacationExceptionsLocalization.CANNOT_REJECT_VACATION));
+        }
     }
 
     private bool IsFromCurrentDepartment(Vacation vacation)

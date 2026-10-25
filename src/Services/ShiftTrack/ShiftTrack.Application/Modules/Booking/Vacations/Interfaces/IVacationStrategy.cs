@@ -10,4 +10,5 @@ public interface IVacationStrategy
     Task<Vacation> GetVacationById(long id, CancellationToken cancellationToken);
     Task<IEnumerable<Vacation>> GetVacations(VacationsFilterDto filter, CancellationToken cancellationToken);
     VacationApprovalFilterDto GetApprovalFilter();
+    VacationAccessDto GetAccess(Vacation vacation);
 }

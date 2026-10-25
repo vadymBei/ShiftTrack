@@ -21,6 +21,7 @@ public class UnitDirectorVacationStrategy(
         var vacation = await vacationRepository.GetById(id, cancellationToken);
 
         ValidateVacationForStatusChange(vacation);
+        EnsureCanApprove(vacation);
 
         await vacationRepository.UpdateVacationStatus(
             new UpdateVacationStatusDto(
@@ -46,6 +47,7 @@ public class UnitDirectorVacationStrategy(
         var vacation = await vacationRepository.GetById(id, cancellationToken);
 
         ValidateVacationForStatusChange(vacation);
+        EnsureCanReject(vacation);
 
         await vacationRepository.UpdateVacationStatus(
             new UpdateVacationStatusDto(
@@ -101,6 +103,37 @@ public class UnitDirectorVacationStrategy(
             currentUnitId,
             null,
             null);
+    }
+
+    public VacationAccessDto GetAccess(Vacation vacation)
+    {
+        var isFromUnit = IsFromCurrentUnit(vacation);
+
+        return new VacationAccessDto(
+            CanView: isFromUnit,
+            CanApprove: isFromUnit && vacation.Status != VacationStatus.ApprovedByUnitDirector,
+            CanReject: isFromUnit && vacation.Status != VacationStatus.Rejected,
+            ApproveSubmitsForApproval: false);
+    }
+
+    private void EnsureCanApprove(Vacation vacation)
+    {
+        if (!GetAccess(vacation).CanApprove)
+        {
+            throw new VacationException(
+                VacationExceptionsLocalization.CANNOT_APPROVE_VACATION,
+                nameof(VacationExceptionsLocalization.CANNOT_APPROVE_VACATION));
+        }
+    }
+
+    private void EnsureCanReject(Vacation vacation)
+    {
+        if (!GetAccess(vacation).CanReject)
+        {
+            throw new VacationException(
+                VacationExceptionsLocalization.CANNOT_REJECT_VACATION,
+                nameof(VacationExceptionsLocalization.CANNOT_REJECT_VACATION));
+        }
     }
 
     private bool IsFromCurrentUnit(Vacation vacation)

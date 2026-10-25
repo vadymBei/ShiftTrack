@@ -23,6 +23,7 @@ public static class BookingModule
         services.AddTransient<IVacationStrategy, SysAdminVacationStrategy>();
         services.AddTransient<IVacationStrategy, UnitDirectorVacationStrategy>();
         services.AddTransient<IVacationService, VacationService>();
+        services.AddTransient<IVacationPermissionService, VacationPermissionService>();
 
         return services;
     }

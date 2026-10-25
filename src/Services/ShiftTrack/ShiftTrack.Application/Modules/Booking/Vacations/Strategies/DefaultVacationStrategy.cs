@@ -58,6 +58,17 @@ public class DefaultVacationStrategy(
 
     public VacationApprovalFilterDto GetApprovalFilter() => null;
 
+    public VacationAccessDto GetAccess(Vacation vacation)
+    {
+        var isAuthor = vacation.AuthorId == currentUserService.Employee.Id;
+
+        return new VacationAccessDto(
+            CanView: isAuthor,
+            CanApprove: isAuthor && vacation.Status == VacationStatus.None,
+            CanReject: false,
+            ApproveSubmitsForApproval: true);
+    }
+
     public async Task<IEnumerable<Vacation>> GetVacations(
         VacationsFilterDto filter,
         CancellationToken cancellationToken)
