@@ -1,6 +1,7 @@
 ﻿using ShiftTrack.Application.Common.Interfaces;
 using ShiftTrack.Application.Modules.Booking.BusinessTrips.Constants;
 using ShiftTrack.Application.Modules.Booking.BusinessTrips.Dtos;
+using ShiftTrack.Application.Modules.Booking.BusinessTrips.Events;
 using ShiftTrack.Application.Modules.Booking.BusinessTrips.Exceptions;
 using ShiftTrack.Application.Modules.Booking.BusinessTrips.Interfaces;
 using ShiftTrack.Application.Modules.Organization.Employees.Interfaces;
@@ -8,6 +9,7 @@ using ShiftTrack.Application.Modules.Organization.Structure.Departments.Interfac
 using ShiftTrack.Application.Modules.System.User.EmployeeRoles.Interfaces;
 using ShiftTrack.Domain.Modules.Booking.BusinessTrips.Entities;
 using ShiftTrack.Domain.Modules.Booking.BusinessTrips.Enums;
+using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Modules.Booking.BusinessTrips.Services;
 
@@ -16,7 +18,8 @@ public class BusinessTripService(
     IEmployeeRepository employeeRepository,
     IEmployeeRoleChecker employeeRoleChecker,
     IDepartmentRepository departmentRepository,
-    IBusinessTripRepository businessTripRepository) : IBusinessTripService
+    IBusinessTripRepository businessTripRepository,
+    IMediator mediator) : IBusinessTripService
 {
     public async Task<BusinessTrip> Create(BusinessTripToCreateDto dto, CancellationToken cancellationToken)
     {
@@ -43,6 +46,8 @@ public class BusinessTripService(
         businessTrip = await businessTripRepository
             .Create(businessTrip, cancellationToken);
 
+        await mediator.Publish(new BusinessTripCreatedEvent(businessTrip.Id), cancellationToken);
+
         return businessTrip;
     }
 
@@ -56,6 +61,13 @@ public class BusinessTripService(
                 BusinessTripExceptionsLocalization.CAN_NOT_UPDATE_BUSINESS_TRIP,
                 nameof(BusinessTripExceptionsLocalization.CAN_NOT_UPDATE_BUSINESS_TRIP));
         }
+
+        var updatedEvent = new BusinessTripUpdatedEvent(
+            businessTrip.Id,
+            (businessTrip.Participants ?? []).Select(x => x.Id).ToList(),
+            (businessTrip.Locations ?? []).OrderBy(x => x.Id).Select(x => x.LocationIntegrationId).ToList(),
+            businessTrip.StartDate,
+            businessTrip.EndDate);
 
         businessTrip.StartDate = dto.StartDate;
         businessTrip.EndDate = dto.EndDate;
@@ -79,6 +91,8 @@ public class BusinessTripService(
 
         businessTrip = await businessTripRepository.GetById(businessTrip.Id, cancellationToken);
 
+        await mediator.Publish(updatedEvent, cancellationToken);
+
         return businessTrip;
     }
 
@@ -93,9 +107,13 @@ public class BusinessTripService(
                 nameof(BusinessTripExceptionsLocalization.CAN_NOT_APPROVE_BUSINESS_TRIP));
         }
 
+        var oldStatus = businessTrip.Status;
+
         businessTrip.Status = BusinessTripStatus.Rejected;
 
         await businessTripRepository.Update(businessTrip, cancellationToken);
+
+        await PublishStatusChanged(businessTrip.Id, oldStatus, businessTrip.Status, cancellationToken);
     }
 
     public async Task<IEnumerable<BusinessTrip>> GetFiltered(BusinessTripFilterDto filter,
@@ -142,7 +160,17 @@ public class BusinessTripService(
                 nameof(BusinessTripExceptionsLocalization.CAN_NOT_DELETE_BUSINESS_TRIP));
         }
 
+        var deletedEvent = new BusinessTripDeletedEvent(
+            businessTrip.Id,
+            businessTrip.AuthorId,
+            (businessTrip.Participants ?? []).Select(x => x.Id).ToList(),
+            (businessTrip.Locations ?? []).OrderBy(x => x.Id).Select(x => x.LocationIntegrationId).ToList(),
+            businessTrip.StartDate,
+            businessTrip.EndDate);
+
         await businessTripRepository.Delete(id, cancellationToken);
+
+        await mediator.Publish(deletedEvent, cancellationToken);
     }
 
     public async Task Approve(long id, CancellationToken cancellationToken)
@@ -156,9 +184,24 @@ public class BusinessTripService(
                 nameof(BusinessTripExceptionsLocalization.CAN_NOT_APPROVE_BUSINESS_TRIP));
         }
 
+        var oldStatus = businessTrip.Status;
+
         businessTrip.Status = BusinessTripStatus.Approved;
 
         await businessTripRepository.Update(businessTrip, cancellationToken);
+
+        await PublishStatusChanged(businessTrip.Id, oldStatus, businessTrip.Status, cancellationToken);
+    }
+
+    private async Task PublishStatusChanged(long businessTripId, BusinessTripStatus oldStatus,
+        BusinessTripStatus newStatus, CancellationToken cancellationToken)
+    {
+        if (oldStatus == newStatus)
+            return;
+
+        await mediator.Publish(
+            new BusinessTripStatusChangedEvent(businessTripId, oldStatus, newStatus),
+            cancellationToken);
     }
 
     public Task<IEnumerable<BusinessTrip>> GetMy(CancellationToken cancellationToken)

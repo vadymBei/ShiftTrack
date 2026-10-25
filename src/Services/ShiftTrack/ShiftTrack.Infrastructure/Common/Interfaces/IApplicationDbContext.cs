@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Domain.Modules.Booking.BusinessTrips.Entities;
 using ShiftTrack.Domain.Modules.Booking.Vacations.Entities;
+using ShiftTrack.Domain.Modules.Communication.Notifications.Entities;
 using ShiftTrack.Domain.Modules.Organization.Payrolls.Entities;
 using ShiftTrack.Domain.Modules.Organization.Structure.Entities;
 using ShiftTrack.Domain.Modules.Organization.Timesheet.Shifts.Entities;
@@ -19,6 +20,10 @@ public interface IApplicationDbContext
     
     //Vacations
     DbSet<Vacation> Vacations { get; set; }
+
+    //Communication
+    //Notifications
+    DbSet<Notification> Notifications { get; set; }
     
     //Organization
     //Structure

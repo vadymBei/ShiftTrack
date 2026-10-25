@@ -1,6 +1,5 @@
 using ShiftTrack.Application.Modules.Booking.BusinessTrips.Interfaces;
 using ShiftTrack.Application.Modules.Booking.Requests.Enums;
-using ShiftTrack.Application.Modules.Booking.Requests.Services;
 using ShiftTrack.Application.Modules.Booking.Requests.ViewModels;
 using ShiftTrack.Application.Modules.Booking.Vacations.Interfaces;
 using ShiftTrack.Domain.Modules.Booking.BusinessTrips.Enums;
@@ -12,7 +11,7 @@ namespace ShiftTrack.Application.Modules.Booking.Requests.UseCases.Queries.GetMy
 public class GetMyRequestsQueryHandler(
     IVacationService vacationService,
     IBusinessTripService businessTripService,
-    ILocationRepository locationRepository) : IRequestHandler<GetMyRequestsQuery, MyBookingRequestsVm>
+    IBusinessTripRouteService businessTripRouteService) : IRequestHandler<GetMyRequestsQuery, MyBookingRequestsVm>
 {
     public async Task<MyBookingRequestsVm> Handle(GetMyRequestsQuery request, CancellationToken cancellationToken = default)
     {
@@ -21,7 +20,7 @@ public class GetMyRequestsQueryHandler(
 
         var vacations = (await vacationService.GetMy(cancellationToken)).ToList();
         var businessTrips = (await businessTripService.GetMy(cancellationToken)).ToList();
-        var routes = await BusinessTripRouteBuilder.BuildRoutes(businessTrips, locationRepository, cancellationToken);
+        var routes = await businessTripRouteService.GetRoutes(businessTrips, cancellationToken);
 
         var vacationItems = vacations.Select(x => new
         {

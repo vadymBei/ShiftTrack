@@ -29,5 +29,7 @@ public class PayrollConfiguration : IEntityTypeConfiguration<Payroll>
         builder.HasOne(x => x.Employee)
             .WithMany()
             .HasForeignKey(x => x.EmployeeId);
+
+        builder.HasQueryFilter(x => !x.Employee.IsDeleted);
     }
 }

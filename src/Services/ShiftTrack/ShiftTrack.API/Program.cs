@@ -1,12 +1,15 @@
 using System.Reflection;
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
+using ShiftTrack.API.Hubs;
 using ShiftTrack.Application;
+using ShiftTrack.Application.Modules.Communication.Notifications.Interfaces;
 using ShiftTrack.Authentication.Bearer;
 using ShiftTrack.Authentication.Bearer.Extensions;
 using ShiftTrack.Infrastructure;
 using ShiftTrack.Infrastructure.Persistence;
 using ShiftTrack.Kernel.Extensions;
+using StackExchange.Redis;
 using Swashbuckle.AspNetCore.SwaggerUI;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +28,21 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
+var signalR = builder.Services
+    .AddSignalR()
+    .AddJsonProtocol(options =>
+        options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
+var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
+
+if (!string.IsNullOrWhiteSpace(redisConnectionString))
+{
+    signalR.AddStackExchangeRedis(redisConnectionString, options =>
+        options.Configuration.ChannelPrefix = RedisChannel.Literal("shift-track"));
+}
+
+builder.Services.AddScoped<INotificationPublisher, SignalRNotificationPublisher>();
 
 builder.Services.AddJWTAuthenticationSwagger(
     builder.Environment.ApplicationName,
@@ -68,6 +86,8 @@ app.UseKernelExceptionHandler();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<NotificationsHub>(NotificationsHub.Path);
 
 app.UseStaticFiles();
 

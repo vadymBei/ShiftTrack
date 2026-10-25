@@ -163,4 +163,22 @@ public class EmployeeRepository(
         
         await applicationDbContext.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task<IReadOnlyCollection<long>> GetIdsByRole(string roleName, long? departmentId, long? unitId,
+        CancellationToken cancellationToken)
+    {
+        var query = applicationDbContext.Employees
+            .AsNoTracking()
+            .Where(x => x.EmployeeRoles.Any(r => r.Role.Name == roleName));
+
+        if (departmentId is not null)
+            query = query.Where(x => x.DepartmentId == departmentId);
+
+        if (unitId is not null)
+            query = query.Where(x => x.Department.UnitId == unitId);
+
+        return await query
+            .Select(x => x.Id)
+            .ToListAsync(cancellationToken);
+    }
 }

@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using ShiftTrack.Application.Common.Interfaces;
 using ShiftTrack.Application.Modules.Booking.BusinessTrips.Interfaces;
 using ShiftTrack.Application.Modules.Booking.Vacations.Interfaces;
+using ShiftTrack.Application.Modules.Communication.Notifications.Interfaces;
 using ShiftTrack.Application.Modules.Booking.BusinessTrips.UseCases.Queries.DownloadBusinessTripOrderPdf;
 using ShiftTrack.Application.Modules.Booking.Vacations.UseCases.Queries.DownloadVacationRequestPdf;
 using ShiftTrack.Application.Modules.Organization.Employees.Interfaces;
@@ -29,6 +30,7 @@ using ShiftTrack.Infrastructure.Common.Services.Excel;
 using ShiftTrack.Infrastructure.Common.Services.Pdf;
 using ShiftTrack.Infrastructure.Modules.Booking.BusinessTrips.Repositories;
 using ShiftTrack.Infrastructure.Modules.Booking.Vacations.Repositories;
+using ShiftTrack.Infrastructure.Modules.Communication.Notifications.Repositories;
 using ShiftTrack.Infrastructure.Modules.Organization.Employees.Repositories;
 using ShiftTrack.Infrastructure.Modules.Organization.Payrolls.Repositories;
 using ShiftTrack.Infrastructure.Modules.Organization.Structure.Departments.Repositories;
@@ -78,6 +80,10 @@ public static class DependencyInjection
         
         //Vacations
         services.AddTransient<IVacationRepository, VacationRepository>();
+
+        //Communication
+        //Notifications
+        services.AddTransient<INotificationRepository, NotificationRepository>();
         
         //User
         services.AddTransient<IRoleRepository, RoleRepository>();

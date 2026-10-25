@@ -24,6 +24,23 @@ namespace ShiftTrack.Authentication.Bearer
                     options.Authority = authOptions.AuthServer.Authority;
                     options.Audience = authOptions.AuthServer.Audience;
                     options.RequireHttpsMetadata = authOptions.AuthServer.RequireHttpsMetadata;
+
+                    // WebSockets can't send the Authorization header: SignalR passes the token in the query string.
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            var accessToken = context.Request.Query["access_token"];
+
+                            if (!string.IsNullOrEmpty(accessToken)
+                                && context.HttpContext.Request.Path.StartsWithSegments("/hubs"))
+                            {
+                                context.Token = accessToken;
+                            }
+
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
 
             services

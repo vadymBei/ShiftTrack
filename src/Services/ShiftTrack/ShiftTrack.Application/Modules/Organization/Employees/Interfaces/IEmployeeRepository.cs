@@ -14,4 +14,6 @@ public interface IEmployeeRepository
     Task<IEnumerable<Employee>> GetFiltered(EmployeesFilterDto filter, CancellationToken cancellationToken);
     Task<Employee> Update(EmployeeToUpdateDto employeeToUpdateDto, CancellationToken cancellationToken);
     Task UpdatePhoto(UploadEmployeePhotoDto uploadEmployeePhotoDto, CancellationToken cancellationToken);
+    Task<IReadOnlyCollection<long>> GetIdsByRole(string roleName, long? departmentId, long? unitId,
+        CancellationToken cancellationToken);
 }

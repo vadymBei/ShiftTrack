@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ShiftTrack.Application.Common.Behaviours;
 using ShiftTrack.Application.Modules.Booking;
+using ShiftTrack.Application.Modules.Communication;
 using ShiftTrack.Application.Modules.Organization;
 using ShiftTrack.Application.Modules.System;
 using ShiftTrack.Kernel;
@@ -27,6 +28,7 @@ public static class DependencyInjection
         services.AddBookingServices();
         services.AddOrganizationServices();
         services.AddSystemServices();
+        services.AddCommunicationServices();
 
         return services;
     }

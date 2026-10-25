@@ -1,5 +1,6 @@
 using AutoMapper;
 using ShiftTrack.Application.Modules.Booking.Vacations.Dtos;
+using ShiftTrack.Application.Modules.Booking.Vacations.Events;
 using ShiftTrack.Application.Modules.Booking.Vacations.Interfaces;
 using ShiftTrack.Application.Modules.Booking.Vacations.ViewModels;
 using ShiftTrack.Application.Modules.Organization.Employees.Interfaces;
@@ -10,7 +11,8 @@ namespace ShiftTrack.Application.Modules.Booking.Vacations.UseCases.Commands.Cre
 public class CreateVacationCommandHandler(
     IMapper mapper,
     IVacationRepository vacationRepository,
-    IEmployeeRepository employeeRepository) : IRequestHandler<CreateVacationCommand, VacationVm>
+    IEmployeeRepository employeeRepository,
+    IMediator mediator) : IRequestHandler<CreateVacationCommand, VacationVm>
 {
     public async Task<VacationVm> Handle(CreateVacationCommand request, CancellationToken cancellationToken = default)
     {
@@ -28,6 +30,8 @@ public class CreateVacationCommandHandler(
             cancellationToken);
 
         vacation = await vacationRepository.GetById(vacation.Id, cancellationToken);
+
+        await mediator.Publish(new VacationCreatedEvent(vacation.Id), cancellationToken);
 
         return mapper.Map<VacationVm>(vacation);
     }

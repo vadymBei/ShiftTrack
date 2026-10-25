@@ -13,6 +13,7 @@ public static class BookingModule
     {
         //BusinessTrips
         services.AddTransient<IBusinessTripService, BusinessTripService>();
+        services.AddTransient<IBusinessTripRouteService, BusinessTripRouteService>();
         
         //Vacations
         services.AddTransient<IVacationShiftService, VacationShiftService>();

@@ -73,6 +73,16 @@ services:
       - TZ=Europe/Khmelnytskyi
     ports:
       - "20001:8080"
+    depends_on:
+      - postgres-db
+      - redis
+
+ redis:
+    image: redis:7-alpine
+    container_name: redis
+    restart: always
+    ports:
+      - "10200:6379"
 
  generators.pdf.api:
    image: ${DOCKER_REGISTRY-}generators-pdf-api

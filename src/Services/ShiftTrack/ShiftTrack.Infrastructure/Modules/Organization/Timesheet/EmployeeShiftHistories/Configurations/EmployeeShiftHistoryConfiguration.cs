@@ -22,5 +22,7 @@ public class EmployeeShiftHistoryConfiguration : IEntityTypeConfiguration<Employ
             .WithMany()
             .HasForeignKey(x => x.NewShiftId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasQueryFilter(x => !x.EmployeeShift.Employee.IsDeleted);
     }
 }

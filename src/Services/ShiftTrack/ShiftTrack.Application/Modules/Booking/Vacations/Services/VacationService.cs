@@ -1,6 +1,7 @@
 using ShiftTrack.Application.Common.Interfaces;
 using ShiftTrack.Application.Modules.Booking.Vacations.Constants;
 using ShiftTrack.Application.Modules.Booking.Vacations.Dtos;
+using ShiftTrack.Application.Modules.Booking.Vacations.Events;
 using ShiftTrack.Application.Modules.Booking.Vacations.Exceptions;
 using ShiftTrack.Application.Modules.Booking.Vacations.Interfaces;
 using ShiftTrack.Application.Modules.Organization.Employees.Interfaces;
@@ -8,6 +9,7 @@ using ShiftTrack.Application.Modules.System.User.EmployeeRoles.Interfaces;
 using ShiftTrack.Domain.Modules.Booking.Vacations.Entities;
 using ShiftTrack.Domain.Modules.Booking.Vacations.Enums;
 using ShiftTrack.Domain.Modules.Booking.Vacations.Models;
+using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Modules.Booking.Vacations.Services;
 
@@ -16,7 +18,8 @@ public class VacationService(
     ICurrentUserService currentUserService,
     IVacationRepository vacationRepository,
     IEmployeeRoleChecker employeeRoleChecker,
-    IVacationStrategyFactory vacationStrategyFactory) : IVacationService
+    IVacationStrategyFactory vacationStrategyFactory,
+    IMediator mediator) : IVacationService
 {
     private IVacationStrategy VacationStrategy => vacationStrategyFactory.GetStrategy();
 
@@ -27,9 +30,15 @@ public class VacationService(
 
     public async Task<Vacation> Approve(long id, CancellationToken cancellationToken)
     {
+        var oldStatus = (await vacationRepository.GetById(id, cancellationToken)).Status;
+
         await VacationStrategy.ApproveVacation(id, cancellationToken);
 
-        return await VacationStrategy.GetVacationById(id, cancellationToken);
+        var vacation = await VacationStrategy.GetVacationById(id, cancellationToken);
+
+        await PublishStatusChanged(vacation, oldStatus, cancellationToken);
+
+        return vacation;
     }
 
     public Task<IEnumerable<Vacation>> GetFiltered(VacationsFilterDto filter, CancellationToken cancellationToken)
@@ -39,9 +48,26 @@ public class VacationService(
 
     public async Task<Vacation> Reject(long id, CancellationToken cancellationToken)
     {
+        var oldStatus = (await vacationRepository.GetById(id, cancellationToken)).Status;
+
         await VacationStrategy.RejectVacation(id, cancellationToken);
 
-        return await VacationStrategy.GetVacationById(id, cancellationToken);
+        var vacation = await VacationStrategy.GetVacationById(id, cancellationToken);
+
+        await PublishStatusChanged(vacation, oldStatus, cancellationToken);
+
+        return vacation;
+    }
+
+    private async Task PublishStatusChanged(Vacation vacation, VacationStatus oldStatus,
+        CancellationToken cancellationToken)
+    {
+        if (vacation.Status == oldStatus)
+            return;
+
+        await mediator.Publish(
+            new VacationStatusChangedEvent(vacation.Id, oldStatus, vacation.Status),
+            cancellationToken);
     }
 
     public async Task Delete(long id, CancellationToken cancellationToken)
@@ -58,6 +84,16 @@ public class VacationService(
         }
 
         await vacationRepository.Delete(vacation.Id, cancellationToken);
+
+        await mediator.Publish(
+            new VacationDeletedEvent(
+                vacation.Id,
+                vacation.EmployeeId,
+                vacation.AuthorId,
+                vacation.Type,
+                vacation.StartDate,
+                vacation.EndDate),
+            cancellationToken);
     }
 
     public Task<IEnumerable<Vacation>> GetMy(CancellationToken cancellationToken)
