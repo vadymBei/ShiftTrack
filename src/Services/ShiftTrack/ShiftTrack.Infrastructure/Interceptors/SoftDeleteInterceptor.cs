@@ -30,7 +30,7 @@ public sealed class SoftDeleteInterceptor : SaveChangesInterceptor
             {
                 entry.State = EntityState.Modified;
                 entry.Entity.IsDeleted = true;
-                entry.Entity.DeletedAt = DateTime.Now;
+                entry.Entity.DeletedAt = DateTime.UtcNow;
             }
         }
 

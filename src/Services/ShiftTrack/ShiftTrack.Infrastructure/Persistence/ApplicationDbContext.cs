@@ -13,6 +13,7 @@ using ShiftTrack.Domain.Modules.System.User.Employees.Entities;
 using ShiftTrack.Domain.Modules.System.User.Roles.Entities;
 using ShiftTrack.Infrastructure.Common.Interfaces;
 using ShiftTrack.Infrastructure.Interceptors;
+using ShiftTrack.Infrastructure.Persistence.Conventions;
 
 namespace ShiftTrack.Infrastructure.Persistence;
 
@@ -104,6 +105,8 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+        builder.ApplyUtcDateTimeConvention();
 
         base.OnModelCreating(builder);
     }
