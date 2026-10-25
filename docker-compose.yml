@@ -77,6 +77,23 @@ services:
       - postgres-db
       - redis
 
+ shifttrack.jobs:
+   image: ${DOCKER_REGISTRY-}shifttrack-jobs
+   build:
+     context: .
+     dockerfile: src\Services\ShiftTrack\ShiftTrack.Jobs\Dockerfile
+   container_name: shifttrack-jobs
+   restart: always
+   environment:
+     - ASPNETCORE_ENVIRONMENT=Development
+     - ASPNETCORE_URLS=http://+:8080
+     - TZ=Europe/Khmelnytskyi
+   ports:
+     - "20004:8080"
+   depends_on:
+     - postgres-db
+     - shifttrack.api
+
  redis:
     image: redis:7-alpine
     container_name: redis

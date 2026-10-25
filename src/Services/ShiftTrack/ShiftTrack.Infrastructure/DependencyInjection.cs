@@ -80,6 +80,7 @@ public static class DependencyInjection
         
         //Vacations
         services.AddTransient<IVacationRepository, VacationRepository>();
+        services.AddTransient<IVacationAccrualRepository, VacationAccrualRepository>();
 
         //Communication
         //Notifications

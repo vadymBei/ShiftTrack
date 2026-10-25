@@ -1,4 +1,5 @@
-﻿using ShiftTrack.Application.Modules.Organization.Employees.Dtos;
+﻿using ShiftTrack.Application.Modules.Booking.Vacations.Dtos;
+using ShiftTrack.Application.Modules.Organization.Employees.Dtos;
 using ShiftTrack.Domain.Modules.System.User.Employees.Entities;
 
 namespace ShiftTrack.Application.Modules.Organization.Employees.Interfaces;
@@ -14,6 +15,8 @@ public interface IEmployeeRepository
     Task<IEnumerable<Employee>> GetFiltered(EmployeesFilterDto filter, CancellationToken cancellationToken);
     Task<Employee> Update(EmployeeToUpdateDto employeeToUpdateDto, CancellationToken cancellationToken);
     Task UpdatePhoto(UploadEmployeePhotoDto uploadEmployeePhotoDto, CancellationToken cancellationToken);
+    Task<IReadOnlyList<EmployeeServiceStartDto>> GetServiceStarts(CancellationToken cancellationToken);
+    Task UpdateVacationDaysBalances(IReadOnlyDictionary<long, int> balances, CancellationToken cancellationToken);
     Task<IReadOnlyCollection<long>> GetIdsByRole(string roleName, long? departmentId, long? unitId,
         CancellationToken cancellationToken);
 }

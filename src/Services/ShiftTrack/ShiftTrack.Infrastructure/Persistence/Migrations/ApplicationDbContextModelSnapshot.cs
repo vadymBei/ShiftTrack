@@ -195,6 +195,57 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
                     b.ToTable("Vacations", (string)null);
                 });
 
+            modelBuilder.Entity("ShiftTrack.Domain.Modules.Booking.Vacations.Entities.VacationAccrual", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long?>("AuthorId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<decimal>("Days")
+                        .HasPrecision(6, 2)
+                        .HasColumnType("numeric(6,2)");
+
+                    b.Property<long>("EmployeeId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsFullEntitlement")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("ModifierId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("PeriodEnd")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("PeriodStart")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("WorkingYear")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
+
+                    b.HasIndex("ModifierId");
+
+                    b.HasIndex("EmployeeId", "WorkingYear")
+                        .IsUnique();
+
+                    b.ToTable("VacationAccruals", (string)null);
+                });
+
             modelBuilder.Entity("ShiftTrack.Domain.Modules.Communication.Notifications.Entities.Notification", b =>
                 {
                     b.Property<long>("Id")
@@ -949,6 +1000,31 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("ApprovedEmployee");
+
+                    b.Navigation("Author");
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("Modifier");
+                });
+
+            modelBuilder.Entity("ShiftTrack.Domain.Modules.Booking.Vacations.Entities.VacationAccrual", b =>
+                {
+                    b.HasOne("ShiftTrack.Domain.Modules.System.User.Employees.Entities.Employee", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("ShiftTrack.Domain.Modules.System.User.Employees.Entities.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ShiftTrack.Domain.Modules.System.User.Employees.Entities.Employee", "Modifier")
+                        .WithMany()
+                        .HasForeignKey("ModifierId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Author");
 

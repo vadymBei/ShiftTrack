@@ -14,12 +14,16 @@ public class CreateVacationCommandHandler(
     IVacationRepository vacationRepository,
     IEmployeeRepository employeeRepository,
     IMediator mediator,
-    IVacationPermissionService vacationPermissionService) : IRequestHandler<CreateVacationCommand, VacationVm>
+    IVacationPermissionService vacationPermissionService,
+    IVacationAccrualService vacationAccrualService) : IRequestHandler<CreateVacationCommand, VacationVm>
 {
     public async Task<VacationVm> Handle(CreateVacationCommand request, CancellationToken cancellationToken = default)
     {
         var employee = await employeeRepository
             .GetById(request.EmployeeId, cancellationToken);
+
+        await vacationAccrualService.EnsureCanTakeVacation(
+            employee.Id, request.Type, request.StartDate, cancellationToken);
 
         var vacation = await vacationRepository.Create(
             new VacationToCreateDto(

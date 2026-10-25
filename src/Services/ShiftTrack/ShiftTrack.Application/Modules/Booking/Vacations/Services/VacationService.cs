@@ -4,7 +4,6 @@ using ShiftTrack.Application.Modules.Booking.Vacations.Dtos;
 using ShiftTrack.Application.Modules.Booking.Vacations.Events;
 using ShiftTrack.Application.Modules.Booking.Vacations.Exceptions;
 using ShiftTrack.Application.Modules.Booking.Vacations.Interfaces;
-using ShiftTrack.Application.Modules.Organization.Employees.Interfaces;
 using ShiftTrack.Domain.Modules.Booking.Vacations.Entities;
 using ShiftTrack.Domain.Modules.Booking.Vacations.Enums;
 using ShiftTrack.Domain.Modules.Booking.Vacations.Models;
@@ -13,11 +12,11 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 namespace ShiftTrack.Application.Modules.Booking.Vacations.Services;
 
 public class VacationService(
-    IEmployeeRepository employeeRepository,
     ICurrentUserService currentUserService,
     IVacationRepository vacationRepository,
     IVacationStrategyFactory vacationStrategyFactory,
     IVacationPermissionService vacationPermissionService,
+    IVacationAccrualService vacationAccrualService,
     IMediator mediator) : IVacationService
 {
     private IVacationStrategy VacationStrategy => vacationStrategyFactory.GetStrategy();
@@ -29,7 +28,11 @@ public class VacationService(
 
     public async Task<Vacation> Approve(long id, CancellationToken cancellationToken)
     {
-        var oldStatus = (await vacationRepository.GetById(id, cancellationToken)).Status;
+        var current = await vacationRepository.GetById(id, cancellationToken);
+        var oldStatus = current.Status;
+
+        await vacationAccrualService.EnsureCanTakeVacation(
+            current.EmployeeId, current.Type, current.StartDate, cancellationToken);
 
         await VacationStrategy.ApproveVacation(id, cancellationToken);
 
@@ -118,15 +121,9 @@ public class VacationService(
         return await vacationRepository.CountForApproval(filter, cancellationToken);
     }
 
-    public async Task<VacationBalance> GetVacationBalanceByEmployeeId(long employeeId, CancellationToken cancellationToken)
+    public Task<VacationBalance> GetVacationBalanceByEmployeeId(long employeeId,
+        CancellationToken cancellationToken)
     {
-        var employee = await employeeRepository.GetById(employeeId, cancellationToken);
-
-        return new VacationBalance()
-        {
-            PlannedDays = 14,
-            TotalDays = 24,
-            UsedDays = 6
-        };
+        return vacationAccrualService.GetBalance(employeeId, cancellationToken);
     }
 }

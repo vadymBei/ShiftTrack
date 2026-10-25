@@ -40,6 +40,7 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
 
     //Vacations
     public DbSet<Vacation> Vacations { get; set; }
+    public DbSet<VacationAccrual> VacationAccruals { get; set; }
 
     //Communication
     //Notifications

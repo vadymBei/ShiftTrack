@@ -18,11 +18,15 @@ public class UpdateVacationCommandHandler(
     IVacationService vacationService,
     IVacationRepository vacationRepository,
     ICurrentUserService currentUserService,
-    IVacationPermissionService vacationPermissionService) : IRequestHandler<UpdateVacationCommand, VacationVm>
+    IVacationPermissionService vacationPermissionService,
+    IVacationAccrualService vacationAccrualService) : IRequestHandler<UpdateVacationCommand, VacationVm>
 {
     public async Task<VacationVm> Handle(UpdateVacationCommand request, CancellationToken cancellationToken = default)
     {
         var vacation = await GetAndValidateVacationForUpdate(request.Id, cancellationToken);
+
+        await vacationAccrualService.EnsureCanTakeVacation(
+            vacation.EmployeeId, request.Type, request.StartDate, cancellationToken);
 
         if (vacation.StartDate != request.StartDate
             || vacation.EndDate != request.EndDate)

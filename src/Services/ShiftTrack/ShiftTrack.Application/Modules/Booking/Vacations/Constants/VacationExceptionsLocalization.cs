@@ -15,6 +15,7 @@ public static class VacationExceptionsLocalization
     public const string CANNOT_VIEW_VACATION_FROM_OTHER_UNIT = "You can only view vacations from your unit.";
     public const string CANNOT_APPROVE_OWN_VACATION = "You cannot approve your own vacation.";
     public const string CANNOT_DOWNLOAD_NOT_APPROVED_VACATION = "The document is available only after final approval of the vacation.";
+    public const string ANNUAL_VACATION_BEFORE_SIX_MONTHS = "Annual vacation is available only after 6 months of continuous work, from {0:dd.MM.yyyy}.";
 
 
 }

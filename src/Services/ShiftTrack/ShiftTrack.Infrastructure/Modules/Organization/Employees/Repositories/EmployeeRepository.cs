@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ShiftTrack.Application.Modules.Booking.Vacations.Dtos;
 using ShiftTrack.Application.Modules.Organization.Employees.Dtos;
 using ShiftTrack.Application.Modules.Organization.Employees.Interfaces;
 using ShiftTrack.Domain.Modules.System.User.Employees.Entities;
@@ -161,6 +162,30 @@ public class EmployeeRepository(
         
         employee.PhotoFullName = uploadEmployeePhotoDto.PhotoUrl;
         
+        await applicationDbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<EmployeeServiceStartDto>> GetServiceStarts(CancellationToken cancellationToken)
+    {
+        // TODO: use the hire date once it's stored, the registration date is used until then.
+        return await applicationDbContext.Employees
+            .AsNoTracking()
+            .Select(x => new EmployeeServiceStartDto(x.Id, x.CreatedAt))
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task UpdateVacationDaysBalances(IReadOnlyDictionary<long, int> balances,
+        CancellationToken cancellationToken)
+    {
+        var employeeIds = balances.Keys.ToList();
+
+        var employees = await applicationDbContext.Employees
+            .Where(x => employeeIds.Contains(x.Id))
+            .ToListAsync(cancellationToken);
+
+        foreach (var employee in employees)
+            employee.VacationDaysBalance = balances[employee.Id];
+
         await applicationDbContext.SaveChangesAsync(cancellationToken);
     }
 

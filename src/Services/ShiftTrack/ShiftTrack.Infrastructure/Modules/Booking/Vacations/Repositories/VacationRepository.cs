@@ -142,6 +142,20 @@ public class VacationRepository(
         return vacation;
     }
 
+    public async Task<IReadOnlyList<Vacation>> GetApproved(IReadOnlyCollection<VacationType> types,
+        long? employeeId, CancellationToken cancellationToken)
+    {
+        var query = applicationDbContext.Vacations
+            .AsNoTracking()
+            .Where(x => x.Status == VacationStatus.ApprovedByUnitDirector
+                        && types.Contains(x.Type));
+
+        if (employeeId is not null)
+            query = query.Where(x => x.EmployeeId == employeeId);
+
+        return await query.ToListAsync(cancellationToken);
+    }
+
     public async Task<Vacation> UpdateVacationStatus(UpdateVacationStatusDto dto, CancellationToken cancellationToken)
     {
         var vacation = await applicationDbContext.Vacations

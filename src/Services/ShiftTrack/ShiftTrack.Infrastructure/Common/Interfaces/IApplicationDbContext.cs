@@ -20,6 +20,7 @@ public interface IApplicationDbContext
     
     //Vacations
     DbSet<Vacation> Vacations { get; set; }
+    DbSet<VacationAccrual> VacationAccruals { get; set; }
 
     //Communication
     //Notifications
