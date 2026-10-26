@@ -7,12 +7,13 @@ public interface IMediator
 
     /// <summary>
     /// Publishes a single notification to all registered <see cref="INotificationHandler{T}"/>.
-    /// Handlers are executed in parallel.
+    /// Handlers are executed sequentially in the caller's scope, so they can safely share scoped services
+    /// such as DbContext. An exception in a handler stops the remaining ones.
     /// </summary>
     Task Publish(INotification notification, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Publishes multiple notifications. Each notification is processed in parallel.
+    /// Publishes multiple notifications one after another, in the given order.
     /// </summary>
     Task Publish(IEnumerable<INotification> notifications, CancellationToken cancellationToken = default);
 }
