@@ -1,9 +1,10 @@
-﻿using ShiftTrack.Application.Common.Interfaces;
+﻿using ShiftTrack.Domain.Modules.System.User.Employees.Entities;
+using ShiftTrack.Application.Modules.Organization.Employees.Interfaces;
+using ShiftTrack.Application.Common.Interfaces;
 using ShiftTrack.Application.Common.ViewModels;
 using ShiftTrack.Application.Modules.Booking.Vacations.Constants;
 using ShiftTrack.Application.Modules.Booking.Vacations.Exceptions;
 using ShiftTrack.Application.Modules.Booking.Vacations.Interfaces;
-using ShiftTrack.Application.Modules.System.User.EmployeeRoleUnits.Interfaces;
 using ShiftTrack.Application.Modules.System.User.Roles.Constants;
 using ShiftTrack.Domain.Modules.Booking.Vacations.Enums;
 using ShiftTrack.Kernel.CQRS.Interfaces;
@@ -12,7 +13,7 @@ namespace ShiftTrack.Application.Modules.Booking.Vacations.UseCases.Queries.Down
 
 public class DownloadVacationRequestPdfQueryHandler(
     IVacationService vacationService,
-    IEmployeeRoleUnitRepository employeeRoleUnitRepository,
+    IEmployeeRepository employeeRepository,
     IPdfExporter<VacationRequestData> vacationRequestExporter)
     : IRequestHandler<DownloadVacationRequestPdfQuery, DocumentVm>
 {
@@ -29,12 +30,7 @@ public class DownloadVacationRequestPdfQueryHandler(
                 nameof(VacationExceptionsLocalization.CANNOT_DOWNLOAD_NOT_APPROVED_VACATION));
         }
 
-        var employeeRoleUnits = await employeeRoleUnitRepository
-            .GetListByUnitId((long)vacation.Employee.Department.UnitId, cancellationToken);
-
-        var unitDirector = employeeRoleUnits
-            .FirstOrDefault(x => x.EmployeeRole.Role.Name == DefaultRolesCatalog.UNIT_DIRECTOR)
-            ?.EmployeeRole?.Employee;
+        var unitDirector = await GetUnitDirector(vacation.Employee.DepartmentId, cancellationToken);
 
         var streamContent = await vacationRequestExporter.Export(
             new VacationRequestData()
@@ -50,5 +46,20 @@ public class DownloadVacationRequestPdfQueryHandler(
             Extension = ".pdf",
             Name = $"{vacation.Employee.FullName} vacation request"
         };
+    }
+
+    /// <summary>Regional director whose role bindings cover the employee's department.</summary>
+    private async Task<Employee> GetUnitDirector(long? departmentId, CancellationToken cancellationToken)
+    {
+        if (departmentId is null)
+            return null;
+
+        var unitDirectorIds = await employeeRepository.GetIdsByRoleScope(
+            DefaultRolesCatalog.UNIT_DIRECTOR, [departmentId.Value], cancellationToken);
+
+        if (unitDirectorIds.Count == 0)
+            return null;
+
+        return await employeeRepository.GetById(unitDirectorIds.First(), cancellationToken);
     }
 }

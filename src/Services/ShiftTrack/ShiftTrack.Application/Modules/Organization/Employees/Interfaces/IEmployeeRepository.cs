@@ -1,4 +1,4 @@
-﻿using ShiftTrack.Application.Modules.Booking.Vacations.Dtos;
+﻿using ShiftTrack.Application.Modules.Organization.Employees.Models;
 using ShiftTrack.Application.Modules.Organization.Employees.Dtos;
 using ShiftTrack.Domain.Modules.System.User.Employees.Entities;
 
@@ -15,8 +15,12 @@ public interface IEmployeeRepository
     Task<IEnumerable<Employee>> GetFiltered(EmployeesFilterDto filter, CancellationToken cancellationToken);
     Task<Employee> Update(EmployeeToUpdateDto employeeToUpdateDto, CancellationToken cancellationToken);
     Task UpdatePhoto(UploadEmployeePhotoDto uploadEmployeePhotoDto, CancellationToken cancellationToken);
-    Task<IReadOnlyList<EmployeeServiceStartDto>> GetServiceStarts(CancellationToken cancellationToken);
+    Task<IReadOnlyList<EmployeeServiceStart>> GetServiceStarts(CancellationToken cancellationToken);
     Task UpdateVacationDaysBalances(IReadOnlyDictionary<long, int> balances, CancellationToken cancellationToken);
-    Task<IReadOnlyCollection<long>> GetIdsByRole(string roleName, long? departmentId, long? unitId,
+    /// <summary>
+    /// Employees with the role whose bindings cover any of the departments:
+    /// a binding to the department's unit without departments, or to the department itself.
+    /// </summary>
+    Task<IReadOnlyCollection<long>> GetIdsByRoleScope(string roleName, IReadOnlyCollection<long> departmentIds,
         CancellationToken cancellationToken);
 }

@@ -1,3 +1,6 @@
+using ShiftTrack.Application.Modules.System.User.Roles.Constants;
+using ShiftTrack.Application.Modules.System.User.RoleScopes.Interfaces;
+using ShiftTrack.Domain.Modules.System.User.EmployeeRoles.Models;
 using ShiftTrack.Application.Common.Interfaces;
 using ShiftTrack.Application.Modules.Booking.Vacations.Constants;
 using ShiftTrack.Application.Modules.Booking.Vacations.Dtos;
@@ -14,8 +17,11 @@ public class UnitDirectorVacationStrategy(
     IVacationRepository vacationRepository,
     ICurrentUserService currentUserService,
     IEmployeeShiftService employeeShiftService,
-    IVacationShiftService vacationShiftService) : IVacationStrategy
+    IVacationShiftService vacationShiftService,
+    IRoleScopeService roleScopeService) : IVacationStrategy
 {
+    private RoleScope Scope => roleScopeService.GetCurrentScope(DefaultRolesCatalog.UNIT_DIRECTOR);
+
     public async Task ApproveVacation(long id, CancellationToken cancellationToken)
     {
         var vacation = await vacationRepository.GetById(id, cancellationToken);
@@ -81,27 +87,24 @@ public class UnitDirectorVacationStrategy(
         VacationsFilterDto filter,
         CancellationToken cancellationToken)
     {
-        var currentUnitId = currentUserService.Employee.Department?.UnitId;
+        var vacations = await vacationRepository.GetFiltered(filter, cancellationToken);
 
-        if (currentUnitId is null || filter.UnitId != currentUnitId)
-        {
-            return [];
-        }
-
-        return await vacationRepository.GetFiltered(filter, cancellationToken);
+        return vacations
+            .Where(IsFromCurrentUnit)
+            .ToList();
     }
 
     public VacationApprovalFilterDto GetApprovalFilter()
     {
-        var currentUnitId = currentUserService.Employee.Department?.UnitId;
+        var scope = Scope;
 
-        if (currentUnitId is null)
+        if (scope.IsEmpty)
             return null;
 
         return new VacationApprovalFilterDto(
             [VacationStatus.PendingApproval, VacationStatus.ApprovedByDepartmentDirector],
-            currentUnitId,
-            null,
+            scope.UnitIds.ToList(),
+            scope.DepartmentIds.ToList(),
             null);
     }
 
@@ -136,11 +139,16 @@ public class UnitDirectorVacationStrategy(
         }
     }
 
+    /// <summary>
+    /// The vacation is of an employee the director manages by the role bindings, or the director's own
+    /// (there is no role above the unit director, so they approve their own requests).
+    /// </summary>
     private bool IsFromCurrentUnit(Vacation vacation)
     {
-        var currentUnitId = currentUserService.Employee.Department?.UnitId;
+        var currentEmployeeId = currentUserService.Employee.Id;
 
-        return currentUnitId is not null
-               && vacation.Employee.Department?.UnitId == currentUnitId;
+        return vacation.EmployeeId == currentEmployeeId
+               || vacation.AuthorId == currentEmployeeId
+               || Scope.Covers(vacation.Employee);
     }
 }

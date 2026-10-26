@@ -1,3 +1,4 @@
+using ShiftTrack.Application.Modules.Booking.Vacations.Models;
 using ShiftTrack.Application.Modules.Booking.Vacations.Dtos;
 
 namespace ShiftTrack.Application.Modules.Booking.Vacations.Interfaces;
@@ -8,7 +9,7 @@ public interface IVacationAccrualCalculator
     /// Working years started from <paramref name="serviceStart"/> up to <paramref name="today"/> with the days
     /// accrued for each of them. Excluded periods are not counted into service and shift the working years.
     /// </summary>
-    IReadOnlyList<WorkingYearAccrualDto> Calculate(
+    IReadOnlyList<WorkingYearAccrual> Calculate(
         DateTime serviceStart,
         DateTime today,
         IReadOnlyCollection<DateRangeDto> excludedPeriods);

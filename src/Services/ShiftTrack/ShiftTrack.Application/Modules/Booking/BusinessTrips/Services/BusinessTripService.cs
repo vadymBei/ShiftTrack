@@ -1,4 +1,6 @@
-﻿using ShiftTrack.Application.Common.Interfaces;
+﻿using ShiftTrack.Application.Modules.System.User.Roles.Constants;
+using ShiftTrack.Application.Modules.System.User.RoleScopes.Interfaces;
+using ShiftTrack.Application.Common.Interfaces;
 using ShiftTrack.Application.Modules.Booking.BusinessTrips.Constants;
 using ShiftTrack.Application.Modules.Booking.BusinessTrips.Dtos;
 using ShiftTrack.Application.Modules.Booking.BusinessTrips.Events;
@@ -6,7 +8,6 @@ using ShiftTrack.Application.Modules.Booking.BusinessTrips.Exceptions;
 using ShiftTrack.Application.Modules.Booking.BusinessTrips.Interfaces;
 using ShiftTrack.Application.Modules.Booking.BusinessTrips.ViewModels;
 using ShiftTrack.Application.Modules.Organization.Employees.Interfaces;
-using ShiftTrack.Application.Modules.Organization.Structure.Departments.Interfaces;
 using ShiftTrack.Application.Modules.System.User.EmployeeRoles.Interfaces;
 using ShiftTrack.Domain.Modules.Booking.BusinessTrips.Entities;
 using ShiftTrack.Domain.Modules.Booking.BusinessTrips.Enums;
@@ -19,7 +20,7 @@ public class BusinessTripService(
     ICurrentUserService currentUserService,
     IEmployeeRepository employeeRepository,
     IEmployeeRoleChecker employeeRoleChecker,
-    IDepartmentRepository departmentRepository,
+    IRoleScopeService roleScopeService,
     IBusinessTripRepository businessTripRepository,
     IDomainEventOutbox domainEventOutbox) : IBusinessTripService
 {
@@ -330,15 +331,12 @@ public class BusinessTripService(
         bool IsUnitDirector,
         IReadOnlySet<long> UnitDepartmentIds);
 
+    /// <summary>Departments the unit director manages by the role bindings.</summary>
     private async Task<IReadOnlySet<long>> GetCurrentUnitDepartmentIds(CancellationToken cancellationToken)
     {
-        var unitId = currentUserService.Employee.Department?.UnitId;
-
-        if (unitId is null || !employeeRoleChecker.HasCurrentUserUnitDirectorRole())
+        if (!employeeRoleChecker.HasCurrentUserUnitDirectorRole())
             return new HashSet<long>();
 
-        var departments = await departmentRepository.GetDepartmentsByUnitId(unitId.Value, cancellationToken);
-
-        return departments.Select(x => x.Id).ToHashSet();
+        return await roleScopeService.GetCurrentDepartmentIds(DefaultRolesCatalog.UNIT_DIRECTOR, cancellationToken);
     }
 }

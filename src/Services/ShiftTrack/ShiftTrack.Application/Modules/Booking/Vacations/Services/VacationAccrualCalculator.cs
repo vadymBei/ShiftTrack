@@ -1,3 +1,4 @@
+using ShiftTrack.Application.Modules.Booking.Vacations.Models;
 using ShiftTrack.Application.Modules.Booking.Vacations.Constants;
 using ShiftTrack.Application.Modules.Booking.Vacations.Dtos;
 using ShiftTrack.Application.Modules.Booking.Vacations.Interfaces;
@@ -16,7 +17,7 @@ namespace ShiftTrack.Application.Modules.Booking.Vacations.Services;
 /// </summary>
 public class VacationAccrualCalculator : IVacationAccrualCalculator
 {
-    public IReadOnlyList<WorkingYearAccrualDto> Calculate(
+    public IReadOnlyList<WorkingYearAccrual> Calculate(
         DateTime serviceStart,
         DateTime today,
         IReadOnlyCollection<DateRangeDto> excludedPeriods)
@@ -28,7 +29,7 @@ public class VacationAccrualCalculator : IVacationAccrualCalculator
             return [];
 
         var excludedDays = GetExcludedDays(excludedPeriods, start, end);
-        var result = new List<WorkingYearAccrualDto>();
+        var result = new List<WorkingYearAccrual>();
 
         var workingYear = 1;
         var yearStart = start;
@@ -43,7 +44,7 @@ public class VacationAccrualCalculator : IVacationAccrualCalculator
             if (countedDays < requiredDays)
                 continue;
 
-            result.Add(new WorkingYearAccrualDto(
+            result.Add(new WorkingYearAccrual(
                 workingYear, yearStart, day, VacationLaw.AnnualBasicVacationDays, true, false));
 
             workingYear++;
@@ -58,7 +59,7 @@ public class VacationAccrualCalculator : IVacationAccrualCalculator
                 ? FirstYearEntitlement(yearStart, countedDays, requiredDays)
                 : (VacationLaw.AnnualBasicVacationDays, true);
 
-            result.Add(new WorkingYearAccrualDto(
+            result.Add(new WorkingYearAccrual(
                 workingYear,
                 yearStart,
                 end.AddDays(requiredDays - countedDays),

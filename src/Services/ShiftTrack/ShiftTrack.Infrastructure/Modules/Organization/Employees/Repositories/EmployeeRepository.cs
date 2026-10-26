@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using ShiftTrack.Application.Modules.Booking.Vacations.Dtos;
+﻿using ShiftTrack.Application.Modules.Organization.Employees.Models;
+using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Application.Modules.Organization.Employees.Dtos;
 using ShiftTrack.Application.Modules.Organization.Employees.Interfaces;
 using ShiftTrack.Domain.Modules.System.User.Employees.Entities;
@@ -165,12 +165,12 @@ public class EmployeeRepository(
         await applicationDbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<IReadOnlyList<EmployeeServiceStartDto>> GetServiceStarts(CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<EmployeeServiceStart>> GetServiceStarts(CancellationToken cancellationToken)
     {
         // TODO: use the hire date once it's stored, the registration date is used until then.
         return await applicationDbContext.Employees
             .AsNoTracking()
-            .Select(x => new EmployeeServiceStartDto(x.Id, x.CreatedAt))
+            .Select(x => new EmployeeServiceStart(x.Id, x.CreatedAt))
             .ToListAsync(cancellationToken);
     }
 
@@ -189,20 +189,27 @@ public class EmployeeRepository(
         await applicationDbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<IReadOnlyCollection<long>> GetIdsByRole(string roleName, long? departmentId, long? unitId,
-        CancellationToken cancellationToken)
+    public async Task<IReadOnlyCollection<long>> GetIdsByRoleScope(string roleName,
+        IReadOnlyCollection<long> departmentIds, CancellationToken cancellationToken)
     {
-        var query = applicationDbContext.Employees
+        if (departmentIds.Count == 0)
+            return [];
+
+        var unitIds = await applicationDbContext.Departments
             .AsNoTracking()
-            .Where(x => x.EmployeeRoles.Any(r => r.Role.Name == roleName));
+            .Where(x => departmentIds.Contains(x.Id) && x.UnitId != null)
+            .Select(x => x.UnitId.Value)
+            .Distinct()
+            .ToListAsync(cancellationToken);
 
-        if (departmentId is not null)
-            query = query.Where(x => x.DepartmentId == departmentId);
-
-        if (unitId is not null)
-            query = query.Where(x => x.Department.UnitId == unitId);
-
-        return await query
+        return await applicationDbContext.Employees
+            .AsNoTracking()
+            .Where(x => x.EmployeeRoles.Any(r =>
+                r.Role.Name == roleName
+                && r.Units.Any(u =>
+                    (u.UnitId != null && unitIds.Contains(u.UnitId.Value) && !u.Departments.Any())
+                    || u.Departments.Any(d => d.DepartmentId != null && departmentIds.Contains(d.DepartmentId.Value)))))
+            .OrderBy(x => x.Id)
             .Select(x => x.Id)
             .ToListAsync(cancellationToken);
     }

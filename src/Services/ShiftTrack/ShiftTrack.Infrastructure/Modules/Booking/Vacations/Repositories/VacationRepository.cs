@@ -112,11 +112,15 @@ public class VacationRepository(
             .AsNoTracking()
             .Where(x => filter.Statuses.Contains(x.Status));
 
-        if (filter.UnitId is not null)
-            query = query.Where(x => x.Employee.Department.UnitId == filter.UnitId);
+        if (filter.UnitIds is not null || filter.DepartmentIds is not null)
+        {
+            var unitIds = filter.UnitIds ?? [];
+            var departmentIds = filter.DepartmentIds ?? [];
 
-        if (filter.DepartmentId is not null)
-            query = query.Where(x => x.Employee.DepartmentId == filter.DepartmentId);
+            query = query.Where(x =>
+                (x.Employee.Department.UnitId != null && unitIds.Contains(x.Employee.Department.UnitId.Value))
+                || (x.Employee.DepartmentId != null && departmentIds.Contains(x.Employee.DepartmentId.Value)));
+        }
 
         if (filter.ExcludeEmployeeId is not null)
             query = query.Where(x => x.EmployeeId != filter.ExcludeEmployeeId);

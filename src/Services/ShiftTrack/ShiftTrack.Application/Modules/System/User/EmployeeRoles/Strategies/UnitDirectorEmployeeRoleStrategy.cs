@@ -1,4 +1,4 @@
-using ShiftTrack.Application.Common.Interfaces;
+using ShiftTrack.Application.Modules.System.User.RoleScopes.Interfaces;
 using ShiftTrack.Application.Modules.Organization.Employees.Interfaces;
 using ShiftTrack.Application.Modules.System.User.Common.Constants;
 using ShiftTrack.Application.Modules.System.User.Common.Exceptions;
@@ -12,9 +12,9 @@ namespace ShiftTrack.Application.Modules.System.User.EmployeeRoles.Strategies;
 
 public sealed class UnitDirectorEmployeeRoleStrategy(
     IRoleRepository roleRepository,
-    ICurrentUserService currentUserService,
     IEmployeeRepository employeeRepository,
-    IEmployeeRoleRepository employeeRoleRepository)
+    IEmployeeRoleRepository employeeRoleRepository,
+    IRoleScopeService roleScopeService)
     : IEmployeeRoleStrategy
 {
     public async Task<EmployeeRole> Create(
@@ -31,12 +31,11 @@ public sealed class UnitDirectorEmployeeRoleStrategy(
 
         var employee = await employeeRepository.GetById(dto.EmployeeId, cancellationToken);
 
-        var currentUser = currentUserService.Employee;
+        var scope = roleScopeService.GetCurrentScope(DefaultRolesCatalog.UNIT_DIRECTOR);
 
-        if (employee.Department is null
-            || currentUser.Department.UnitId != dto.UnitId
-            || !currentUser.EmployeeRoles.Any(x => x.Role.Name == DefaultRolesCatalog.UNIT_DIRECTOR
-                                                   && x.Units.Any(u => u.UnitId == employee.Department.UnitId)))
+        // The employee works in the director's scope and the granted departments are in it too.
+        if (!scope.Covers(employee)
+            || !dto.DepartmentIds.All(departmentId => scope.Covers(dto.UnitId, departmentId)))
         {
             throw new EmployeeRoleException(
                 UserExceptionsLocalization.CREATE_ROLE_UNIT_OUT_OF_SCOPE,
@@ -63,8 +62,7 @@ public sealed class UnitDirectorEmployeeRoleStrategy(
     {
         var employeeRole = await employeeRoleRepository.GetById(employeeRoleId, cancellationToken);
 
-        if (employeeRole.Employee.Department is null
-            || employeeRole.Employee.Department.UnitId != currentUserService.Employee.Department.UnitId)
+        if (!roleScopeService.GetCurrentScope(DefaultRolesCatalog.UNIT_DIRECTOR).Covers(employeeRole.Employee))
         {
             throw new EmployeeRoleException(
                 UserExceptionsLocalization.DELETE_ROLE_WRONG_UNIT,

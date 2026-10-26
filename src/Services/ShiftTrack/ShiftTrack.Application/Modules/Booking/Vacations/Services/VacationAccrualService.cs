@@ -1,3 +1,4 @@
+using ShiftTrack.Application.Modules.Booking.Vacations.Models;
 using ShiftTrack.Application.Modules.Booking.Vacations.Constants;
 using ShiftTrack.Application.Modules.Booking.Vacations.Dtos;
 using ShiftTrack.Application.Modules.Booking.Vacations.Exceptions;
@@ -69,9 +70,9 @@ public class VacationAccrualService(
 
         var accruals = await vacationAccrualRepository.GetByEmployeeId(employeeId, cancellationToken);
 
-        IReadOnlyList<WorkingYearAccrualDto> workingYears = accruals.Count > 0
+        IReadOnlyList<WorkingYearAccrual> workingYears = accruals.Count > 0
             ? accruals
-                .Select(x => new WorkingYearAccrualDto(
+                .Select(x => new WorkingYearAccrual(
                     x.WorkingYear, x.PeriodStart, x.PeriodEnd, x.Days, x.IsFullEntitlement,
                     x.PeriodEnd.Date >= today))
                 .ToList()
@@ -132,7 +133,7 @@ public class VacationAccrualService(
     }
 
     /// <summary>For employees the job hasn't processed yet (e.g. registered today).</summary>
-    private async Task<IReadOnlyList<WorkingYearAccrualDto>> CalculateNow(long employeeId, DateTime today,
+    private async Task<IReadOnlyList<WorkingYearAccrual>> CalculateNow(long employeeId, DateTime today,
         CancellationToken cancellationToken)
     {
         var employee = await employeeRepository.GetById(employeeId, cancellationToken);

@@ -1,6 +1,6 @@
-namespace ShiftTrack.Application.Modules.Booking.Vacations.Dtos;
+namespace ShiftTrack.Application.Modules.Booking.Vacations.Models;
 
-public record WorkingYearAccrualDto(
+public record WorkingYearAccrual(
     int WorkingYear,
     DateTime PeriodStart,
     DateTime PeriodEnd,

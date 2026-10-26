@@ -100,12 +100,12 @@ public class VacationStatusChangedEventHandler(
     private async Task NotifyUnitDirectors(Vacation vacation, string title, string message,
         CancellationToken cancellationToken)
     {
-        var unitId = vacation.Employee?.Department?.UnitId;
+        var departmentId = vacation.Employee?.DepartmentId;
 
-        if (unitId is null)
+        if (departmentId is null)
             return;
 
-        var recipients = await recipientResolver.GetUnitDirectors(unitId.Value, cancellationToken);
+        var recipients = await recipientResolver.GetUnitDirectors(departmentId.Value, cancellationToken);
 
         await notificationService.Notify(
             new NotificationToCreateDto(
