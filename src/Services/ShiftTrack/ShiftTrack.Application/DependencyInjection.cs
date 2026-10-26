@@ -2,6 +2,8 @@ using ShiftTrack.Kernel.Attributes;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ShiftTrack.Application.Common.Behaviours;
+using ShiftTrack.Application.Common.Outbox.Interfaces;
+using ShiftTrack.Application.Common.Outbox.Services;
 using ShiftTrack.Application.Modules.Booking;
 using ShiftTrack.Application.Modules.Communication;
 using ShiftTrack.Application.Modules.Organization;
@@ -24,6 +26,12 @@ public static class DependencyInjection
         // Register Pipelines
         services.AddTransient(typeof(IPipelineBehaviour<,>), typeof(RequestAuthorizationBehaviour<,>));
         services.AddTransient(typeof(IPipelineBehaviour<>), typeof(RequestAuthorizationBehaviour<>));
+        services.AddTransient(typeof(IPipelineBehaviour<,>), typeof(TransactionBehaviour<,>));
+        services.AddTransient(typeof(IPipelineBehaviour<>), typeof(TransactionBehaviour<>));
+
+        // Outbox
+        services.AddTransient<IDomainEventOutbox, DomainEventOutbox>();
+        services.AddTransient<IOutboxProcessor, OutboxProcessor>();
 
         services.AddBookingServices();
         services.AddOrganizationServices();

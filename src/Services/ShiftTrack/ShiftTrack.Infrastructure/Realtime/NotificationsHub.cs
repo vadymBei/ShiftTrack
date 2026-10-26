@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using ShiftTrack.Application.Modules.Organization.Employees.Interfaces;
 
-namespace ShiftTrack.API.Hubs;
+namespace ShiftTrack.Infrastructure.Realtime;
 
 /// <summary>
 /// Clients only listen: "notificationReceived" (a new notification) and
 /// "notificationsChanged" (read / resolved / deleted — reload the counter).
 /// Every connection joins the group of its employee, so delivery works across
-/// several API instances through the Redis backplane.
+/// several API instances and from ShiftTrack.Jobs through the Redis backplane.
 /// </summary>
 [Authorize]
 public class NotificationsHub(IEmployeeRepository employeeRepository) : Hub

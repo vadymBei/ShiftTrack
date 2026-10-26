@@ -1,4 +1,5 @@
 using ShiftTrack.Application.Common.Interfaces;
+using ShiftTrack.Application.Common.Outbox.Interfaces;
 using ShiftTrack.Application.Modules.Booking.Vacations.Constants;
 using ShiftTrack.Application.Modules.Booking.Vacations.Dtos;
 using ShiftTrack.Application.Modules.Booking.Vacations.Events;
@@ -7,7 +8,6 @@ using ShiftTrack.Application.Modules.Booking.Vacations.Interfaces;
 using ShiftTrack.Domain.Modules.Booking.Vacations.Entities;
 using ShiftTrack.Domain.Modules.Booking.Vacations.Enums;
 using ShiftTrack.Domain.Modules.Booking.Vacations.Models;
-using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Modules.Booking.Vacations.Services;
 
@@ -17,7 +17,7 @@ public class VacationService(
     IVacationStrategyFactory vacationStrategyFactory,
     IVacationPermissionService vacationPermissionService,
     IVacationAccrualService vacationAccrualService,
-    IMediator mediator) : IVacationService
+    IDomainEventOutbox domainEventOutbox) : IVacationService
 {
     private IVacationStrategy VacationStrategy => vacationStrategyFactory.GetStrategy();
 
@@ -67,7 +67,7 @@ public class VacationService(
         if (vacation.Status == oldStatus)
             return;
 
-        await mediator.Publish(
+        await domainEventOutbox.Enqueue(
             new VacationStatusChangedEvent(vacation.Id, oldStatus, vacation.Status),
             cancellationToken);
     }
@@ -85,7 +85,7 @@ public class VacationService(
 
         await vacationRepository.Delete(vacation.Id, cancellationToken);
 
-        await mediator.Publish(
+        await domainEventOutbox.Enqueue(
             new VacationDeletedEvent(
                 vacation.Id,
                 vacation.EmployeeId,

@@ -1,8 +1,8 @@
 using ShiftTrack.Application;
-using ShiftTrack.Application.Modules.Communication.Notifications.Interfaces;
 using ShiftTrack.Infrastructure;
+using ShiftTrack.Infrastructure.Realtime;
 using ShiftTrack.Jobs.Jobs.Booking;
-using ShiftTrack.Jobs.Services;
+using ShiftTrack.Jobs.Jobs.Outbox;
 using ShiftTrack.Scheduling;
 using ShiftTrack.Scheduling.Endpoints;
 
@@ -14,12 +14,14 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddMemoryCache();
 builder.Services.AddHttpContextAccessor();
 
-// Jobs don't have SignalR clients, notifications are only stored.
-builder.Services.AddScoped<INotificationPublisher, NullNotificationPublisher>();
+// No hub here: notifications are sent to the clients of the API through the Redis backplane.
+builder.Services.AddRealtime(builder.Configuration);
 
 builder.Services.AddScheduling(builder.Configuration, jobs =>
 {
     jobs.AddJob<VacationAccrualJob>();
+    jobs.AddJob<OutboxProcessorJob>();
+    jobs.AddJob<OutboxCleanupJob>();
 });
 
 builder.Services.AddEndpointsApiExplorer();

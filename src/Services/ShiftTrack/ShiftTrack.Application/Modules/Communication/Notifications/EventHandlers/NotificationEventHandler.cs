@@ -4,8 +4,8 @@ using ShiftTrack.Kernel.CQRS.Interfaces;
 namespace ShiftTrack.Application.Modules.Communication.Notifications.EventHandlers;
 
 /// <summary>
-/// Notifications are a side effect: a failure here is logged and must never fail the business operation
-/// that raised the event.
+/// Handlers run from the outbox in ShiftTrack.Jobs, after the business operation is committed.
+/// A failure is logged and rethrown, so the outbox retries the event later.
 /// </summary>
 public abstract class NotificationEventHandler<TEvent>(ILogger logger) : IDomainEventHandler<TEvent>
     where TEvent : IDomainEvent
@@ -19,6 +19,7 @@ public abstract class NotificationEventHandler<TEvent>(ILogger logger) : IDomain
         catch (Exception exception)
         {
             logger.LogError(exception, "Failed to create notifications for {Event}", typeof(TEvent).Name);
+            throw;
         }
     }
 

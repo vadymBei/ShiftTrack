@@ -11,6 +11,7 @@ using ShiftTrack.Application.Modules.System.User.EmployeeRoles.Interfaces;
 using ShiftTrack.Domain.Modules.Booking.BusinessTrips.Entities;
 using ShiftTrack.Domain.Modules.Booking.BusinessTrips.Enums;
 using ShiftTrack.Kernel.CQRS.Interfaces;
+using ShiftTrack.Application.Common.Outbox.Interfaces;
 
 namespace ShiftTrack.Application.Modules.Booking.BusinessTrips.Services;
 
@@ -20,7 +21,7 @@ public class BusinessTripService(
     IEmployeeRoleChecker employeeRoleChecker,
     IDepartmentRepository departmentRepository,
     IBusinessTripRepository businessTripRepository,
-    IMediator mediator) : IBusinessTripService
+    IDomainEventOutbox domainEventOutbox) : IBusinessTripService
 {
     public async Task<BusinessTrip> Create(BusinessTripToCreateDto dto, CancellationToken cancellationToken)
     {
@@ -47,7 +48,7 @@ public class BusinessTripService(
         businessTrip = await businessTripRepository
             .Create(businessTrip, cancellationToken);
 
-        await mediator.Publish(new BusinessTripCreatedEvent(businessTrip.Id), cancellationToken);
+        await domainEventOutbox.Enqueue(new BusinessTripCreatedEvent(businessTrip.Id), cancellationToken);
 
         return businessTrip;
     }
@@ -92,7 +93,7 @@ public class BusinessTripService(
 
         businessTrip = await businessTripRepository.GetById(businessTrip.Id, cancellationToken);
 
-        await mediator.Publish(updatedEvent, cancellationToken);
+        await domainEventOutbox.Enqueue(updatedEvent, cancellationToken);
 
         return businessTrip;
     }
@@ -165,7 +166,7 @@ public class BusinessTripService(
 
         await businessTripRepository.Delete(id, cancellationToken);
 
-        await mediator.Publish(deletedEvent, cancellationToken);
+        await domainEventOutbox.Enqueue(deletedEvent, cancellationToken);
     }
 
     public async Task Approve(long id, CancellationToken cancellationToken)
@@ -194,7 +195,7 @@ public class BusinessTripService(
         if (oldStatus == newStatus)
             return;
 
-        await mediator.Publish(
+        await domainEventOutbox.Enqueue(
             new BusinessTripStatusChangedEvent(businessTripId, oldStatus, newStatus),
             cancellationToken);
     }

@@ -6,6 +6,7 @@ using ShiftTrack.Application.Modules.Booking.Vacations.Interfaces;
 using ShiftTrack.Application.Modules.Booking.Vacations.ViewModels;
 using ShiftTrack.Application.Modules.Organization.Employees.Interfaces;
 using ShiftTrack.Kernel.CQRS.Interfaces;
+using ShiftTrack.Application.Common.Outbox.Interfaces;
 
 namespace ShiftTrack.Application.Modules.Booking.Vacations.UseCases.Commands.CreateVacation;
 
@@ -13,7 +14,7 @@ public class CreateVacationCommandHandler(
     IMapper mapper,
     IVacationRepository vacationRepository,
     IEmployeeRepository employeeRepository,
-    IMediator mediator,
+    IDomainEventOutbox domainEventOutbox,
     IVacationPermissionService vacationPermissionService,
     IVacationAccrualService vacationAccrualService) : IRequestHandler<CreateVacationCommand, VacationVm>
 {
@@ -37,7 +38,7 @@ public class CreateVacationCommandHandler(
 
         vacation = await vacationRepository.GetById(vacation.Id, cancellationToken);
 
-        await mediator.Publish(new VacationCreatedEvent(vacation.Id), cancellationToken);
+        await domainEventOutbox.Enqueue(new VacationCreatedEvent(vacation.Id), cancellationToken);
 
         return vacation.ToVm(mapper, vacationPermissionService);
     }

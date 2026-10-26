@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Application.Common.Interfaces;
 using ShiftTrack.Domain.Common.Abstractions;
 using ShiftTrack.Domain.Modules.Booking.BusinessTrips.Entities;
+using ShiftTrack.Domain.Common.Outbox;
 using ShiftTrack.Domain.Modules.Booking.Vacations.Entities;
 using ShiftTrack.Domain.Modules.Communication.Notifications.Entities;
 using ShiftTrack.Domain.Modules.Organization.Payrolls.Entities;
@@ -41,6 +42,9 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
     //Vacations
     public DbSet<Vacation> Vacations { get; set; }
     public DbSet<VacationAccrual> VacationAccruals { get; set; }
+
+    //Outbox
+    public DbSet<OutboxMessage> OutboxMessages { get; set; }
 
     //Communication
     //Notifications

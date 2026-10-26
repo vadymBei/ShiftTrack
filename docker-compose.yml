@@ -93,6 +93,7 @@ services:
    depends_on:
      - postgres-db
      - shifttrack.api
+     - redis
 
  redis:
     image: redis:7-alpine

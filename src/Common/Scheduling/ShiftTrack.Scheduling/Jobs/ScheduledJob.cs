@@ -13,18 +13,21 @@ namespace ShiftTrack.Scheduling.Jobs;
 [DisallowConcurrentExecution]
 public abstract class ScheduledJob(ILogger logger) : IJob
 {
+    /// <summary>Level of the start / finish messages. Frequent jobs can lower it to keep the log readable.</summary>
+    protected virtual LogLevel ExecutionLogLevel => LogLevel.Information;
+
     public async Task Execute(IJobExecutionContext context)
     {
         var jobName = context.JobDetail.Key.Name;
         var stopwatch = Stopwatch.StartNew();
 
-        logger.LogInformation("Job {JobName} started", jobName);
+        logger.Log(ExecutionLogLevel, "Job {JobName} started", jobName);
 
         try
         {
             await ExecuteJob(context, context.CancellationToken);
 
-            logger.LogInformation("Job {JobName} finished in {ElapsedMilliseconds} ms",
+            logger.Log(ExecutionLogLevel, "Job {JobName} finished in {ElapsedMilliseconds} ms",
                 jobName, stopwatch.ElapsedMilliseconds);
         }
         catch (OperationCanceledException) when (context.CancellationToken.IsCancellationRequested)

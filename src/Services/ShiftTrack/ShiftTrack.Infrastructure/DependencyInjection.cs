@@ -23,7 +23,9 @@ using ShiftTrack.Application.Modules.System.User.EmployeeRoleUnitDepartments.Int
 using ShiftTrack.Application.Modules.System.User.EmployeeRoleUnits.Interfaces;
 using ShiftTrack.Application.Modules.System.User.Roles.Interfaces;
 using ShiftTrack.Client.Http;
+using ShiftTrack.Application.Common.Outbox.Interfaces;
 using ShiftTrack.Infrastructure.Common.Interfaces;
+using ShiftTrack.Infrastructure.Common.Outbox;
 using ShiftTrack.Infrastructure.Common.Repositories;
 using ShiftTrack.Infrastructure.Common.Services;
 using ShiftTrack.Infrastructure.Common.Services.Excel;
@@ -66,12 +68,14 @@ public static class DependencyInjection
 
         //Services
         services.AddScoped<ICurrentUserService, CurrentUserService>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddTransient<IExcelExporter<UnitTimesheetExportData>, TimesheetPlanExporter>();
         services.AddTransient<IPdfExporter<VacationRequestData>, VacationRequestExporter>();
         services.AddTransient<IPdfExporter<BusinessTripOrderData>, BusinessTripOrderExporter>();
 
         //Repositories
         services.AddTransient<IPdfRepository, PdfRepository>();
+        services.AddTransient<IOutboxRepository, OutboxRepository>();
 
         //Booking
         //BusinessTrips

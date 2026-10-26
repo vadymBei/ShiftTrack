@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 using ShiftTrack.Application.Modules.Communication.Notifications.Interfaces;
 using ShiftTrack.Application.Modules.Communication.Notifications.ViewModels;
 
-namespace ShiftTrack.API.Hubs;
+namespace ShiftTrack.Infrastructure.Realtime;
 
 public class SignalRNotificationPublisher(
     IHubContext<NotificationsHub> hubContext,
