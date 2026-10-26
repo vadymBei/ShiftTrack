@@ -24,16 +24,21 @@ public class UnitDirectorVacationStrategy(
 
     public async Task ApproveVacation(long id, CancellationToken cancellationToken)
     {
-        var vacation = await vacationRepository.GetById(id, cancellationToken);
+        var vacation = await vacationRepository.GetForUpdate(id, cancellationToken);
 
         ValidateVacationForStatusChange(vacation);
+
+        if (IsOwnDraft(vacation))
+        {
+            vacation.Submit();
+            await vacationRepository.Save(cancellationToken);
+            return;
+        }
+
         EnsureCanApprove(vacation);
 
-        await vacationRepository.UpdateVacationStatus(
-            new UpdateVacationStatusDto(
-                vacation.Id,
-                VacationStatus.ApprovedByUnitDirector),
-            cancellationToken);
+        vacation.Approve(VacationApprovalLevel.UnitDirector);
+        await vacationRepository.Save(cancellationToken);
 
         await vacationShiftService.SetVacationShifts(id, cancellationToken);
     }
@@ -50,16 +55,13 @@ public class UnitDirectorVacationStrategy(
 
     public async Task RejectVacation(long id, CancellationToken cancellationToken)
     {
-        var vacation = await vacationRepository.GetById(id, cancellationToken);
+        var vacation = await vacationRepository.GetForUpdate(id, cancellationToken);
 
         ValidateVacationForStatusChange(vacation);
         EnsureCanReject(vacation);
 
-        await vacationRepository.UpdateVacationStatus(
-            new UpdateVacationStatusDto(
-                vacation.Id,
-                VacationStatus.Rejected),
-            cancellationToken);
+        vacation.Reject(VacationApprovalLevel.UnitDirector);
+        await vacationRepository.Save(cancellationToken);
         
         await employeeShiftService.RestorePreviousEmployeeShifts(
             new RestoreEmployeeShiftsDto(
@@ -111,12 +113,13 @@ public class UnitDirectorVacationStrategy(
     public VacationAccessDto GetAccess(Vacation vacation)
     {
         var isFromUnit = IsFromCurrentUnit(vacation);
+        var isOwnDraft = IsOwnDraft(vacation);
 
         return new VacationAccessDto(
             CanView: isFromUnit,
-            CanApprove: isFromUnit && vacation.Status != VacationStatus.ApprovedByUnitDirector,
-            CanReject: isFromUnit && vacation.Status != VacationStatus.Rejected,
-            ApproveSubmitsForApproval: false);
+            CanApprove: isOwnDraft || (isFromUnit && vacation.CanApprove(VacationApprovalLevel.UnitDirector)),
+            CanReject: isFromUnit && vacation.CanReject(VacationApprovalLevel.UnitDirector),
+            ApproveSubmitsForApproval: isOwnDraft);
     }
 
     private void EnsureCanApprove(Vacation vacation)
@@ -143,6 +146,9 @@ public class UnitDirectorVacationStrategy(
     /// The vacation is of an employee the director manages by the role bindings, or the director's own
     /// (there is no role above the unit director, so they approve their own requests).
     /// </summary>
+    private bool IsOwnDraft(Vacation vacation) =>
+        vacation.AuthorId == currentUserService.Employee.Id && vacation.CanSubmit;
+
     private bool IsFromCurrentUnit(Vacation vacation)
     {
         var currentEmployeeId = currentUserService.Employee.Id;

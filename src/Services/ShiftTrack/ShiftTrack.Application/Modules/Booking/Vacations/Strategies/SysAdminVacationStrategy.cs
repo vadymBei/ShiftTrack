@@ -18,30 +18,31 @@ public class SysAdminVacationStrategy(
 {
     public async Task ApproveVacation(long id, CancellationToken cancellationToken)
     {
-        var vacation = await vacationRepository.GetById(id, cancellationToken);
+        var vacation = await vacationRepository.GetForUpdate(id, cancellationToken);
+
+        if (IsOwnDraft(vacation))
+        {
+            vacation.Submit();
+            await vacationRepository.Save(cancellationToken);
+            return;
+        }
 
         EnsureCanApprove(vacation);
 
-        await vacationRepository.UpdateVacationStatus(
-            new UpdateVacationStatusDto(
-                vacation.Id,
-                VacationStatus.ApprovedByUnitDirector),
-            cancellationToken);
+        vacation.Approve(VacationApprovalLevel.UnitDirector);
+        await vacationRepository.Save(cancellationToken);
 
         await vacationShiftService.SetVacationShifts(id, cancellationToken);
     }
 
     public async Task RejectVacation(long id, CancellationToken cancellationToken)
     {
-        var vacation = await vacationRepository.GetById(id, cancellationToken);
+        var vacation = await vacationRepository.GetForUpdate(id, cancellationToken);
 
         EnsureCanReject(vacation);
 
-        await vacationRepository.UpdateVacationStatus(
-            new UpdateVacationStatusDto(
-                vacation.Id,
-                VacationStatus.Rejected),
-            cancellationToken);
+        vacation.Reject(VacationApprovalLevel.UnitDirector);
+        await vacationRepository.Save(cancellationToken);
 
         await employeeShiftService.RestorePreviousEmployeeShifts(
             new RestoreEmployeeShiftsDto(
@@ -60,12 +61,17 @@ public class SysAdminVacationStrategy(
 
     public VacationAccessDto GetAccess(Vacation vacation)
     {
+        var isOwnDraft = IsOwnDraft(vacation);
+
         return new VacationAccessDto(
             CanView: true,
-            CanApprove: vacation.Status != VacationStatus.ApprovedByUnitDirector,
-            CanReject: vacation.Status != VacationStatus.Rejected,
-            ApproveSubmitsForApproval: false);
+            CanApprove: isOwnDraft || vacation.CanApprove(VacationApprovalLevel.UnitDirector),
+            CanReject: vacation.CanReject(VacationApprovalLevel.UnitDirector),
+            ApproveSubmitsForApproval: isOwnDraft);
     }
+
+    private bool IsOwnDraft(Vacation vacation) =>
+        vacation.AuthorId == currentUserService.Employee.Id && vacation.CanSubmit;
 
     private void EnsureCanApprove(Vacation vacation)
     {

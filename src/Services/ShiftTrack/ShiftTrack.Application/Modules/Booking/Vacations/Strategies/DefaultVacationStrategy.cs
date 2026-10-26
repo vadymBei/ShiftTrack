@@ -14,7 +14,7 @@ public class DefaultVacationStrategy(
 {
     public async Task ApproveVacation(long id, CancellationToken cancellationToken)
     {
-        var vacation = await vacationRepository.GetById(id, cancellationToken);
+        var vacation = await vacationRepository.GetForUpdate(id, cancellationToken);
 
         if (vacation.AuthorId != currentUserService.Employee.Id)
         {
@@ -23,18 +23,15 @@ public class DefaultVacationStrategy(
                 nameof(VacationExceptionsLocalization.CANNOT_VIEW_OTHERS_VACATION));
         }
         
-        if (vacation.Status is not VacationStatus.None)
+        if (!vacation.CanSubmit)
         {
             throw new VacationException(
                 VacationExceptionsLocalization.CANNOT_APPROVE_VACATION,
                 nameof(VacationExceptionsLocalization.CANNOT_APPROVE_VACATION));
         }
-        
-        await vacationRepository.UpdateVacationStatus(
-            new UpdateVacationStatusDto(
-                vacation.Id,
-                VacationStatus.PendingApproval),
-            cancellationToken);
+
+        vacation.Submit();
+        await vacationRepository.Save(cancellationToken);
     }
 
     public Task RejectVacation(long id, CancellationToken cancellationToken)
@@ -64,7 +61,7 @@ public class DefaultVacationStrategy(
 
         return new VacationAccessDto(
             CanView: isAuthor,
-            CanApprove: isAuthor && vacation.Status == VacationStatus.None,
+            CanApprove: isAuthor && vacation.CanSubmit,
             CanReject: false,
             ApproveSubmitsForApproval: true);
     }

@@ -24,17 +24,12 @@ public class DepartmentDirectorVacationStrategy(
 
     public async Task ApproveVacation(long id, CancellationToken cancellationToken)
     {
-        var vacation = await vacationRepository.GetById(id, cancellationToken);
+        var vacation = await vacationRepository.GetForUpdate(id, cancellationToken);
 
-        if (vacation.AuthorId == currentUserService.Employee.Id
-            && vacation.Status is VacationStatus.None)
+        if (IsOwnDraft(vacation))
         {
-            await vacationRepository.UpdateVacationStatus(
-                new UpdateVacationStatusDto(
-                    vacation.Id,
-                    VacationStatus.PendingApproval),
-                cancellationToken);
-
+            vacation.Submit();
+            await vacationRepository.Save(cancellationToken);
             return;
         }
 
@@ -49,11 +44,8 @@ public class DepartmentDirectorVacationStrategy(
 
         EnsureCanApprove(vacation);
 
-        await vacationRepository.UpdateVacationStatus(
-            new UpdateVacationStatusDto(
-                vacation.Id,
-                VacationStatus.ApprovedByDepartmentDirector),
-            cancellationToken);
+        vacation.Approve(VacationApprovalLevel.DepartmentDirector);
+        await vacationRepository.Save(cancellationToken);
 
         await vacationShiftService.SetVacationShifts(id, cancellationToken);
     }
@@ -66,27 +58,17 @@ public class DepartmentDirectorVacationStrategy(
                 VacationExceptionsLocalization.CANNOT_CHANGE_VACATION_STATUS_FROM_OTHER_DEPARTMENT,
                 nameof(VacationExceptionsLocalization.CANNOT_CHANGE_VACATION_STATUS_FROM_OTHER_DEPARTMENT));
         }
-
-        if (vacation.Status is VacationStatus.ApprovedByUnitDirector)
-        {
-            throw new VacationException(
-                VacationExceptionsLocalization.CANNOT_APPROVE_UNIT_DIRECTOR_APPROVED_VACATION,
-                nameof(VacationExceptionsLocalization.CANNOT_APPROVE_UNIT_DIRECTOR_APPROVED_VACATION));
-        }
     }
 
     public async Task RejectVacation(long id, CancellationToken cancellationToken)
     {
-        var vacation = await vacationRepository.GetById(id, cancellationToken);
-        
+        var vacation = await vacationRepository.GetForUpdate(id, cancellationToken);
+
         ValidateVacationForStatusChange(vacation);
         EnsureCanReject(vacation);
 
-        await vacationRepository.UpdateVacationStatus(
-            new UpdateVacationStatusDto(
-                vacation.Id,
-                VacationStatus.Rejected),
-            cancellationToken);
+        vacation.Reject(VacationApprovalLevel.DepartmentDirector);
+        await vacationRepository.Save(cancellationToken);
 
         await employeeShiftService.RestorePreviousEmployeeShifts(
             new RestoreEmployeeShiftsDto(
@@ -140,17 +122,15 @@ public class DepartmentDirectorVacationStrategy(
     public VacationAccessDto GetAccess(Vacation vacation)
     {
         var currentEmployeeId = currentUserService.Employee.Id;
-        var isOwnDraft = vacation.AuthorId == currentEmployeeId && vacation.Status == VacationStatus.None;
+        var isOwnDraft = IsOwnDraft(vacation);
         var isFromDepartment = IsFromCurrentDepartment(vacation);
 
         var canApprove = isOwnDraft
                          || (isFromDepartment
                              && vacation.EmployeeId != currentEmployeeId
-                             && vacation.Status is not (VacationStatus.ApprovedByDepartmentDirector
-                                 or VacationStatus.ApprovedByUnitDirector));
+                             && vacation.CanApprove(VacationApprovalLevel.DepartmentDirector));
 
-        var canReject = isFromDepartment
-                        && vacation.Status is not (VacationStatus.ApprovedByUnitDirector or VacationStatus.Rejected);
+        var canReject = isFromDepartment && vacation.CanReject(VacationApprovalLevel.DepartmentDirector);
 
         return new VacationAccessDto(
             CanView: isFromDepartment || IsOwn(vacation),
@@ -181,6 +161,9 @@ public class DepartmentDirectorVacationStrategy(
 
     /// <summary>The vacation is of an employee the director manages by the role bindings.</summary>
     private bool IsFromCurrentDepartment(Vacation vacation) => Scope.Covers(vacation.Employee);
+
+    private bool IsOwnDraft(Vacation vacation) =>
+        vacation.AuthorId == currentUserService.Employee.Id && vacation.CanSubmit;
 
     private bool IsOwn(Vacation vacation)
     {

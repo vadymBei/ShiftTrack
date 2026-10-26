@@ -20,7 +20,6 @@ public class VacationRepository(
             EmployeeId = vacationToCreateDto.EmployeeId,
             Comment = vacationToCreateDto.Comment,
             Type = vacationToCreateDto.Type,
-            Status = VacationStatus.None,
             DaysBalanceAtCreation = vacationToCreateDto.EmployeeVacationDaysBalance,
             DaysCount = (vacationToCreateDto.EndDate - vacationToCreateDto.StartDate).Days + 1
         };
@@ -160,16 +159,17 @@ public class VacationRepository(
         return await query.ToListAsync(cancellationToken);
     }
 
-    public async Task<Vacation> UpdateVacationStatus(UpdateVacationStatusDto dto, CancellationToken cancellationToken)
+    public async Task<Vacation> GetForUpdate(long id, CancellationToken cancellationToken)
     {
-        var vacation = await applicationDbContext.Vacations
-                           .FindAsync([dto.Id], cancellationToken)
-                       ?? throw new EntityNotFoundException(typeof(Vacation), dto.Id);
+        return await applicationDbContext.Vacations
+                   .Include(x => x.Employee)
+                   .ThenInclude(x => x.Department)
+                   .FirstOrDefaultAsync(x => x.Id == id, cancellationToken)
+               ?? throw new EntityNotFoundException(typeof(Vacation), id);
+    }
 
-        vacation.Status = dto.Status;
-
-        await applicationDbContext.SaveChangesAsync(cancellationToken);
-
-        return vacation;
+    public Task Save(CancellationToken cancellationToken)
+    {
+        return applicationDbContext.SaveChangesAsync(cancellationToken);
     }
 }
