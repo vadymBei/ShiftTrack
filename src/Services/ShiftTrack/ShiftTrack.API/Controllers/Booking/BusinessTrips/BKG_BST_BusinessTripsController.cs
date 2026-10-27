@@ -9,6 +9,7 @@ using ShiftTrack.Application.Modules.Booking.BusinessTrips.UseCases.Commands.Upd
 using ShiftTrack.Application.Modules.Booking.BusinessTrips.UseCases.Queries.DownloadBusinessTripOrderPdf;
 using ShiftTrack.Application.Modules.Booking.BusinessTrips.UseCases.Queries.GetBusinessTripById;
 using ShiftTrack.Application.Modules.Booking.BusinessTrips.UseCases.Queries.GetBusinessTrips;
+using ShiftTrack.Application.Modules.Booking.BusinessTrips.UseCases.Queries.SearchLocations;
 using ShiftTrack.Application.Modules.Booking.BusinessTrips.ViewModels;
 using ShiftTrack.Kernel.CQRS.Controllers;
 
@@ -45,6 +46,10 @@ public class BKG_BST_BusinessTripsController : ApiController
     [HttpGet("filtered")]
     public async Task<IEnumerable<BusinessTripVm>> GetFiltered([FromQuery] BusinessTripFilterDto filter)
         => await Mediator.Send(new GetBusinessTripsQuery(filter));
+
+    [HttpGet("locations/search")]
+    public async Task<IEnumerable<LocationVm>> SearchLocations([FromQuery] string searchTerm)
+        => await Mediator.Send(new SearchLocationsQuery(searchTerm));
     
     [HttpGet("{id:long}")]
     public async Task<BusinessTripVm> GetById(long id)
