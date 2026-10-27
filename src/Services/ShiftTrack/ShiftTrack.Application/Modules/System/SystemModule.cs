@@ -1,3 +1,5 @@
+using ShiftTrack.Application.Modules.System.User.RoleScopes.Services;
+using ShiftTrack.Application.Modules.System.User.RoleScopes.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using ShiftTrack.Application.Modules.System.User.EmployeeRoles.Interfaces;
 using ShiftTrack.Application.Modules.System.User.EmployeeRoles.Services;
@@ -17,6 +19,7 @@ public static class SystemModule
     {
         //Services
         services.AddTransient<IEmployeeRoleChecker, EmployeeRoleChecker>();
+        services.AddTransient<IRoleScopeService, RoleScopeService>();
         services.AddTransient<IEmployeeRoleService, EmployeeRoleService>();
         services.AddTransient<IEmployeeRoleUnitService, EmployeeRoleUnitService>();
         services.AddTransient<IEmployeeRoleUnitDepartmentService, EmployeeRoleUnitDepartmentService>();

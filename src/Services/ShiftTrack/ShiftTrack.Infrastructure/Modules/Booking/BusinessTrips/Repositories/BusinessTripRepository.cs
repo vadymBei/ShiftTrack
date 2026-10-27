@@ -20,10 +20,9 @@ public class BusinessTripRepository(
     }
 
     public async Task<IEnumerable<BusinessTrip>> GetFiltered(BusinessTripFilterDto filter,
-        CancellationToken cancellationToken)
+        BusinessTripAccessFilterDto access, CancellationToken cancellationToken)
     {
-        var businessTripQuery = applicationDbContext.BusinessTrips
-            .AsNoTracking()
+        var businessTripQuery = ApplyAccess(applicationDbContext.BusinessTrips.AsNoTracking(), access)
             .Include(x => x.Locations)
             .Include(x => x.Participants)
             .ThenInclude(x => x.Department)
@@ -48,6 +47,20 @@ public class BusinessTripRepository(
         return await businessTripQuery
             .OrderByDescending(x => x.StartDate)
             .ToListAsync(cancellationToken);
+    }
+
+    private static IQueryable<BusinessTrip> ApplyAccess(IQueryable<BusinessTrip> query,
+        BusinessTripAccessFilterDto access)
+    {
+        if (access.IsUnrestricted)
+            return query;
+
+        var departmentIds = access.ParticipantDepartmentIds ?? [];
+        var ownerId = access.OwnerId;
+
+        return query.Where(x =>
+            (ownerId != null && (x.AuthorId == ownerId || x.Participants.Any(p => p.Id == ownerId)))
+            || x.Participants.Any(p => p.DepartmentId != null && departmentIds.Contains(p.DepartmentId.Value)));
     }
 
     public async Task<IEnumerable<BusinessTrip>> GetByParticipantOrAuthor(long employeeId,

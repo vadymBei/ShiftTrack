@@ -1,13 +1,18 @@
-﻿using ShiftTrack.Application.Common.Interfaces;
+﻿using ShiftTrack.Application.Modules.System.User.Roles.Constants;
+using ShiftTrack.Application.Modules.System.User.RoleScopes.Interfaces;
+using ShiftTrack.Application.Common.Interfaces;
 using ShiftTrack.Application.Modules.Booking.BusinessTrips.Constants;
 using ShiftTrack.Application.Modules.Booking.BusinessTrips.Dtos;
+using ShiftTrack.Application.Modules.Booking.BusinessTrips.Events;
 using ShiftTrack.Application.Modules.Booking.BusinessTrips.Exceptions;
 using ShiftTrack.Application.Modules.Booking.BusinessTrips.Interfaces;
+using ShiftTrack.Application.Modules.Booking.BusinessTrips.ViewModels;
 using ShiftTrack.Application.Modules.Organization.Employees.Interfaces;
-using ShiftTrack.Application.Modules.Organization.Structure.Departments.Interfaces;
 using ShiftTrack.Application.Modules.System.User.EmployeeRoles.Interfaces;
 using ShiftTrack.Domain.Modules.Booking.BusinessTrips.Entities;
 using ShiftTrack.Domain.Modules.Booking.BusinessTrips.Enums;
+using ShiftTrack.Kernel.CQRS.Interfaces;
+using ShiftTrack.Application.Common.Outbox.Interfaces;
 
 namespace ShiftTrack.Application.Modules.Booking.BusinessTrips.Services;
 
@@ -15,8 +20,9 @@ public class BusinessTripService(
     ICurrentUserService currentUserService,
     IEmployeeRepository employeeRepository,
     IEmployeeRoleChecker employeeRoleChecker,
-    IDepartmentRepository departmentRepository,
-    IBusinessTripRepository businessTripRepository) : IBusinessTripService
+    IRoleScopeService roleScopeService,
+    IBusinessTripRepository businessTripRepository,
+    IDomainEventOutbox domainEventOutbox) : IBusinessTripService
 {
     public async Task<BusinessTrip> Create(BusinessTripToCreateDto dto, CancellationToken cancellationToken)
     {
@@ -43,6 +49,8 @@ public class BusinessTripService(
         businessTrip = await businessTripRepository
             .Create(businessTrip, cancellationToken);
 
+        await domainEventOutbox.Enqueue(new BusinessTripCreatedEvent(businessTrip.Id), cancellationToken);
+
         return businessTrip;
     }
 
@@ -50,12 +58,19 @@ public class BusinessTripService(
     {
         var businessTrip = await businessTripRepository.GetById(dto.Id, cancellationToken);
 
-        if (!await CanManage(businessTrip, cancellationToken))
+        if (!(await GetPermissions(businessTrip, cancellationToken)).CanEdit)
         {
             throw new BusinessTripException(
                 BusinessTripExceptionsLocalization.CAN_NOT_UPDATE_BUSINESS_TRIP,
                 nameof(BusinessTripExceptionsLocalization.CAN_NOT_UPDATE_BUSINESS_TRIP));
         }
+
+        var updatedEvent = new BusinessTripUpdatedEvent(
+            businessTrip.Id,
+            (businessTrip.Participants ?? []).Select(x => x.Id).ToList(),
+            (businessTrip.Locations ?? []).OrderBy(x => x.Id).Select(x => x.LocationIntegrationId).ToList(),
+            businessTrip.StartDate,
+            businessTrip.EndDate);
 
         businessTrip.StartDate = dto.StartDate;
         businessTrip.EndDate = dto.EndDate;
@@ -79,6 +94,8 @@ public class BusinessTripService(
 
         businessTrip = await businessTripRepository.GetById(businessTrip.Id, cancellationToken);
 
+        await domainEventOutbox.Enqueue(updatedEvent, cancellationToken);
+
         return businessTrip;
     }
 
@@ -86,42 +103,46 @@ public class BusinessTripService(
     {
         var businessTrip = await businessTripRepository.GetById(id, cancellationToken);
 
-        if (!await CanChangeStatus(businessTrip, cancellationToken))
+        if (!(await GetPermissions(businessTrip, cancellationToken)).CanReject)
         {
             throw new BusinessTripException(
-                BusinessTripExceptionsLocalization.CAN_NOT_APPROVE_BUSINESS_TRIP,
-                nameof(BusinessTripExceptionsLocalization.CAN_NOT_APPROVE_BUSINESS_TRIP));
+                BusinessTripExceptionsLocalization.CAN_NOT_REJECT_BUSINESS_TRIP,
+                nameof(BusinessTripExceptionsLocalization.CAN_NOT_REJECT_BUSINESS_TRIP));
         }
+
+        var oldStatus = businessTrip.Status;
 
         businessTrip.Status = BusinessTripStatus.Rejected;
 
         await businessTripRepository.Update(businessTrip, cancellationToken);
+
+        await PublishStatusChanged(businessTrip.Id, oldStatus, businessTrip.Status, cancellationToken);
     }
 
     public async Task<IEnumerable<BusinessTrip>> GetFiltered(BusinessTripFilterDto filter,
         CancellationToken cancellationToken)
     {
-        var businessTrips = await businessTripRepository
-            .GetFiltered(filter, cancellationToken);
+        var context = await GetAccessContext(cancellationToken);
 
-        if (employeeRoleChecker.HasCurrentUserSysAdminRole())
-        {
-            return businessTrips;
-        }
+        return await businessTripRepository.GetFiltered(filter, GetAccessFilter(context), cancellationToken);
+    }
 
-        var unitDepartmentIds = await GetCurrentUnitDepartmentIds(cancellationToken);
+    /// <summary>The same rule as <see cref="CanView"/>, applied in the database query.</summary>
+    private BusinessTripAccessFilterDto GetAccessFilter(AccessContext context)
+    {
+        if (context.IsSysAdmin)
+            return BusinessTripAccessFilterDto.Unrestricted;
 
-        return businessTrips
-            .Where(x => CanView(x, unitDepartmentIds))
-            .ToList();
+        return new BusinessTripAccessFilterDto(
+            context.IsUnitDirector ? context.UnitDepartmentIds.ToList() : [],
+            currentUserService.Employee.Id);
     }
 
     public async Task<BusinessTrip> GetById(long id, CancellationToken cancellationToken)
     {
         var businessTrip = await businessTripRepository.GetById(id, cancellationToken);
 
-        if (!employeeRoleChecker.HasCurrentUserSysAdminRole()
-            && !CanView(businessTrip, await GetCurrentUnitDepartmentIds(cancellationToken)))
+        if (!CanView(businessTrip, await GetAccessContext(cancellationToken)))
         {
             throw new BusinessTripException(
                 BusinessTripExceptionsLocalization.CAN_NOT_VIEW_BUSINESS_TRIP,
@@ -135,30 +156,55 @@ public class BusinessTripService(
     {
         var businessTrip = await businessTripRepository.GetById(id, cancellationToken);
 
-        if (!await CanManage(businessTrip, cancellationToken))
+        if (!(await GetPermissions(businessTrip, cancellationToken)).CanDelete)
         {
             throw new BusinessTripException(
                 BusinessTripExceptionsLocalization.CAN_NOT_DELETE_BUSINESS_TRIP,
                 nameof(BusinessTripExceptionsLocalization.CAN_NOT_DELETE_BUSINESS_TRIP));
         }
 
+        var deletedEvent = new BusinessTripDeletedEvent(
+            businessTrip.Id,
+            businessTrip.AuthorId,
+            (businessTrip.Participants ?? []).Select(x => x.Id).ToList(),
+            (businessTrip.Locations ?? []).OrderBy(x => x.Id).Select(x => x.LocationIntegrationId).ToList(),
+            businessTrip.StartDate,
+            businessTrip.EndDate);
+
         await businessTripRepository.Delete(id, cancellationToken);
+
+        await domainEventOutbox.Enqueue(deletedEvent, cancellationToken);
     }
 
     public async Task Approve(long id, CancellationToken cancellationToken)
     {
         var businessTrip = await businessTripRepository.GetById(id, cancellationToken);
 
-        if (!await CanChangeStatus(businessTrip, cancellationToken))
+        if (!(await GetPermissions(businessTrip, cancellationToken)).CanApprove)
         {
             throw new BusinessTripException(
                 BusinessTripExceptionsLocalization.CAN_NOT_APPROVE_BUSINESS_TRIP,
                 nameof(BusinessTripExceptionsLocalization.CAN_NOT_APPROVE_BUSINESS_TRIP));
         }
 
+        var oldStatus = businessTrip.Status;
+
         businessTrip.Status = BusinessTripStatus.Approved;
 
         await businessTripRepository.Update(businessTrip, cancellationToken);
+
+        await PublishStatusChanged(businessTrip.Id, oldStatus, businessTrip.Status, cancellationToken);
+    }
+
+    private async Task PublishStatusChanged(long businessTripId, BusinessTripStatus oldStatus,
+        BusinessTripStatus newStatus, CancellationToken cancellationToken)
+    {
+        if (oldStatus == newStatus)
+            return;
+
+        await domainEventOutbox.Enqueue(
+            new BusinessTripStatusChangedEvent(businessTripId, oldStatus, newStatus),
+            cancellationToken);
     }
 
     public Task<IEnumerable<BusinessTrip>> GetMy(CancellationToken cancellationToken)
@@ -214,47 +260,89 @@ public class BusinessTripService(
         => businessTrip.Participants.Any(p => p.DepartmentId is { } departmentId
                                               && unitDepartmentIds.Contains(departmentId));
 
-    private bool CanView(BusinessTrip businessTrip, IReadOnlySet<long> unitDepartmentIds)
+    public async Task<BusinessTripPermissionsVm> GetPermissions(BusinessTrip businessTrip,
+        CancellationToken cancellationToken)
     {
-        if (IsAuthor(businessTrip) || IsParticipant(businessTrip))
-            return true;
-
-        return employeeRoleChecker.HasCurrentUserUnitDirectorRole()
-               && IsInUnit(businessTrip, unitDepartmentIds);
+        return BuildPermissions(businessTrip, await GetAccessContext(cancellationToken));
     }
 
-    private async Task<bool> CanManage(BusinessTrip businessTrip, CancellationToken cancellationToken)
+    public async Task<IReadOnlyDictionary<long, BusinessTripPermissionsVm>> GetPermissions(
+        IReadOnlyCollection<BusinessTrip> businessTrips, CancellationToken cancellationToken)
     {
-        if (employeeRoleChecker.HasCurrentUserSysAdminRole())
+        var context = await GetAccessContext(cancellationToken);
+
+        return businessTrips
+            .GroupBy(x => x.Id)
+            .ToDictionary(x => x.Key, x => BuildPermissions(x.First(), context));
+    }
+
+    /// <summary>
+    /// Single source of truth for business trip access: used both to validate actions
+    /// and to tell the client which actions to show.
+    /// </summary>
+    private BusinessTripPermissionsVm BuildPermissions(BusinessTrip businessTrip, AccessContext context)
+    {
+        var canView = CanView(businessTrip, context);
+        var canManage = CanManage(businessTrip, context);
+        var canChangeStatus = CanChangeStatus(businessTrip, context);
+
+        return new BusinessTripPermissionsVm
+        {
+            CanView = canView,
+            CanEdit = canManage && businessTrip.Status != BusinessTripStatus.Approved,
+            CanApprove = canChangeStatus && businessTrip.Status != BusinessTripStatus.Approved,
+            CanReject = canChangeStatus && businessTrip.Status != BusinessTripStatus.Rejected,
+            CanDelete = canManage,
+            CanDownload = canView && businessTrip.Status == BusinessTripStatus.Approved
+        };
+    }
+
+    private bool CanView(BusinessTrip businessTrip, AccessContext context)
+    {
+        if (context.IsSysAdmin || IsAuthor(businessTrip) || IsParticipant(businessTrip))
             return true;
 
-        if (employeeRoleChecker.HasCurrentUserUnitDirectorRole()
-            && (IsAuthor(businessTrip)
-                || IsInUnit(businessTrip, await GetCurrentUnitDepartmentIds(cancellationToken))))
+        return context.IsUnitDirector && IsInUnit(businessTrip, context.UnitDepartmentIds);
+    }
+
+    private bool CanManage(BusinessTrip businessTrip, AccessContext context)
+    {
+        if (context.IsSysAdmin)
+            return true;
+
+        if (context.IsUnitDirector
+            && (IsAuthor(businessTrip) || IsInUnit(businessTrip, context.UnitDepartmentIds)))
             return true;
 
         return IsAuthor(businessTrip)
                && businessTrip.Status is BusinessTripStatus.PendingApproval or BusinessTripStatus.Rejected;
     }
 
-    private async Task<bool> CanChangeStatus(BusinessTrip businessTrip, CancellationToken cancellationToken)
+    private static bool CanChangeStatus(BusinessTrip businessTrip, AccessContext context)
     {
-        if (employeeRoleChecker.HasCurrentUserSysAdminRole())
-            return true;
-
-        return employeeRoleChecker.HasCurrentUserUnitDirectorRole()
-               && IsInUnit(businessTrip, await GetCurrentUnitDepartmentIds(cancellationToken));
+        return context.IsSysAdmin
+               || (context.IsUnitDirector && IsInUnit(businessTrip, context.UnitDepartmentIds));
     }
 
+    private async Task<AccessContext> GetAccessContext(CancellationToken cancellationToken)
+    {
+        return new AccessContext(
+            employeeRoleChecker.HasCurrentUserSysAdminRole(),
+            employeeRoleChecker.HasCurrentUserUnitDirectorRole(),
+            await GetCurrentUnitDepartmentIds(cancellationToken));
+    }
+
+    private sealed record AccessContext(
+        bool IsSysAdmin,
+        bool IsUnitDirector,
+        IReadOnlySet<long> UnitDepartmentIds);
+
+    /// <summary>Departments the unit director manages by the role bindings.</summary>
     private async Task<IReadOnlySet<long>> GetCurrentUnitDepartmentIds(CancellationToken cancellationToken)
     {
-        var unitId = currentUserService.Employee.Department?.UnitId;
-
-        if (unitId is null || !employeeRoleChecker.HasCurrentUserUnitDirectorRole())
+        if (!employeeRoleChecker.HasCurrentUserUnitDirectorRole())
             return new HashSet<long>();
 
-        var departments = await departmentRepository.GetDepartmentsByUnitId(unitId.Value, cancellationToken);
-
-        return departments.Select(x => x.Id).ToHashSet();
+        return await roleScopeService.GetCurrentDepartmentIds(DefaultRolesCatalog.UNIT_DIRECTOR, cancellationToken);
     }
 }

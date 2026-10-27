@@ -1,4 +1,5 @@
 using AutoMapper;
+using ShiftTrack.Application.Modules.Booking.Vacations.Extensions;
 using ShiftTrack.Application.Common.Interfaces;
 using ShiftTrack.Application.Modules.Booking.Vacations.Constants;
 using ShiftTrack.Application.Modules.Booking.Vacations.Exceptions;
@@ -16,11 +17,16 @@ public class UpdateVacationCommandHandler(
     IEmployeeRepository employeeRepository,
     IVacationService vacationService,
     IVacationRepository vacationRepository,
-    ICurrentUserService currentUserService) : IRequestHandler<UpdateVacationCommand, VacationVm>
+    ICurrentUserService currentUserService,
+    IVacationPermissionService vacationPermissionService,
+    IVacationAccrualService vacationAccrualService) : IRequestHandler<UpdateVacationCommand, VacationVm>
 {
     public async Task<VacationVm> Handle(UpdateVacationCommand request, CancellationToken cancellationToken = default)
     {
         var vacation = await GetAndValidateVacationForUpdate(request.Id, cancellationToken);
+
+        await vacationAccrualService.EnsureCanTakeVacation(
+            vacation.EmployeeId, request.Type, request.StartDate, cancellationToken);
 
         if (vacation.StartDate != request.StartDate
             || vacation.EndDate != request.EndDate)
@@ -49,12 +55,15 @@ public class UpdateVacationCommandHandler(
 
         vacation = await vacationService.GetById(vacation.Id, cancellationToken);
         
-        return mapper.Map<VacationVm>(vacation);
+        return vacation.ToVm(mapper, vacationPermissionService);
     }
 
     private async Task<Vacation> GetAndValidateVacationForUpdate (long id, CancellationToken cancellationToken)
     {
         var vacation = await vacationRepository.GetById(id, cancellationToken);
+
+        if (vacationPermissionService.CanEdit(vacation))
+            return vacation;
 
         if (vacation.AuthorId != currentUserService.Employee.Id)
             throw new VacationException(

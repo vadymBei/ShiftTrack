@@ -1,3 +1,4 @@
+using ShiftTrack.Application.Modules.System.User.RoleScopes.Interfaces;
 using ShiftTrack.Application.Common.Interfaces;
 using ShiftTrack.Application.Modules.Organization.Structure.Departments.Interfaces;
 using ShiftTrack.Application.Modules.Organization.Structure.Units.Interfaces;
@@ -11,13 +12,12 @@ public class UnitService(
     IUnitRepository unitRepository,
     ICurrentUserService currentUserService,
     IEmployeeRoleChecker employeeRoleChecker,
-    IDepartmentRepository departmentRepository)
+    IDepartmentRepository departmentRepository,
+    IRoleScopeService roleScopeService)
     : IUnitService
 {
     public async Task<IEnumerable<Unit>> GetUnitsByRoles(CancellationToken cancellationToken)
     {
-        var currentUserEmployeeRoles = currentUserService.Employee.EmployeeRoles;
-
         var units = new List<Unit>();
 
         if (employeeRoleChecker.HasCurrentUserSysAdminRole())
@@ -27,33 +27,11 @@ public class UnitService(
         }
         else if (employeeRoleChecker.HasCurrentUserUnitDirectorRole())
         {
-            var employeeRole = currentUserEmployeeRoles
-                .FirstOrDefault(x => x.Role.Name == DefaultRolesCatalog.UNIT_DIRECTOR);
-
-            var unitIds = employeeRole.Units
-                .Where(x => x.UnitId != null)
-                .Select(x => (long)x.UnitId)
-                .Distinct()
-                .ToList();
-
-            units = (await unitRepository.GetByIds(unitIds, cancellationToken))
-                .ToList();
+            units = await GetUnitsByScope(DefaultRolesCatalog.UNIT_DIRECTOR, cancellationToken);
         }
         else if (employeeRoleChecker.HasCurrentUserDepartmentDirectorRole())
         {
-            var employeeRole = currentUserEmployeeRoles
-                .FirstOrDefault(x => x.Role.Name == DefaultRolesCatalog.DEPARTMENT_DIRECTOR);
-
-            var unitId = employeeRole.Units.FirstOrDefault()?.UnitId
-                         ?? currentUserService.Employee.Department.UnitId;
-
-            if (unitId is not null)
-            {
-                units =
-                [
-                    await unitRepository.GetById((long)unitId, cancellationToken)
-                ];
-            }
+            units = await GetUnitsByScope(DefaultRolesCatalog.DEPARTMENT_DIRECTOR, cancellationToken);
         }
         else if (currentUserService.Employee.Department is not null)
         {
@@ -64,6 +42,17 @@ public class UnitService(
         }
 
         return units;
+    }
+
+    /// <summary>Units the director manages by the role bindings.</summary>
+    private async Task<List<Unit>> GetUnitsByScope(string roleName, CancellationToken cancellationToken)
+    {
+        var unitIds = await roleScopeService.GetCurrentUnitIds(roleName, cancellationToken);
+
+        if (unitIds.Count == 0)
+            return [];
+
+        return (await unitRepository.GetByIds(unitIds.ToList(), cancellationToken)).ToList();
     }
 
     public async Task Delete(long id, CancellationToken cancellationToken)

@@ -22,6 +22,7 @@ public class UpdateBusinessTripCommandHandler(
         var businessTrip = await businessTripService.Update(request.Data, cancellationToken);
         
         var businessTripVm = mapper.Map<BusinessTripVm>(businessTrip);
+        businessTripVm.Permissions = await businessTripService.GetPermissions(businessTrip, cancellationToken);
         businessTripVm.EnrichWithLocationData(locationDictionary);
         
         return businessTripVm;

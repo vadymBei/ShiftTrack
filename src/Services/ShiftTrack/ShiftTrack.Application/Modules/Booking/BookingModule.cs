@@ -13,6 +13,7 @@ public static class BookingModule
     {
         //BusinessTrips
         services.AddTransient<IBusinessTripService, BusinessTripService>();
+        services.AddTransient<IBusinessTripRouteService, BusinessTripRouteService>();
         
         //Vacations
         services.AddTransient<IVacationShiftService, VacationShiftService>();
@@ -22,6 +23,9 @@ public static class BookingModule
         services.AddTransient<IVacationStrategy, SysAdminVacationStrategy>();
         services.AddTransient<IVacationStrategy, UnitDirectorVacationStrategy>();
         services.AddTransient<IVacationService, VacationService>();
+        services.AddTransient<IVacationPermissionService, VacationPermissionService>();
+        services.AddTransient<IVacationAccrualCalculator, VacationAccrualCalculator>();
+        services.AddTransient<IVacationAccrualService, VacationAccrualService>();
 
         return services;
     }

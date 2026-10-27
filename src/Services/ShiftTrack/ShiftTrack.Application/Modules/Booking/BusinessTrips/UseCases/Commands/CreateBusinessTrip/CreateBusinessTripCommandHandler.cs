@@ -21,6 +21,7 @@ public class CreateBusinessTripCommandHandler(
             .Create(request.Data, cancellationToken);
 
         var businessTripVm = mapper.Map<BusinessTripVm>(businessTrip);
+        businessTripVm.Permissions = await businessTripService.GetPermissions(businessTrip, cancellationToken);
         
         businessTripVm.EnrichWithLocationData(
             locations

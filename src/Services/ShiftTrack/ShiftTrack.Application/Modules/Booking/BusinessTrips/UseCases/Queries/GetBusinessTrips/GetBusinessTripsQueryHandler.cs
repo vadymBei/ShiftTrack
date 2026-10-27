@@ -13,8 +13,8 @@ public class GetBusinessTripsQueryHandler(
 {
     public async Task<IEnumerable<BusinessTripVm>> Handle(GetBusinessTripsQuery request, CancellationToken cancellationToken = default)
     {
-        var businessTrips = await businessTripService
-            .GetFiltered(request.Filter, cancellationToken);
+        var businessTrips = (await businessTripService
+            .GetFiltered(request.Filter, cancellationToken)).ToList();
         
         if(!businessTrips.Any())
             return [];
@@ -30,11 +30,14 @@ public class GetBusinessTripsQueryHandler(
         var locationsDictionary = locations
             .ToDictionary(x => x.IntegrationId);
         
-        var businessTripVms = mapper.Map<IEnumerable<BusinessTripVm>>(businessTrips);
+        var permissions = await businessTripService.GetPermissions(businessTrips, cancellationToken);
+
+        var businessTripVms = mapper.Map<List<BusinessTripVm>>(businessTrips);
 
         foreach (var businessTripVm in businessTripVms)
         {
             businessTripVm.EnrichWithLocationData(locationsDictionary);
+            businessTripVm.Permissions = permissions[businessTripVm.Id];
         }
         
         return businessTripVms;

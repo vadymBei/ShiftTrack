@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Domain.Modules.Booking.BusinessTrips.Entities;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using ShiftTrack.Domain.Common.Outbox;
 using ShiftTrack.Domain.Modules.Booking.Vacations.Entities;
+using ShiftTrack.Domain.Modules.Communication.Notifications.Entities;
 using ShiftTrack.Domain.Modules.Organization.Payrolls.Entities;
 using ShiftTrack.Domain.Modules.Organization.Structure.Entities;
 using ShiftTrack.Domain.Modules.Organization.Timesheet.Shifts.Entities;
@@ -19,6 +22,16 @@ public interface IApplicationDbContext
     
     //Vacations
     DbSet<Vacation> Vacations { get; set; }
+    DbSet<VacationAccrual> VacationAccruals { get; set; }
+
+    //Outbox
+    DbSet<OutboxMessage> OutboxMessages { get; set; }
+
+    DatabaseFacade Database { get; }
+
+    //Communication
+    //Notifications
+    DbSet<Notification> Notifications { get; set; }
     
     //Organization
     //Structure

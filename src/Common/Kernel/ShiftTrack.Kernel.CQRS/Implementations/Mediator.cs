@@ -259,7 +259,7 @@ public class Mediator(
         await pipeline(cancellationToken);
     }
 
-    public Task Publish(INotification notification, CancellationToken cancellationToken = default)
+    public async Task Publish(INotification notification, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(notification);
         cancellationToken = ResolveToken(cancellationToken);
@@ -274,21 +274,22 @@ public class Mediator(
 
         var handlers = serviceProvider.GetServices(handlerType).ToArray();
 
-        if (handlers.Length == 0)
-            return Task.CompletedTask;
+        // Обробники виконуються послідовно: вони отримані з того самого scope і ділять scoped-сервіси
+        // (зокрема DbContext), який не підтримує паралельних операцій.
+        foreach (var handler in handlers)
+        {
+            if (handler is null)
+                continue;
 
-        // Всі обробники одного повідомлення незалежні — виконуємо паралельно
-        var tasks = handlers
-            .Where(h => h is not null)
-            .Select(h => handlerInvoke(h!, notification, cancellationToken));
-
-        return Task.WhenAll(tasks);
+            await handlerInvoke(handler, notification, cancellationToken);
+        }
     }
 
-    public Task Publish(IEnumerable<INotification> notifications, CancellationToken cancellationToken = default)
+    public async Task Publish(IEnumerable<INotification> notifications, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(notifications);
 
-        return Task.WhenAll(notifications.Select(n => Publish(n, cancellationToken)));
+        foreach (var notification in notifications)
+            await Publish(notification, cancellationToken);
     }
 }

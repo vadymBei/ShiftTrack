@@ -1,4 +1,5 @@
 ﻿using ShiftTrack.Application.Modules.Booking.BusinessTrips.Dtos;
+using ShiftTrack.Application.Modules.Booking.BusinessTrips.ViewModels;
 using ShiftTrack.Domain.Modules.Booking.BusinessTrips.Entities;
 
 namespace ShiftTrack.Application.Modules.Booking.BusinessTrips.Interfaces;
@@ -15,4 +16,7 @@ public interface IBusinessTripService
     Task<IEnumerable<BusinessTrip>> GetMy(CancellationToken cancellationToken);
     Task<IEnumerable<BusinessTrip>> GetPendingApprovals(int take, CancellationToken cancellationToken);
     Task<int> CountPendingApprovals(CancellationToken cancellationToken);
+    Task<BusinessTripPermissionsVm> GetPermissions(BusinessTrip businessTrip, CancellationToken cancellationToken);
+    Task<IReadOnlyDictionary<long, BusinessTripPermissionsVm>> GetPermissions(
+        IReadOnlyCollection<BusinessTrip> businessTrips, CancellationToken cancellationToken);
 }

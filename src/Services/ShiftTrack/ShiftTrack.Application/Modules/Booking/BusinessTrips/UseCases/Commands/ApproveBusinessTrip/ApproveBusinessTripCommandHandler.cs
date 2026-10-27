@@ -15,6 +15,9 @@ public class ApproveBusinessTripCommandHandler(
         
         var businessTrip = await businessTripService.GetById(request.Id, cancellationToken);
         
-        return mapper.Map<BusinessTripVm>(businessTrip);
+        var businessTripVm = mapper.Map<BusinessTripVm>(businessTrip);
+        businessTripVm.Permissions = await businessTripService.GetPermissions(businessTrip, cancellationToken);
+
+        return businessTripVm;
     }
 }

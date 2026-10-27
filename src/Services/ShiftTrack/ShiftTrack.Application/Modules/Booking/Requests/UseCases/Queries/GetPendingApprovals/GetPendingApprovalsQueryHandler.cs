@@ -1,6 +1,5 @@
 using ShiftTrack.Application.Modules.Booking.BusinessTrips.Interfaces;
 using ShiftTrack.Application.Modules.Booking.Requests.Enums;
-using ShiftTrack.Application.Modules.Booking.Requests.Services;
 using ShiftTrack.Application.Modules.Booking.Requests.ViewModels;
 using ShiftTrack.Application.Modules.Booking.Vacations.Interfaces;
 using ShiftTrack.Domain.Modules.System.User.Employees.Entities;
@@ -11,7 +10,7 @@ namespace ShiftTrack.Application.Modules.Booking.Requests.UseCases.Queries.GetPe
 public class GetPendingApprovalsQueryHandler(
     IVacationService vacationService,
     IBusinessTripService businessTripService,
-    ILocationRepository locationRepository) : IRequestHandler<GetPendingApprovalsQuery, IEnumerable<PendingApprovalVm>>
+    IBusinessTripRouteService businessTripRouteService) : IRequestHandler<GetPendingApprovalsQuery, IEnumerable<PendingApprovalVm>>
 {
     public async Task<IEnumerable<PendingApprovalVm>> Handle(GetPendingApprovalsQuery request,
         CancellationToken cancellationToken = default)
@@ -20,7 +19,7 @@ public class GetPendingApprovalsQueryHandler(
 
         var vacations = await vacationService.GetPendingApprovals(take, cancellationToken);
         var businessTrips = (await businessTripService.GetPendingApprovals(take, cancellationToken)).ToList();
-        var routes = await BusinessTripRouteBuilder.BuildRoutes(businessTrips, locationRepository, cancellationToken);
+        var routes = await businessTripRouteService.GetRoutes(businessTrips, cancellationToken);
 
         var vacationItems = vacations.Select(x => new PendingApprovalVm
         {

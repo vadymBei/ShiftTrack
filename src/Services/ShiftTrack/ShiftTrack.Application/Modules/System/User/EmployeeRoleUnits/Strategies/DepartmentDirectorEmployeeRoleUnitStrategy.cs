@@ -1,4 +1,4 @@
-﻿using ShiftTrack.Application.Common.Interfaces;
+﻿using ShiftTrack.Application.Modules.System.User.RoleScopes.Interfaces;
 using ShiftTrack.Application.Modules.System.User.Common.Constants;
 using ShiftTrack.Application.Modules.System.User.Common.Exceptions;
 using ShiftTrack.Application.Modules.System.User.EmployeeRoles.Interfaces;
@@ -10,9 +10,9 @@ using ShiftTrack.Domain.Modules.System.User.EmployeeRoles.Entities;
 namespace ShiftTrack.Application.Modules.System.User.EmployeeRoleUnits.Strategies;
 
 public class DepartmentDirectorEmployeeRoleUnitStrategy(
-    ICurrentUserService currentUserService,
     IEmployeeRoleUnitRepository employeeRoleUnitRepository,
-    IEmployeeRoleRepository employeeRoleRepository)
+    IEmployeeRoleRepository employeeRoleRepository,
+    IRoleScopeService roleScopeService)
     : IEmployeeRoleUnitStrategy
 {
     public async Task<EmployeeRoleUnit> Create(EmployeeRoleUnitToCreateDto dto, CancellationToken cancellationToken)
@@ -27,12 +27,9 @@ public class DepartmentDirectorEmployeeRoleUnitStrategy(
                 nameof(UserExceptionsLocalization.DEPARTMENT_DIRECTOR_INVALID_ROLE));
         }
 
-        if (employeeRole.Employee.Department is null
-            || !currentUserService.Employee.EmployeeRoles
-                .Any(x => x.Role.Name == DefaultRolesCatalog.DEPARTMENT_DIRECTOR
-                          && x.Units.Any(u =>
-                              u.UnitId == employeeRole.Employee.Department.UnitId
-                              && u.Departments.Any(d => d.DepartmentId == employeeRole.Employee.DepartmentId))))
+        var scope = roleScopeService.GetCurrentScope(DefaultRolesCatalog.DEPARTMENT_DIRECTOR);
+
+        if (!scope.Covers(employeeRole.Employee) || !scope.IsBoundTo(dto.UnitId))
         {
             throw new EmployeeRoleException(
                 UserExceptionsLocalization.CREATE_ROLE_UNIT_OUT_OF_SCOPE,
@@ -56,13 +53,8 @@ public class DepartmentDirectorEmployeeRoleUnitStrategy(
                 nameof(UserExceptionsLocalization.DEPARTMENT_DIRECTOR_INVALID_ROLE));
         }
 
-        if (employeeRoleUnit.EmployeeRole.Employee.Department is null
-            || !currentUserService.Employee.EmployeeRoles
-                .Any(x => x.Role.Name == DefaultRolesCatalog.DEPARTMENT_DIRECTOR
-                          && x.Units.Any(u =>
-                              u.UnitId == employeeRoleUnit.EmployeeRole.Employee.Department.UnitId
-                              && u.Departments.Any(d =>
-                                  d.DepartmentId == employeeRoleUnit.EmployeeRole.Employee.DepartmentId))))
+        if (!roleScopeService.GetCurrentScope(DefaultRolesCatalog.DEPARTMENT_DIRECTOR)
+                .Covers(employeeRoleUnit.EmployeeRole.Employee))
         {
             throw new EmployeeRoleException(
                 UserExceptionsLocalization.DELETE_ROLE_WRONG_UNIT,

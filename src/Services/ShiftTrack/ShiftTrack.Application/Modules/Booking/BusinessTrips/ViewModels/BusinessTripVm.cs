@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.Configuration.Annotations;
 using ShiftTrack.Application.Modules.Organization.Employees.ViewModels;
 using ShiftTrack.Domain.Modules.Booking.BusinessTrips.Entities;
 using ShiftTrack.Domain.Modules.Booking.BusinessTrips.Enums;
@@ -18,4 +19,7 @@ public class BusinessTripVm
 
     public IEnumerable<EmployeeVm> Participants { get; set; }
     public IEnumerable<BusinessTripLocationVm> Locations { get; set; }
+
+    [Ignore]
+    public BusinessTripPermissionsVm Permissions { get; set; }
 }

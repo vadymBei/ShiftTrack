@@ -19,6 +19,7 @@ public class GetBusinessTripByIdQueryHandler(
             .GetListByIds(businessTrip.Locations.Select(x => x.LocationIntegrationId), cancellationToken);
         
         var businessTripVm = mapper.Map<BusinessTripVm>(businessTrip);
+        businessTripVm.Permissions = await businessTripService.GetPermissions(businessTrip, cancellationToken);
         businessTripVm.EnrichWithLocationData(locations
             .ToDictionary(x => x.IntegrationId));
         

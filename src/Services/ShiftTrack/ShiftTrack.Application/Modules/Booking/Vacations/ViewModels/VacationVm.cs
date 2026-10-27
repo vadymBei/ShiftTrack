@@ -1,4 +1,5 @@
 using AutoMapper;
+using AutoMapper.Configuration.Annotations;
 using ShiftTrack.Application.Modules.Organization.Employees.ViewModels;
 using ShiftTrack.Domain.Modules.Booking.Vacations.Entities;
 using ShiftTrack.Domain.Modules.Booking.Vacations.Enums;
@@ -26,4 +27,7 @@ public class VacationVm
 
     public long? ApprovedEmployeeId { get; set; }
     public EmployeeVm ApprovedEmployee { get; set; }
+
+    [Ignore]
+    public VacationPermissionsVm Permissions { get; set; }
 }

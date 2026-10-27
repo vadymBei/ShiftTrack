@@ -6,6 +6,7 @@ using ShiftTrack.Authentication.Bearer;
 using ShiftTrack.Authentication.Bearer.Extensions;
 using ShiftTrack.Infrastructure;
 using ShiftTrack.Infrastructure.Persistence;
+using ShiftTrack.Infrastructure.Realtime;
 using ShiftTrack.Kernel.Extensions;
 using Swashbuckle.AspNetCore.SwaggerUI;
 
@@ -25,6 +26,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
+builder.Services.AddRealtime(builder.Configuration);
 
 builder.Services.AddJWTAuthenticationSwagger(
     builder.Environment.ApplicationName,
@@ -68,6 +71,8 @@ app.UseKernelExceptionHandler();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<NotificationsHub>(NotificationsHub.Path);
 
 app.UseStaticFiles();
 

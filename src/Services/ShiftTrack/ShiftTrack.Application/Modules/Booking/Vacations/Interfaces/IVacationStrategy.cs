@@ -8,6 +8,8 @@ public interface IVacationStrategy
     Task ApproveVacation(long id, CancellationToken cancellationToken);
     Task RejectVacation(long id, CancellationToken cancellationToken);
     Task<Vacation> GetVacationById(long id, CancellationToken cancellationToken);
-    Task<IEnumerable<Vacation>> GetVacations(VacationsFilterDto filter, CancellationToken cancellationToken);
+    /// <summary>Vacations the current user may see in lists; null means none.</summary>
+    VacationAccessFilterDto GetAccessFilter();
     VacationApprovalFilterDto GetApprovalFilter();
+    VacationAccessDto GetAccess(Vacation vacation);
 }

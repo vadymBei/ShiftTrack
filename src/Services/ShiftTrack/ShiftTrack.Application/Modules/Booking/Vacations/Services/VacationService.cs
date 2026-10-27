@@ -1,10 +1,10 @@
 using ShiftTrack.Application.Common.Interfaces;
+using ShiftTrack.Application.Common.Outbox.Interfaces;
 using ShiftTrack.Application.Modules.Booking.Vacations.Constants;
 using ShiftTrack.Application.Modules.Booking.Vacations.Dtos;
+using ShiftTrack.Application.Modules.Booking.Vacations.Events;
 using ShiftTrack.Application.Modules.Booking.Vacations.Exceptions;
 using ShiftTrack.Application.Modules.Booking.Vacations.Interfaces;
-using ShiftTrack.Application.Modules.Organization.Employees.Interfaces;
-using ShiftTrack.Application.Modules.System.User.EmployeeRoles.Interfaces;
 using ShiftTrack.Domain.Modules.Booking.Vacations.Entities;
 using ShiftTrack.Domain.Modules.Booking.Vacations.Enums;
 using ShiftTrack.Domain.Modules.Booking.Vacations.Models;
@@ -12,11 +12,12 @@ using ShiftTrack.Domain.Modules.Booking.Vacations.Models;
 namespace ShiftTrack.Application.Modules.Booking.Vacations.Services;
 
 public class VacationService(
-    IEmployeeRepository employeeRepository,
     ICurrentUserService currentUserService,
     IVacationRepository vacationRepository,
-    IEmployeeRoleChecker employeeRoleChecker,
-    IVacationStrategyFactory vacationStrategyFactory) : IVacationService
+    IVacationStrategyFactory vacationStrategyFactory,
+    IVacationPermissionService vacationPermissionService,
+    IVacationAccrualService vacationAccrualService,
+    IDomainEventOutbox domainEventOutbox) : IVacationService
 {
     private IVacationStrategy VacationStrategy => vacationStrategyFactory.GetStrategy();
 
@@ -27,30 +28,60 @@ public class VacationService(
 
     public async Task<Vacation> Approve(long id, CancellationToken cancellationToken)
     {
+        var current = await vacationRepository.GetById(id, cancellationToken);
+        var oldStatus = current.Status;
+
+        await vacationAccrualService.EnsureCanTakeVacation(
+            current.EmployeeId, current.Type, current.StartDate, cancellationToken);
+
         await VacationStrategy.ApproveVacation(id, cancellationToken);
 
-        return await VacationStrategy.GetVacationById(id, cancellationToken);
+        var vacation = await VacationStrategy.GetVacationById(id, cancellationToken);
+
+        await PublishStatusChanged(vacation, oldStatus, cancellationToken);
+
+        return vacation;
     }
 
-    public Task<IEnumerable<Vacation>> GetFiltered(VacationsFilterDto filter, CancellationToken cancellationToken)
+    public async Task<IEnumerable<Vacation>> GetFiltered(VacationsFilterDto filter, CancellationToken cancellationToken)
     {
-        return VacationStrategy.GetVacations(filter, cancellationToken);
+        var access = VacationStrategy.GetAccessFilter();
+
+        if (access is null)
+            return [];
+
+        return await vacationRepository.GetFiltered(filter, access, cancellationToken);
     }
 
     public async Task<Vacation> Reject(long id, CancellationToken cancellationToken)
     {
+        var oldStatus = (await vacationRepository.GetById(id, cancellationToken)).Status;
+
         await VacationStrategy.RejectVacation(id, cancellationToken);
 
-        return await VacationStrategy.GetVacationById(id, cancellationToken);
+        var vacation = await VacationStrategy.GetVacationById(id, cancellationToken);
+
+        await PublishStatusChanged(vacation, oldStatus, cancellationToken);
+
+        return vacation;
+    }
+
+    private async Task PublishStatusChanged(Vacation vacation, VacationStatus oldStatus,
+        CancellationToken cancellationToken)
+    {
+        if (vacation.Status == oldStatus)
+            return;
+
+        await domainEventOutbox.Enqueue(
+            new VacationStatusChangedEvent(vacation.Id, oldStatus, vacation.Status),
+            cancellationToken);
     }
 
     public async Task Delete(long id, CancellationToken cancellationToken)
     {
         var vacation = await vacationRepository.GetById(id, cancellationToken);
 
-        if (!employeeRoleChecker.HasCurrentUserSysAdminRole()
-            && (vacation.AuthorId != currentUserService.Employee.Id
-                || vacation.Status is not (VacationStatus.None or VacationStatus.PendingApproval)))
+        if (!vacationPermissionService.CanDelete(vacation))
         {
             throw new VacationException(
                 VacationExceptionsLocalization.CANNOT_DELETE_OTHERS_VACATION,
@@ -58,6 +89,16 @@ public class VacationService(
         }
 
         await vacationRepository.Delete(vacation.Id, cancellationToken);
+
+        await domainEventOutbox.Enqueue(
+            new VacationDeletedEvent(
+                vacation.Id,
+                vacation.EmployeeId,
+                vacation.AuthorId,
+                vacation.Type,
+                vacation.StartDate,
+                vacation.EndDate),
+            cancellationToken);
     }
 
     public Task<IEnumerable<Vacation>> GetMy(CancellationToken cancellationToken)
@@ -85,15 +126,9 @@ public class VacationService(
         return await vacationRepository.CountForApproval(filter, cancellationToken);
     }
 
-    public async Task<VacationBalance> GetVacationBalanceByEmployeeId(long employeeId, CancellationToken cancellationToken)
+    public Task<VacationBalance> GetVacationBalanceByEmployeeId(long employeeId,
+        CancellationToken cancellationToken)
     {
-        var employee = await employeeRepository.GetById(employeeId, cancellationToken);
-
-        return new VacationBalance()
-        {
-            PlannedDays = 14,
-            TotalDays = 24,
-            UsedDays = 6
-        };
+        return vacationAccrualService.GetBalance(employeeId, cancellationToken);
     }
 }

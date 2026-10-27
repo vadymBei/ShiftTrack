@@ -4,7 +4,6 @@ using ShiftTrack.Application.Modules.Booking.Vacations.Dtos;
 using ShiftTrack.Application.Modules.Booking.Vacations.Exceptions;
 using ShiftTrack.Application.Modules.Booking.Vacations.Interfaces;
 using ShiftTrack.Domain.Modules.Booking.Vacations.Entities;
-using ShiftTrack.Domain.Modules.Booking.Vacations.Enums;
 
 namespace ShiftTrack.Application.Modules.Booking.Vacations.Strategies;
 
@@ -14,7 +13,7 @@ public class DefaultVacationStrategy(
 {
     public async Task ApproveVacation(long id, CancellationToken cancellationToken)
     {
-        var vacation = await vacationRepository.GetById(id, cancellationToken);
+        var vacation = await vacationRepository.GetForUpdate(id, cancellationToken);
 
         if (vacation.AuthorId != currentUserService.Employee.Id)
         {
@@ -23,18 +22,15 @@ public class DefaultVacationStrategy(
                 nameof(VacationExceptionsLocalization.CANNOT_VIEW_OTHERS_VACATION));
         }
         
-        if (vacation.Status is not VacationStatus.None)
+        if (!vacation.CanSubmit)
         {
             throw new VacationException(
                 VacationExceptionsLocalization.CANNOT_APPROVE_VACATION,
                 nameof(VacationExceptionsLocalization.CANNOT_APPROVE_VACATION));
         }
-        
-        await vacationRepository.UpdateVacationStatus(
-            new UpdateVacationStatusDto(
-                vacation.Id,
-                VacationStatus.PendingApproval),
-            cancellationToken);
+
+        vacation.Submit();
+        await vacationRepository.Save(cancellationToken);
     }
 
     public Task RejectVacation(long id, CancellationToken cancellationToken)
@@ -58,20 +54,25 @@ public class DefaultVacationStrategy(
 
     public VacationApprovalFilterDto GetApprovalFilter() => null;
 
-    public async Task<IEnumerable<Vacation>> GetVacations(
-        VacationsFilterDto filter,
-        CancellationToken cancellationToken)
+    public VacationAccessDto GetAccess(Vacation vacation)
     {
-        var vacations = await vacationRepository.GetFiltered(filter, cancellationToken);
+        var isAuthor = vacation.AuthorId == currentUserService.Employee.Id;
 
+        return new VacationAccessDto(
+            CanView: isAuthor,
+            CanApprove: isAuthor && vacation.CanSubmit,
+            CanReject: false,
+            ApproveSubmitsForApproval: true);
+    }
+
+    /// <summary>Own vacations and vacations of colleagues from the same department.</summary>
+    public VacationAccessFilterDto GetAccessFilter()
+    {
         var currentEmployee = currentUserService.Employee;
 
-        vacations = vacations
-            .Where(x => x.AuthorId == currentEmployee.Id
-                        || (currentEmployee.DepartmentId is not null
-                            && x.Employee.DepartmentId == currentEmployee.DepartmentId))
-            .ToList();
-        
-        return vacations;
+        return new VacationAccessFilterDto(
+            [],
+            currentEmployee.DepartmentId is { } departmentId ? [departmentId] : [],
+            currentEmployee.Id);
     }
 }

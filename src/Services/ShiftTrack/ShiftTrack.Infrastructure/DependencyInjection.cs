@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using ShiftTrack.Application.Common.Interfaces;
 using ShiftTrack.Application.Modules.Booking.BusinessTrips.Interfaces;
 using ShiftTrack.Application.Modules.Booking.Vacations.Interfaces;
+using ShiftTrack.Application.Modules.Communication.Notifications.Interfaces;
 using ShiftTrack.Application.Modules.Booking.BusinessTrips.UseCases.Queries.DownloadBusinessTripOrderPdf;
 using ShiftTrack.Application.Modules.Booking.Vacations.UseCases.Queries.DownloadVacationRequestPdf;
 using ShiftTrack.Application.Modules.Organization.Employees.Interfaces;
@@ -22,13 +23,16 @@ using ShiftTrack.Application.Modules.System.User.EmployeeRoleUnitDepartments.Int
 using ShiftTrack.Application.Modules.System.User.EmployeeRoleUnits.Interfaces;
 using ShiftTrack.Application.Modules.System.User.Roles.Interfaces;
 using ShiftTrack.Client.Http;
+using ShiftTrack.Application.Common.Outbox.Interfaces;
 using ShiftTrack.Infrastructure.Common.Interfaces;
+using ShiftTrack.Infrastructure.Common.Outbox;
 using ShiftTrack.Infrastructure.Common.Repositories;
 using ShiftTrack.Infrastructure.Common.Services;
 using ShiftTrack.Infrastructure.Common.Services.Excel;
 using ShiftTrack.Infrastructure.Common.Services.Pdf;
 using ShiftTrack.Infrastructure.Modules.Booking.BusinessTrips.Repositories;
 using ShiftTrack.Infrastructure.Modules.Booking.Vacations.Repositories;
+using ShiftTrack.Infrastructure.Modules.Communication.Notifications.Repositories;
 using ShiftTrack.Infrastructure.Modules.Organization.Employees.Repositories;
 using ShiftTrack.Infrastructure.Modules.Organization.Payrolls.Repositories;
 using ShiftTrack.Infrastructure.Modules.Organization.Structure.Departments.Repositories;
@@ -64,12 +68,14 @@ public static class DependencyInjection
 
         //Services
         services.AddScoped<ICurrentUserService, CurrentUserService>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddTransient<IExcelExporter<UnitTimesheetExportData>, TimesheetPlanExporter>();
         services.AddTransient<IPdfExporter<VacationRequestData>, VacationRequestExporter>();
         services.AddTransient<IPdfExporter<BusinessTripOrderData>, BusinessTripOrderExporter>();
 
         //Repositories
         services.AddTransient<IPdfRepository, PdfRepository>();
+        services.AddTransient<IOutboxRepository, OutboxRepository>();
 
         //Booking
         //BusinessTrips
@@ -78,6 +84,11 @@ public static class DependencyInjection
         
         //Vacations
         services.AddTransient<IVacationRepository, VacationRepository>();
+        services.AddTransient<IVacationAccrualRepository, VacationAccrualRepository>();
+
+        //Communication
+        //Notifications
+        services.AddTransient<INotificationRepository, NotificationRepository>();
         
         //User
         services.AddTransient<IRoleRepository, RoleRepository>();

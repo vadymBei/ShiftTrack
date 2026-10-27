@@ -3,7 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Application.Common.Interfaces;
 using ShiftTrack.Domain.Common.Abstractions;
 using ShiftTrack.Domain.Modules.Booking.BusinessTrips.Entities;
+using ShiftTrack.Domain.Common.Outbox;
 using ShiftTrack.Domain.Modules.Booking.Vacations.Entities;
+using ShiftTrack.Domain.Modules.Communication.Notifications.Entities;
 using ShiftTrack.Domain.Modules.Organization.Payrolls.Entities;
 using ShiftTrack.Domain.Modules.Organization.Structure.Entities;
 using ShiftTrack.Domain.Modules.Organization.Timesheet.Shifts.Entities;
@@ -12,6 +14,7 @@ using ShiftTrack.Domain.Modules.System.User.Employees.Entities;
 using ShiftTrack.Domain.Modules.System.User.Roles.Entities;
 using ShiftTrack.Infrastructure.Common.Interfaces;
 using ShiftTrack.Infrastructure.Interceptors;
+using ShiftTrack.Infrastructure.Persistence.Conventions;
 
 namespace ShiftTrack.Infrastructure.Persistence;
 
@@ -38,6 +41,14 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
 
     //Vacations
     public DbSet<Vacation> Vacations { get; set; }
+    public DbSet<VacationAccrual> VacationAccruals { get; set; }
+
+    //Outbox
+    public DbSet<OutboxMessage> OutboxMessages { get; set; }
+
+    //Communication
+    //Notifications
+    public DbSet<Notification> Notifications { get; set; }
 
     //Organization
     //Structure
@@ -99,6 +110,8 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+        builder.ApplyUtcDateTimeConvention();
 
         base.OnModelCreating(builder);
     }

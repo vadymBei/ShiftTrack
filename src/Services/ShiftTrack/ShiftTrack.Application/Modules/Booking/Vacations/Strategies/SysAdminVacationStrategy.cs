@@ -1,5 +1,7 @@
 using ShiftTrack.Application.Common.Interfaces;
+using ShiftTrack.Application.Modules.Booking.Vacations.Constants;
 using ShiftTrack.Application.Modules.Booking.Vacations.Dtos;
+using ShiftTrack.Application.Modules.Booking.Vacations.Exceptions;
 using ShiftTrack.Application.Modules.Booking.Vacations.Interfaces;
 using ShiftTrack.Application.Modules.Organization.Timesheet.EmployeeShifts.Dtos;
 using ShiftTrack.Application.Modules.Organization.Timesheet.EmployeeShifts.Interfaces;
@@ -16,26 +18,31 @@ public class SysAdminVacationStrategy(
 {
     public async Task ApproveVacation(long id, CancellationToken cancellationToken)
     {
-        var vacation = await vacationRepository.GetById(id, cancellationToken);
+        var vacation = await vacationRepository.GetForUpdate(id, cancellationToken);
 
-        await vacationRepository.UpdateVacationStatus(
-            new UpdateVacationStatusDto(
-                vacation.Id,
-                VacationStatus.ApprovedByUnitDirector),
-            cancellationToken);
+        if (IsOwnDraft(vacation))
+        {
+            vacation.Submit();
+            await vacationRepository.Save(cancellationToken);
+            return;
+        }
+
+        EnsureCanApprove(vacation);
+
+        vacation.Approve(VacationApprovalLevel.UnitDirector);
+        await vacationRepository.Save(cancellationToken);
 
         await vacationShiftService.SetVacationShifts(id, cancellationToken);
     }
 
     public async Task RejectVacation(long id, CancellationToken cancellationToken)
     {
-        var vacation = await vacationRepository.GetById(id, cancellationToken);
+        var vacation = await vacationRepository.GetForUpdate(id, cancellationToken);
 
-        await vacationRepository.UpdateVacationStatus(
-            new UpdateVacationStatusDto(
-                vacation.Id,
-                VacationStatus.Rejected),
-            cancellationToken);
+        EnsureCanReject(vacation);
+
+        vacation.Reject(VacationApprovalLevel.UnitDirector);
+        await vacationRepository.Save(cancellationToken);
 
         await employeeShiftService.RestorePreviousEmployeeShifts(
             new RestoreEmployeeShiftsDto(
@@ -52,6 +59,40 @@ public class SysAdminVacationStrategy(
         return vacation;
     }
 
+    public VacationAccessDto GetAccess(Vacation vacation)
+    {
+        var isOwnDraft = IsOwnDraft(vacation);
+
+        return new VacationAccessDto(
+            CanView: true,
+            CanApprove: isOwnDraft || vacation.CanApprove(VacationApprovalLevel.UnitDirector),
+            CanReject: vacation.CanReject(VacationApprovalLevel.UnitDirector),
+            ApproveSubmitsForApproval: isOwnDraft);
+    }
+
+    private bool IsOwnDraft(Vacation vacation) =>
+        vacation.AuthorId == currentUserService.Employee.Id && vacation.CanSubmit;
+
+    private void EnsureCanApprove(Vacation vacation)
+    {
+        if (!GetAccess(vacation).CanApprove)
+        {
+            throw new VacationException(
+                VacationExceptionsLocalization.CANNOT_APPROVE_VACATION,
+                nameof(VacationExceptionsLocalization.CANNOT_APPROVE_VACATION));
+        }
+    }
+
+    private void EnsureCanReject(Vacation vacation)
+    {
+        if (!GetAccess(vacation).CanReject)
+        {
+            throw new VacationException(
+                VacationExceptionsLocalization.CANNOT_REJECT_VACATION,
+                nameof(VacationExceptionsLocalization.CANNOT_REJECT_VACATION));
+        }
+    }
+
     public VacationApprovalFilterDto GetApprovalFilter()
     {
         return new VacationApprovalFilterDto(
@@ -61,12 +102,5 @@ public class SysAdminVacationStrategy(
             currentUserService.Employee.Id);
     }
 
-    public async Task<IEnumerable<Vacation>> GetVacations(
-        VacationsFilterDto filter,
-        CancellationToken cancellationToken)
-    {
-        var vacations = await vacationRepository.GetFiltered(filter, cancellationToken);
-
-        return vacations;
-    }
+    public VacationAccessFilterDto GetAccessFilter() => VacationAccessFilterDto.Unrestricted;
 }

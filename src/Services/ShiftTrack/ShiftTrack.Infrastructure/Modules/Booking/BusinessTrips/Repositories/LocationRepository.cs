@@ -30,4 +30,21 @@ public class LocationRepository(
             throw;
         }
     }
+
+    public async Task<IEnumerable<Location>> Search(string searchTerm, CancellationToken cancellationToken)
+    {
+        try
+        {
+            return await client
+                .Path("locations-api/locations-service")
+                .Auth(AuthProvider.Basic)
+                .Body(new { searchTerm })
+                .Post<IEnumerable<Location>>("search", cancellationToken);
+        }
+        catch (HttpClientException e)
+        {
+            logger.LogError(e, "Error searching locations in API");
+            throw;
+        }
+    }
 }
