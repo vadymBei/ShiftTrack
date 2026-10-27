@@ -4,7 +4,6 @@ using ShiftTrack.Application.Modules.Booking.Vacations.Dtos;
 using ShiftTrack.Application.Modules.Booking.Vacations.Exceptions;
 using ShiftTrack.Application.Modules.Booking.Vacations.Interfaces;
 using ShiftTrack.Domain.Modules.Booking.Vacations.Entities;
-using ShiftTrack.Domain.Modules.Booking.Vacations.Enums;
 
 namespace ShiftTrack.Application.Modules.Booking.Vacations.Strategies;
 
@@ -66,20 +65,14 @@ public class DefaultVacationStrategy(
             ApproveSubmitsForApproval: true);
     }
 
-    public async Task<IEnumerable<Vacation>> GetVacations(
-        VacationsFilterDto filter,
-        CancellationToken cancellationToken)
+    /// <summary>Own vacations and vacations of colleagues from the same department.</summary>
+    public VacationAccessFilterDto GetAccessFilter()
     {
-        var vacations = await vacationRepository.GetFiltered(filter, cancellationToken);
-
         var currentEmployee = currentUserService.Employee;
 
-        vacations = vacations
-            .Where(x => x.AuthorId == currentEmployee.Id
-                        || (currentEmployee.DepartmentId is not null
-                            && x.Employee.DepartmentId == currentEmployee.DepartmentId))
-            .ToList();
-        
-        return vacations;
+        return new VacationAccessFilterDto(
+            [],
+            currentEmployee.DepartmentId is { } departmentId ? [departmentId] : [],
+            currentEmployee.Id);
     }
 }

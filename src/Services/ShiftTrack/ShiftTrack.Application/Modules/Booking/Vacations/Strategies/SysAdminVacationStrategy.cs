@@ -102,12 +102,5 @@ public class SysAdminVacationStrategy(
             currentUserService.Employee.Id);
     }
 
-    public async Task<IEnumerable<Vacation>> GetVacations(
-        VacationsFilterDto filter,
-        CancellationToken cancellationToken)
-    {
-        var vacations = await vacationRepository.GetFiltered(filter, cancellationToken);
-
-        return vacations;
-    }
+    public VacationAccessFilterDto GetAccessFilter() => VacationAccessFilterDto.Unrestricted;
 }

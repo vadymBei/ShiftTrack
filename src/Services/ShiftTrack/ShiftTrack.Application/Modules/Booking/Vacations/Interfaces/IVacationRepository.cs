@@ -13,7 +13,8 @@ public interface IVacationRepository
     /// <summary>Saves changes of entities loaded with <see cref="GetForUpdate"/>.</summary>
     Task Save(CancellationToken cancellationToken);
     Task<Vacation> GetById(long id, CancellationToken cancellationToken);
-    Task<IEnumerable<Vacation>> GetFiltered(VacationsFilterDto filter, CancellationToken cancellationToken);
+    Task<IEnumerable<Vacation>> GetFiltered(VacationsFilterDto filter, VacationAccessFilterDto access,
+        CancellationToken cancellationToken);
     Task Delete(long id, CancellationToken cancellationToken);
     Task<Vacation> Update(Vacation vacation, CancellationToken cancellationToken);
     Task<IEnumerable<Vacation>> GetByEmployeeOrAuthor(long employeeId, CancellationToken cancellationToken);

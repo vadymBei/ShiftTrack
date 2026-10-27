@@ -43,9 +43,14 @@ public class VacationService(
         return vacation;
     }
 
-    public Task<IEnumerable<Vacation>> GetFiltered(VacationsFilterDto filter, CancellationToken cancellationToken)
+    public async Task<IEnumerable<Vacation>> GetFiltered(VacationsFilterDto filter, CancellationToken cancellationToken)
     {
-        return VacationStrategy.GetVacations(filter, cancellationToken);
+        var access = VacationStrategy.GetAccessFilter();
+
+        if (access is null)
+            return [];
+
+        return await vacationRepository.GetFiltered(filter, access, cancellationToken);
     }
 
     public async Task<Vacation> Reject(long id, CancellationToken cancellationToken)

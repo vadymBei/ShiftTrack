@@ -92,17 +92,14 @@ public class DepartmentDirectorVacationStrategy(
         return vacation;
     }
 
-    public async Task<IEnumerable<Vacation>> GetVacations(
-        VacationsFilterDto filter,
-        CancellationToken cancellationToken)
+    public VacationAccessFilterDto GetAccessFilter()
     {
-        var vacations = await vacationRepository.GetFiltered(filter, cancellationToken);
+        var scope = Scope;
 
-        vacations = vacations
-            .Where(x => IsOwn(x) || IsFromCurrentDepartment(x))
-            .ToList();
-
-        return vacations;
+        return new VacationAccessFilterDto(
+            scope.UnitIds.ToList(),
+            scope.DepartmentIds.ToList(),
+            currentUserService.Employee.Id);
     }
 
     public VacationApprovalFilterDto GetApprovalFilter()

@@ -44,10 +44,10 @@ public class VacationRepository(
         return vacation;
     }
 
-    public async Task<IEnumerable<Vacation>> GetFiltered(VacationsFilterDto filter, CancellationToken cancellationToken)
+    public async Task<IEnumerable<Vacation>> GetFiltered(VacationsFilterDto filter, VacationAccessFilterDto access,
+        CancellationToken cancellationToken)
     {
-        var vacationsQuery = applicationDbContext.Vacations
-            .AsNoTracking()
+        var vacationsQuery = ApplyAccess(applicationDbContext.Vacations.AsNoTracking(), access)
             .Include(x => x.Author)
             .Include(x => x.Employee)
             .ThenInclude(x => x.Department)
@@ -112,19 +112,27 @@ public class VacationRepository(
             .Where(x => filter.Statuses.Contains(x.Status));
 
         if (filter.UnitIds is not null || filter.DepartmentIds is not null)
-        {
-            var unitIds = filter.UnitIds ?? [];
-            var departmentIds = filter.DepartmentIds ?? [];
-
-            query = query.Where(x =>
-                (x.Employee.Department.UnitId != null && unitIds.Contains(x.Employee.Department.UnitId.Value))
-                || (x.Employee.DepartmentId != null && departmentIds.Contains(x.Employee.DepartmentId.Value)));
-        }
+            query = ApplyAccess(query, new VacationAccessFilterDto(filter.UnitIds ?? [], filter.DepartmentIds ?? [], null));
 
         if (filter.ExcludeEmployeeId is not null)
             query = query.Where(x => x.EmployeeId != filter.ExcludeEmployeeId);
 
         return query;
+    }
+
+    private static IQueryable<Vacation> ApplyAccess(IQueryable<Vacation> query, VacationAccessFilterDto access)
+    {
+        if (access.IsUnrestricted)
+            return query;
+
+        var unitIds = access.UnitIds ?? [];
+        var departmentIds = access.DepartmentIds ?? [];
+        var ownerId = access.OwnerId;
+
+        return query.Where(x =>
+            (x.Employee.Department.UnitId != null && unitIds.Contains(x.Employee.Department.UnitId.Value))
+            || (x.Employee.DepartmentId != null && departmentIds.Contains(x.Employee.DepartmentId.Value))
+            || (ownerId != null && (x.EmployeeId == ownerId || x.AuthorId == ownerId)));
     }
 
     public async Task Delete(long id, CancellationToken cancellationToken)

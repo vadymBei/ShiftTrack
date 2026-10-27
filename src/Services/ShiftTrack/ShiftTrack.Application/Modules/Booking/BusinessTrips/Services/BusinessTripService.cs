@@ -122,14 +122,20 @@ public class BusinessTripService(
     public async Task<IEnumerable<BusinessTrip>> GetFiltered(BusinessTripFilterDto filter,
         CancellationToken cancellationToken)
     {
-        var businessTrips = await businessTripRepository
-            .GetFiltered(filter, cancellationToken);
-
         var context = await GetAccessContext(cancellationToken);
 
-        return businessTrips
-            .Where(x => CanView(x, context))
-            .ToList();
+        return await businessTripRepository.GetFiltered(filter, GetAccessFilter(context), cancellationToken);
+    }
+
+    /// <summary>The same rule as <see cref="CanView"/>, applied in the database query.</summary>
+    private BusinessTripAccessFilterDto GetAccessFilter(AccessContext context)
+    {
+        if (context.IsSysAdmin)
+            return BusinessTripAccessFilterDto.Unrestricted;
+
+        return new BusinessTripAccessFilterDto(
+            context.IsUnitDirector ? context.UnitDepartmentIds.ToList() : [],
+            currentUserService.Employee.Id);
     }
 
     public async Task<BusinessTrip> GetById(long id, CancellationToken cancellationToken)
