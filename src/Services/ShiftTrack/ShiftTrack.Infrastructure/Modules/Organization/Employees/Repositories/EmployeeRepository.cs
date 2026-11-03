@@ -144,6 +144,7 @@ public class EmployeeRepository(
         employee.Patronymic = employeeToUpdateDto.Patronymic;
         employee.Email = employeeToUpdateDto.Email;
         employee.DateOfBirth = employeeToUpdateDto.DateOfBirth;
+        employee.HireDate = employeeToUpdateDto.HireDate?.Date;
         employee.Gender = employeeToUpdateDto.Gender;
         employee.DepartmentId = employeeToUpdateDto.DepartmentId;
         employee.PositionId = employeeToUpdateDto.PositionId;
@@ -165,13 +166,21 @@ public class EmployeeRepository(
         await applicationDbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<IReadOnlyList<EmployeeServiceStart>> GetServiceStarts(CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<EmployeeServiceStart>> GetServiceStarts(long? employeeId,
+        CancellationToken cancellationToken)
     {
-        // TODO: use the hire date once it's stored, the registration date is used until then.
-        return await applicationDbContext.Employees
-            .AsNoTracking()
-            .Select(x => new EmployeeServiceStart(x.Id, x.CreatedAt))
+        var query = applicationDbContext.Employees.AsNoTracking();
+
+        if (employeeId is not null)
+            query = query.Where(x => x.Id == employeeId);
+
+        var rows = await query
+            .Select(x => new { x.Id, x.HireDate, x.CreatedAt })
             .ToListAsync(cancellationToken);
+
+        return rows
+            .Select(x => new EmployeeServiceStart(x.Id, Employee.ServiceStartOf(x.HireDate, x.CreatedAt)))
+            .ToList();
     }
 
     public async Task UpdateVacationDaysBalances(IReadOnlyDictionary<long, int> balances,

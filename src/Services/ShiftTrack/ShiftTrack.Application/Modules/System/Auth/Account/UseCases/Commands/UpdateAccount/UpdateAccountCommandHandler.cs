@@ -50,7 +50,9 @@ public class UpdateAccountCommandHandler(
                 employee.DepartmentId,
                 employee.PositionId,
                 request.DateOfBirth,
-                request.Gender),
+                request.Gender,
+                // The hire date is set by the administration, not by the employee.
+                employee.HireDate),
             cancellationToken);
 
         return mapper.Map<EmployeeVm>(employee);

@@ -14,13 +14,14 @@ public class VacationAccrualServiceTests
     private const long EmployeeId = 5;
 
     private readonly VacationAccrualService _service;
+    private readonly Employee _employee = new() { Id = EmployeeId, CreatedAt = new DateTime(2026, 10, 21) };
 
     public VacationAccrualServiceTests()
     {
         var employeeRepository = new Mock<IEmployeeRepository>();
         employeeRepository
             .Setup(x => x.GetById(EmployeeId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Employee { Id = EmployeeId, CreatedAt = new DateTime(2026, 10, 21) });
+            .ReturnsAsync(_employee);
 
         var vacationRepository = new Mock<IVacationRepository>();
         vacationRepository
@@ -59,5 +60,28 @@ public class VacationAccrualServiceTests
     public async Task OtherVacationTypes_AreNotLimitedBySixMonths(VacationType type)
     {
         await _service.EnsureCanTakeVacation(EmployeeId, type, new DateTime(2026, 10, 22), CancellationToken.None);
+    }
+
+    [Fact]
+    public async Task HireDate_CountsInsteadOfTheRegistration()
+    {
+        // Hired long before the account was registered.
+        _employee.HireDate = new DateTime(2025, 1, 10);
+
+        await _service.EnsureCanTakeVacation(
+            EmployeeId, VacationType.YearMainVacation, new DateTime(2026, 11, 2), CancellationToken.None);
+
+        Assert.Equal(new DateTime(2025, 7, 10), await _service.GetAnnualVacationAvailableFrom(EmployeeId, CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task HireDate_AfterTheRegistration_MovesTheSixMonths()
+    {
+        _employee.HireDate = new DateTime(2026, 12, 1);
+
+        var exception = await Assert.ThrowsAsync<VacationException>(() => _service.EnsureCanTakeVacation(
+            EmployeeId, VacationType.YearMainVacation, new DateTime(2027, 5, 1), CancellationToken.None));
+
+        Assert.Contains("01.06.2027", exception.ErrorMessage);
     }
 }

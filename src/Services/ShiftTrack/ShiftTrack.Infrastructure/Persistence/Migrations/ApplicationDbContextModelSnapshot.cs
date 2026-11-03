@@ -1015,6 +1015,9 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
                     b.Property<int>("Gender")
                         .HasColumnType("integer");
 
+                    b.Property<DateTime?>("HireDate")
+                        .HasColumnType("date");
+
                     b.Property<string>("IntegrationId")
                         .HasColumnType("text");
 

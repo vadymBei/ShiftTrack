@@ -16,18 +16,24 @@ public class VacationAccrualService(
     IVacationAccrualRepository vacationAccrualRepository,
     IVacationAccrualCalculator vacationAccrualCalculator) : IVacationAccrualService
 {
-    public async Task<int> RecalculateAll(CancellationToken cancellationToken)
+    public Task<int> RecalculateAll(CancellationToken cancellationToken) => Recalculate(null, cancellationToken);
+
+    public Task Recalculate(long employeeId, CancellationToken cancellationToken) =>
+        Recalculate((long?)employeeId, cancellationToken);
+
+    /// <summary>One employee, or everyone when <paramref name="employeeId"/> is null.</summary>
+    private async Task<int> Recalculate(long? employeeId, CancellationToken cancellationToken)
     {
         var today = DateTime.Today;
 
-        var employees = await employeeRepository.GetServiceStarts(cancellationToken);
+        var employees = await employeeRepository.GetServiceStarts(employeeId, cancellationToken);
 
         var excludedPeriods = (await vacationRepository.GetApproved(
-                VacationLaw.NotCountedInServiceTypes, null, cancellationToken))
+                VacationLaw.NotCountedInServiceTypes, employeeId, cancellationToken))
             .ToLookup(x => x.EmployeeId, x => new DateRangeDto(x.StartDate, x.EndDate));
 
         var usedDays = (await vacationRepository.GetApproved(
-                VacationLaw.AnnualVacationTypes, null, cancellationToken))
+                VacationLaw.AnnualVacationTypes, employeeId, cancellationToken))
             .Where(x => x.StartDate.Date <= today)
             .GroupBy(x => x.EmployeeId)
             .ToDictionary(x => x.Key, x => x.Sum(v => v.DaysCount));
@@ -105,7 +111,7 @@ public class VacationAccrualService(
 
         var excludedPeriods = await GetExcludedPeriods(employeeId, cancellationToken);
 
-        return vacationAccrualCalculator.GetAnnualVacationAvailableFrom(employee.CreatedAt, excludedPeriods);
+        return vacationAccrualCalculator.GetAnnualVacationAvailableFrom(employee.ServiceStart, excludedPeriods);
     }
 
     public async Task EnsureCanTakeVacation(long employeeId, VacationType type, DateTime startDate,
@@ -140,6 +146,6 @@ public class VacationAccrualService(
 
         var excludedPeriods = await GetExcludedPeriods(employeeId, cancellationToken);
 
-        return vacationAccrualCalculator.Calculate(employee.CreatedAt, today, excludedPeriods);
+        return vacationAccrualCalculator.Calculate(employee.ServiceStart, today, excludedPeriods);
     }
 }

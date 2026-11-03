@@ -33,6 +33,18 @@ public class UpdateEmployeeCommandValidator : AbstractValidator<UpdateEmployeeCo
             .When(x => x.DateOfBirth.HasValue)
             .WithMessage("Date of birth must be in the past.");
 
+        RuleFor(x => x.HireDate)
+            .GreaterThanOrEqualTo(new DateTime(1950, 1, 1))
+            .WithMessage("Hire date is too far in the past.")
+            .LessThanOrEqualTo(_ => DateTime.Today.AddYears(1))
+            .WithMessage("Hire date can be at most a year ahead.")
+            .When(x => x.HireDate.HasValue);
+
+        RuleFor(x => x.HireDate)
+            .GreaterThan(x => x.DateOfBirth)
+            .When(x => x.HireDate.HasValue && x.DateOfBirth.HasValue)
+            .WithMessage("Hire date must be after the date of birth.");
+
         RuleFor(x => x.Gender)
             .IsInEnum()
             .WithMessage("Invalid gender.");

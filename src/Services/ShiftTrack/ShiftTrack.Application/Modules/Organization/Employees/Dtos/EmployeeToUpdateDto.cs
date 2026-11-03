@@ -12,4 +12,5 @@ public record EmployeeToUpdateDto(
     long? DepartmentId,
     long? PositionId,
     DateTime? DateOfBirth,
-    EmployeeGender Gender);
+    EmployeeGender Gender,
+    DateTime? HireDate);

@@ -8,6 +8,9 @@ public interface IVacationAccrualService
     /// <summary>Recalculates accrued vacation days of all employees.</summary>
     Task<int> RecalculateAll(CancellationToken cancellationToken);
 
+    /// <summary>Recalculates accrued vacation days of one employee, e.g. after the hire date changed.</summary>
+    Task Recalculate(long employeeId, CancellationToken cancellationToken);
+
     Task<VacationBalance> GetBalance(long employeeId, CancellationToken cancellationToken);
 
     /// <summary>First day the employee can start annual vacation (after 6 months of continuous work).</summary>
