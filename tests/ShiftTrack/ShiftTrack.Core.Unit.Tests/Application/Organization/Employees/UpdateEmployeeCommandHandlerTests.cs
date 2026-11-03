@@ -24,6 +24,7 @@ public class UpdateEmployeeCommandHandlerTests
 
     private readonly Mock<IEmployeeService> _employeeService = new();
     private readonly Mock<IVacationAccrualService> _accruals = new();
+    private readonly Mock<IEmployeeEditPermission> _permission = new();
     private readonly UpdateEmployeeCommandHandler _handler;
 
     public UpdateEmployeeCommandHandlerTests()
@@ -37,7 +38,8 @@ public class UpdateEmployeeCommandHandlerTests
                 new Employee { Id = dto.Id, CreatedAt = _stored.CreatedAt, HireDate = dto.HireDate });
 
         _handler = new UpdateEmployeeCommandHandler(
-            new Mock<IMapper>().Object, _employeeService.Object, repository.Object, _accruals.Object);
+            new Mock<IMapper>().Object, _employeeService.Object, repository.Object, _accruals.Object,
+            _permission.Object);
     }
 
     [Fact]
@@ -64,6 +66,20 @@ public class UpdateEmployeeCommandHandlerTests
         await _handler.Handle(Command(null), CancellationToken.None);
 
         _accruals.Verify(x => x.Recalculate(EmployeeId, It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task WithoutPermission_NothingIsSaved()
+    {
+        _permission
+            .Setup(x => x.EnsureCanEdit(_stored, It.IsAny<long?>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new InvalidOperationException("forbidden"));
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            _handler.Handle(Command(new DateTime(2024, 6, 3)), CancellationToken.None));
+
+        _employeeService.Verify(x => x.Update(It.IsAny<EmployeeToUpdateDto>(), It.IsAny<CancellationToken>()), Times.Never);
+        _accruals.Verify(x => x.Recalculate(It.IsAny<long>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     private static UpdateEmployeeCommand Command(DateTime? hireDate) =>

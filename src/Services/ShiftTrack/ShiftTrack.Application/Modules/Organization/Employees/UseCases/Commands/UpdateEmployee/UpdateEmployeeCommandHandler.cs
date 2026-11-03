@@ -11,13 +11,16 @@ public class UpdateEmployeeCommandHandler(
     IMapper mapper,
     IEmployeeService employeeService,
     IEmployeeRepository employeeRepository,
-    IVacationAccrualService vacationAccrualService)
+    IVacationAccrualService vacationAccrualService,
+    IEmployeeEditPermission employeeEditPermission)
     : IRequestHandler<UpdateEmployeeCommand, EmployeeVm>
 {
     public async Task<EmployeeVm> Handle(UpdateEmployeeCommand request, CancellationToken cancellationToken)
     {
         var employee = await employeeRepository.GetById(request.Id, cancellationToken);
         var serviceStart = employee.ServiceStart;
+
+        await employeeEditPermission.EnsureCanEdit(employee, request.DepartmentId, cancellationToken);
 
         employee = await employeeService.Update(
             new EmployeeToUpdateDto(
