@@ -295,6 +295,148 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
                     b.ToTable("VacationAccruals", (string)null);
                 });
 
+            modelBuilder.Entity("ShiftTrack.Domain.Modules.Communication.Messenger.Entities.Conversation", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long?>("AuthorId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("DirectKey")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime?>("LastMessageAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("LastMessageId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("ModifierId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
+
+                    b.HasIndex("DirectKey")
+                        .IsUnique()
+                        .HasFilter("\"DirectKey\" IS NOT NULL");
+
+                    b.HasIndex("LastMessageAt");
+
+                    b.HasIndex("ModifierId");
+
+                    b.ToTable("Conversations", (string)null);
+                });
+
+            modelBuilder.Entity("ShiftTrack.Domain.Modules.Communication.Messenger.Entities.ConversationMember", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("ConversationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("EmployeeId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("JoinedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("LastReadMessageId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("ConversationId", "EmployeeId")
+                        .IsUnique();
+
+                    b.ToTable("ConversationMembers", (string)null);
+                });
+
+            modelBuilder.Entity("ShiftTrack.Domain.Modules.Communication.Messenger.Entities.Message", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long?>("AuthorId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid?>("ClientMessageId")
+                        .HasColumnType("uuid");
+
+                    b.Property<long>("ConversationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime?>("EditedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("ModifierId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("ReplyToMessageId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Text")
+                        .HasMaxLength(4000)
+                        .HasColumnType("character varying(4000)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ModifierId");
+
+                    b.HasIndex("ReplyToMessageId");
+
+                    b.HasIndex("AuthorId", "ClientMessageId")
+                        .IsUnique()
+                        .HasFilter("\"ClientMessageId\" IS NOT NULL");
+
+                    b.HasIndex("ConversationId", "Id");
+
+                    b.ToTable("Messages", (string)null);
+                });
+
             modelBuilder.Entity("ShiftTrack.Domain.Modules.Communication.Notifications.Entities.Notification", b =>
                 {
                     b.Property<long>("Id")
@@ -1082,6 +1224,74 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
                     b.Navigation("Modifier");
                 });
 
+            modelBuilder.Entity("ShiftTrack.Domain.Modules.Communication.Messenger.Entities.Conversation", b =>
+                {
+                    b.HasOne("ShiftTrack.Domain.Modules.System.User.Employees.Entities.Employee", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("ShiftTrack.Domain.Modules.System.User.Employees.Entities.Employee", "Modifier")
+                        .WithMany()
+                        .HasForeignKey("ModifierId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Author");
+
+                    b.Navigation("Modifier");
+                });
+
+            modelBuilder.Entity("ShiftTrack.Domain.Modules.Communication.Messenger.Entities.ConversationMember", b =>
+                {
+                    b.HasOne("ShiftTrack.Domain.Modules.Communication.Messenger.Entities.Conversation", "Conversation")
+                        .WithMany("Members")
+                        .HasForeignKey("ConversationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ShiftTrack.Domain.Modules.System.User.Employees.Entities.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Conversation");
+
+                    b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("ShiftTrack.Domain.Modules.Communication.Messenger.Entities.Message", b =>
+                {
+                    b.HasOne("ShiftTrack.Domain.Modules.System.User.Employees.Entities.Employee", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("ShiftTrack.Domain.Modules.Communication.Messenger.Entities.Conversation", "Conversation")
+                        .WithMany()
+                        .HasForeignKey("ConversationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ShiftTrack.Domain.Modules.System.User.Employees.Entities.Employee", "Modifier")
+                        .WithMany()
+                        .HasForeignKey("ModifierId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("ShiftTrack.Domain.Modules.Communication.Messenger.Entities.Message", "ReplyToMessage")
+                        .WithMany()
+                        .HasForeignKey("ReplyToMessageId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Author");
+
+                    b.Navigation("Conversation");
+
+                    b.Navigation("Modifier");
+
+                    b.Navigation("ReplyToMessage");
+                });
+
             modelBuilder.Entity("ShiftTrack.Domain.Modules.Communication.Notifications.Entities.Notification", b =>
                 {
                     b.HasOne("ShiftTrack.Domain.Modules.System.User.Employees.Entities.Employee", "Author")
@@ -1416,6 +1626,11 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("ShiftTrack.Domain.Modules.Booking.BusinessTrips.Entities.BusinessTrip", b =>
                 {
                     b.Navigation("Locations");
+                });
+
+            modelBuilder.Entity("ShiftTrack.Domain.Modules.Communication.Messenger.Entities.Conversation", b =>
+                {
+                    b.Navigation("Members");
                 });
 
             modelBuilder.Entity("ShiftTrack.Domain.Modules.Organization.Structure.Entities.Unit", b =>

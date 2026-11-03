@@ -21,6 +21,13 @@ public interface IEmployeeRepository
     /// Employees with the role whose bindings cover any of the departments:
     /// a binding to the department's unit without departments, or to the department itself.
     /// </summary>
+    /// <summary>
+    /// Employees of the whole company whose full name contains every word of <paramref name="search"/>,
+    /// with position, department and unit.
+    /// </summary>
+    Task<IReadOnlyList<Employee>> SearchContacts(string search, long excludeEmployeeId, int take,
+        CancellationToken cancellationToken);
+
     Task<IReadOnlyCollection<long>> GetIdsByRoleScope(string roleName, IReadOnlyCollection<long> departmentIds,
         CancellationToken cancellationToken);
 }

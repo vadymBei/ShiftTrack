@@ -1,3 +1,5 @@
+using ShiftTrack.Infrastructure.Modules.Communication.Messenger.Repositories;
+using ShiftTrack.Application.Modules.Communication.Messenger.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -89,6 +91,10 @@ public static class DependencyInjection
         //Communication
         //Notifications
         services.AddTransient<INotificationRepository, NotificationRepository>();
+
+        //Messenger
+        services.AddTransient<IConversationRepository, ConversationRepository>();
+        services.AddTransient<IMessageRepository, MessageRepository>();
         
         //User
         services.AddTransient<IRoleRepository, RoleRepository>();

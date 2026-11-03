@@ -189,6 +189,37 @@ public class EmployeeRepository(
         await applicationDbContext.SaveChangesAsync(cancellationToken);
     }
 
+    public async Task<IReadOnlyList<Employee>> SearchContacts(string search, long excludeEmployeeId, int take,
+        CancellationToken cancellationToken)
+    {
+        var query = applicationDbContext.Employees
+            .AsNoTracking()
+            .Include(x => x.Position)
+            .Include(x => x.Department)
+            .ThenInclude(x => x.Unit)
+            .Where(x => x.Id != excludeEmployeeId);
+
+        var words = (search ?? string.Empty)
+            .ToLower()
+            .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+        foreach (var word in words)
+        {
+            var pattern = $"%{word}%";
+
+            query = query.Where(x => EF.Functions.Like(
+                x.Surname.ToLower() + " " + x.Name.ToLower() + " " + (x.Patronymic ?? "").ToLower(),
+                pattern));
+        }
+
+        return await query
+            .OrderBy(x => x.Surname)
+            .ThenBy(x => x.Name)
+            .ThenBy(x => x.Patronymic)
+            .Take(take)
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task<IReadOnlyCollection<long>> GetIdsByRoleScope(string roleName,
         IReadOnlyCollection<long> departmentIds, CancellationToken cancellationToken)
     {

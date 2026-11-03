@@ -1,3 +1,4 @@
+using ShiftTrack.Domain.Modules.Communication.Messenger.Entities;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Application.Common.Interfaces;
@@ -49,6 +50,11 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
     //Communication
     //Notifications
     public DbSet<Notification> Notifications { get; set; }
+
+    //Messenger
+    public DbSet<Conversation> Conversations { get; set; }
+    public DbSet<ConversationMember> ConversationMembers { get; set; }
+    public DbSet<Message> Messages { get; set; }
 
     //Organization
     //Structure
