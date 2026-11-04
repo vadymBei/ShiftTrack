@@ -38,5 +38,10 @@ public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
 
         builder.Property(t => t.PhoneNumber)
             .HasMaxLength(13);
+
+        builder.Property(t => t.HireDate)
+            .HasColumnType("date");
+
+        builder.Ignore(t => t.ServiceStart);
     }
 }

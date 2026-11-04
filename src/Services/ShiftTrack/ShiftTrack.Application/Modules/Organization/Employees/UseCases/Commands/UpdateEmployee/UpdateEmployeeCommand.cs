@@ -12,4 +12,5 @@ public record UpdateEmployeeCommand(
     long? DepartmentId,
     long? PositionId,
     DateTime? DateOfBirth,
-    EmployeeGender Gender) : IRequest<EmployeeVm>;
+    EmployeeGender Gender,
+    DateTime? HireDate) : IRequest<EmployeeVm>;

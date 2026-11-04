@@ -144,6 +144,7 @@ public class EmployeeRepository(
         employee.Patronymic = employeeToUpdateDto.Patronymic;
         employee.Email = employeeToUpdateDto.Email;
         employee.DateOfBirth = employeeToUpdateDto.DateOfBirth;
+        employee.HireDate = employeeToUpdateDto.HireDate?.Date;
         employee.Gender = employeeToUpdateDto.Gender;
         employee.DepartmentId = employeeToUpdateDto.DepartmentId;
         employee.PositionId = employeeToUpdateDto.PositionId;
@@ -165,13 +166,32 @@ public class EmployeeRepository(
         await applicationDbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<IReadOnlyList<EmployeeServiceStart>> GetServiceStarts(CancellationToken cancellationToken)
+    public async Task<IReadOnlyDictionary<long, string>> GetPhotoNames(IReadOnlyCollection<long> employeeIds,
+        CancellationToken cancellationToken)
     {
-        // TODO: use the hire date once it's stored, the registration date is used until then.
+        // Deleted employees too: their photos stay next to their old messages.
         return await applicationDbContext.Employees
             .AsNoTracking()
-            .Select(x => new EmployeeServiceStart(x.Id, x.CreatedAt))
+            .IgnoreQueryFilters()
+            .Where(x => employeeIds.Contains(x.Id) && x.PhotoFullName != null && x.PhotoFullName != "")
+            .ToDictionaryAsync(x => x.Id, x => x.PhotoFullName, cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<EmployeeServiceStart>> GetServiceStarts(long? employeeId,
+        CancellationToken cancellationToken)
+    {
+        var query = applicationDbContext.Employees.AsNoTracking();
+
+        if (employeeId is not null)
+            query = query.Where(x => x.Id == employeeId);
+
+        var rows = await query
+            .Select(x => new { x.Id, x.HireDate, x.CreatedAt })
             .ToListAsync(cancellationToken);
+
+        return rows
+            .Select(x => new EmployeeServiceStart(x.Id, Employee.ServiceStartOf(x.HireDate, x.CreatedAt)))
+            .ToList();
     }
 
     public async Task UpdateVacationDaysBalances(IReadOnlyDictionary<long, int> balances,
@@ -187,6 +207,37 @@ public class EmployeeRepository(
             employee.VacationDaysBalance = balances[employee.Id];
 
         await applicationDbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<Employee>> SearchContacts(string search, long excludeEmployeeId, int take,
+        CancellationToken cancellationToken)
+    {
+        var query = applicationDbContext.Employees
+            .AsNoTracking()
+            .Include(x => x.Position)
+            .Include(x => x.Department)
+            .ThenInclude(x => x.Unit)
+            .Where(x => x.Id != excludeEmployeeId);
+
+        var words = (search ?? string.Empty)
+            .ToLower()
+            .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+        foreach (var word in words)
+        {
+            var pattern = $"%{word}%";
+
+            query = query.Where(x => EF.Functions.Like(
+                x.Surname.ToLower() + " " + x.Name.ToLower() + " " + (x.Patronymic ?? "").ToLower(),
+                pattern));
+        }
+
+        return await query
+            .OrderBy(x => x.Surname)
+            .ThenBy(x => x.Name)
+            .ThenBy(x => x.Patronymic)
+            .Take(take)
+            .ToListAsync(cancellationToken);
     }
 
     public async Task<IReadOnlyCollection<long>> GetIdsByRoleScope(string roleName,

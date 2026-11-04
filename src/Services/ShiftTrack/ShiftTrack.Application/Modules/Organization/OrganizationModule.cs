@@ -26,6 +26,7 @@ public static class OrganizationModule
     {
         //Employees
         services.AddTransient<IEmployeeService, EmployeeService>();
+        services.AddTransient<IEmployeeEditPermission, EmployeeEditPermission>();
 
         //Payrolls
         services.AddTransient<IPayrollService, PayrollService>();

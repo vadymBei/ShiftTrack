@@ -1,3 +1,5 @@
+using ShiftTrack.Infrastructure.Modules.Communication.Messenger.Services;
+using ShiftTrack.Infrastructure.Modules.Organization.Employees.Services;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
@@ -28,6 +30,9 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 builder.Services.AddRealtime(builder.Configuration);
+
+// The files of the chats are on this instance's disk, so they are cleaned up here.
+builder.Services.AddHostedService<AttachmentCleanupService>();
 
 builder.Services.AddJWTAuthenticationSwagger(
     builder.Environment.ApplicationName,
@@ -73,6 +78,17 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapHub<NotificationsHub>(NotificationsHub.Path);
+
+// Chat files and employee photos lie in wwwroot but are only for signed-in users (chat files only for the members
+// of the conversation): they are served by their endpoints, never as static files.
+app.UseWhen(
+    context => context.Request.Path.StartsWithSegments(LocalAttachmentStorage.RequestPath, StringComparison.OrdinalIgnoreCase)
+               || context.Request.Path.StartsWithSegments(LocalEmployeePhotoStorage.RequestPath, StringComparison.OrdinalIgnoreCase),
+    branch => branch.Run(context =>
+    {
+        context.Response.StatusCode = StatusCodes.Status404NotFound;
+        return Task.CompletedTask;
+    }));
 
 app.UseStaticFiles();
 

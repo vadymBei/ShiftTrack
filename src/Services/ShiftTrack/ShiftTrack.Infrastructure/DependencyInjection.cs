@@ -1,3 +1,6 @@
+using ShiftTrack.Infrastructure.Modules.Communication.Messenger.Services;
+using ShiftTrack.Infrastructure.Modules.Communication.Messenger.Repositories;
+using ShiftTrack.Application.Modules.Communication.Messenger.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,6 +37,7 @@ using ShiftTrack.Infrastructure.Modules.Booking.BusinessTrips.Repositories;
 using ShiftTrack.Infrastructure.Modules.Booking.Vacations.Repositories;
 using ShiftTrack.Infrastructure.Modules.Communication.Notifications.Repositories;
 using ShiftTrack.Infrastructure.Modules.Organization.Employees.Repositories;
+using ShiftTrack.Infrastructure.Modules.Organization.Employees.Services;
 using ShiftTrack.Infrastructure.Modules.Organization.Payrolls.Repositories;
 using ShiftTrack.Infrastructure.Modules.Organization.Structure.Departments.Repositories;
 using ShiftTrack.Infrastructure.Modules.Organization.Structure.Positions.Repositories;
@@ -89,6 +93,13 @@ public static class DependencyInjection
         //Communication
         //Notifications
         services.AddTransient<INotificationRepository, NotificationRepository>();
+
+        //Messenger
+        services.AddTransient<IConversationRepository, ConversationRepository>();
+        services.AddTransient<IMessageRepository, MessageRepository>();
+        services.AddTransient<IMessageAttachmentRepository, MessageAttachmentRepository>();
+        services.AddTransient<IAttachmentStorage, LocalAttachmentStorage>();
+        services.AddTransient<IEmployeePhotoStorage, LocalEmployeePhotoStorage>();
         
         //User
         services.AddTransient<IRoleRepository, RoleRepository>();

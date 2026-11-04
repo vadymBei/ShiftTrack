@@ -1,3 +1,4 @@
+using ShiftTrack.Domain.Modules.Communication.Messenger.Entities;
 using Microsoft.EntityFrameworkCore;
 using ShiftTrack.Domain.Modules.Booking.BusinessTrips.Entities;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -32,6 +33,13 @@ public interface IApplicationDbContext
     //Communication
     //Notifications
     DbSet<Notification> Notifications { get; set; }
+
+    //Messenger
+    DbSet<Conversation> Conversations { get; set; }
+    DbSet<ConversationMember> ConversationMembers { get; set; }
+    DbSet<Message> Messages { get; set; }
+    DbSet<MessageAttachment> MessageAttachments { get; set; }
+    DbSet<MessageMention> MessageMentions { get; set; }
     
     //Organization
     //Structure

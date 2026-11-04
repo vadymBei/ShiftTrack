@@ -1,4 +1,5 @@
 using FluentValidation;
+using ShiftTrack.Application.Modules.Organization.Employees.Constants;
 
 namespace ShiftTrack.Application.Modules.System.Auth.Account.UseCases.Commands.UploadPhoto;
 
@@ -6,10 +7,8 @@ public class UploadPhotoCommandValidator : AbstractValidator<UploadPhotoCommand>
 {
     public UploadPhotoCommandValidator()
     {
-        RuleFor(x => x.EmployeeId)
-            .NotNull()
-            .WithMessage("EmployeeId is required")
-            .GreaterThan(0)
-            .WithMessage("EmployeeId must be greater than zero.");
+        RuleFor(x => x.File)
+            .Must(x => x is { Length: > 0 })
+            .WithMessage(EmployeeExceptionsLocalization.PHOTO_REQUIRED);
     }
 }

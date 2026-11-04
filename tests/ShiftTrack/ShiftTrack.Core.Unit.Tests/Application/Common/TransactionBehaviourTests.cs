@@ -1,7 +1,7 @@
 using ShiftTrack.Application.Common.Behaviours;
-using ShiftTrack.Application.Common.Interfaces;
 using ShiftTrack.Core.Unit.Tests.Application.Common.UseCases.Commands;
 using ShiftTrack.Core.Unit.Tests.Application.Common.UseCases.Queries;
+using ShiftTrack.Core.Unit.Tests.Fakes;
 
 namespace ShiftTrack.Core.Unit.Tests.Application.Common
 {
@@ -47,15 +47,45 @@ namespace ShiftTrack.Core.Unit.Tests.Application.Common
             Assert.Equal(1, _unitOfWork.Transactions);
         }
 
-        private sealed class FakeUnitOfWork : IUnitOfWork
+        [Fact]
+        public async Task AfterCommit_RunsWhenTheCommandSucceeds()
         {
-            public int Transactions { get; private set; }
+            var behaviour = new TransactionBehaviour<FakeCommand, string>(_unitOfWork);
+            var sent = false;
 
-            public Task<T> ExecuteInTransaction<T>(Func<Task<T>> action, CancellationToken cancellationToken)
+            await behaviour.Handle(new FakeCommand(), async _ =>
             {
-                Transactions++;
-                return action();
-            }
+                await _unitOfWork.AfterCommit(() =>
+                {
+                    sent = true;
+                    return Task.CompletedTask;
+                });
+
+                Assert.False(sent);
+                return "done";
+            }, CancellationToken.None);
+
+            Assert.True(sent);
+        }
+
+        [Fact]
+        public async Task AfterCommit_IsDroppedWhenTheCommandFails()
+        {
+            var behaviour = new TransactionBehaviour<FakeCommand, string>(_unitOfWork);
+            var sent = false;
+
+            await Assert.ThrowsAsync<InvalidOperationException>(() => behaviour.Handle(new FakeCommand(), async _ =>
+            {
+                await _unitOfWork.AfterCommit(() =>
+                {
+                    sent = true;
+                    return Task.CompletedTask;
+                });
+
+                throw new InvalidOperationException();
+            }, CancellationToken.None));
+
+            Assert.False(sent);
         }
     }
 }

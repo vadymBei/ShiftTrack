@@ -7,7 +7,9 @@ using ShiftTrack.Application.Modules.System.Auth.Account.UseCases.Commands.Regis
 using ShiftTrack.Application.Modules.System.Auth.Account.UseCases.Commands.UpdateAccount;
 using ShiftTrack.Application.Modules.System.Auth.Account.UseCases.Commands.UploadPhoto;
 using ShiftTrack.Application.Modules.System.Auth.Account.UseCases.Queries.GetCurrentUser;
-using ShiftTrack.Application.Modules.System.Auth.Account.UseCases.Queries.GetUserPhoto;
+using ShiftTrack.Application.Modules.System.Auth.Account.UseCases.Commands.RemovePhoto;
+using ShiftTrack.Application.Modules.Organization.Employees.Constants;
+using ShiftTrack.Application.Modules.Organization.Employees.Models;
 using ShiftTrack.Application.Modules.System.Auth.Account.ViewModels;
 using ShiftTrack.Application.Modules.System.Auth.Tokens.Dtos;
 using ShiftTrack.Application.Modules.System.Auth.Tokens.UseCases.Commands.GenerateToken;
@@ -43,19 +45,22 @@ public class SYS_AUTH_AccountController : ApiController
     public Task<EmployeeVm> UpdateAccount(UpdateAccountCommand command)
         => Mediator.Send(command);
 
-    [HttpPost("upload-photo")]
-    public async Task<IActionResult> UploadPhoto([FromForm] UploadPhotoCommand command)
+    /// <summary>Replaces the photo of the current user; the photo is read at organization/employees/{id}/photo.</summary>
+    [HttpPost("photo")]
+    [RequestSizeLimit(EmployeePhotoConstants.MaxSize + 1024 * 1024)]
+    [RequestFormLimits(MultipartBodyLengthLimit = EmployeePhotoConstants.MaxSize + 1024 * 1024)]
+    public async Task<EmployeePhotoVm> UploadPhoto(IFormFile file)
     {
-        var document = await Mediator.Send(command);
+        await using var content = file?.OpenReadStream() ?? Stream.Null;
 
-        return PhysicalFile(document.Path, document.MimeType);
+        return await Mediator.Send(new UploadPhotoCommand(new PhotoUpload(content, file?.FileName, file?.Length ?? 0)));
     }
 
-    [HttpGet("photo")]
-    public async Task<IActionResult> GetPhoto([FromQuery] GetUserPhotoQuery query)
+    [HttpDelete("photo")]
+    public async Task<IActionResult> RemovePhoto()
     {
-        var document = await Mediator.Send(query);
+        await Mediator.Send(new RemovePhotoCommand());
 
-        return PhysicalFile(document.Path, document.MimeType);
+        return NoContent();
     }
 }

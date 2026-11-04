@@ -18,6 +18,13 @@ public class EmployeeVm
     public string PhoneNumber { get; set; }
     public DateTime? DateOfBirth { get; set; }
 
+    /// <summary>Null if not set; <see cref="ServiceStart"/> is what the vacations are counted from.</summary>
+    public DateTime? HireDate { get; set; }
+    public DateTime ServiceStart { get; set; }
+
+    /// <summary>Registration in the system.</summary>
+    public DateTime CreatedAt { get; set; }
+
     public long? DepartmentId { get; set; }
     public DepartmentVm Department { get; set; }
 

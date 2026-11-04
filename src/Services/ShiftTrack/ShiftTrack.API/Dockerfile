@@ -1,4 +1,7 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
+# Uploads (employee photos, chat files) are written at runtime by the non-root user. Done in "base",
+# because Rider's fast mode runs only this stage; a new volume takes the owner from the image.
+RUN mkdir -p /app/wwwroot/uploads && chown -R app:app /app/wwwroot
 USER app
 WORKDIR /app
 EXPOSE 8080

@@ -1,3 +1,4 @@
+using ShiftTrack.Application.Modules.Communication.Messenger.Interfaces;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,6 +29,7 @@ public static class RealtimeExtensions
         }
 
         services.AddScoped<INotificationPublisher, SignalRNotificationPublisher>();
+        services.AddScoped<IMessengerPublisher, SignalRMessengerPublisher>();
 
         return services;
     }
