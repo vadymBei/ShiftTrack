@@ -65,7 +65,14 @@ public class MessageRepository(
     private static IQueryable<Message> WithDetails(IQueryable<Message> query) =>
         query
             .Include(x => x.Author)
+            .Include(x => x.Conversation)
             .Include(x => x.ReplyToMessage)
             .ThenInclude(x => x.Author)
-            .Include(x => x.Attachments);
+            .Include(x => x.ReplyToMessage)
+            .ThenInclude(x => x.Mentions)
+            .ThenInclude(x => x.Employee)
+            .Include(x => x.Attachments)
+            .Include(x => x.Mentions)
+            .ThenInclude(x => x.Employee)
+            .AsSplitQuery();
 }

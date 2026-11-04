@@ -12,4 +12,6 @@ public class ConversationSummary
 
     /// <summary>Messages of other members after the last read one.</summary>
     public int UnreadCount { get; init; }
+
+    public bool HasUnreadMention { get; init; }
 }

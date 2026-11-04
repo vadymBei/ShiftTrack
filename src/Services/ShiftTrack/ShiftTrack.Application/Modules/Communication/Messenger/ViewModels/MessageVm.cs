@@ -25,4 +25,7 @@ public class MessageVm
 
     /// <summary>Empty for a deleted message.</summary>
     public List<AttachmentVm> Attachments { get; set; } = [];
+
+    /// <summary>Names for the "&lt;@id&gt;" tokens in <see cref="Text"/>.</summary>
+    public List<MentionVm> Mentions { get; set; } = [];
 }

@@ -169,6 +169,7 @@ public class MessageServiceTests : MessengerFixture
     private Message GivenMessage(Message message)
     {
         Messages.Setup(x => x.GetForUpdate(message.Id, It.IsAny<CancellationToken>())).ReturnsAsync(message);
+        Messages.Setup(x => x.GetById(message.Id, It.IsAny<CancellationToken>())).ReturnsAsync(message);
         return message;
     }
 }

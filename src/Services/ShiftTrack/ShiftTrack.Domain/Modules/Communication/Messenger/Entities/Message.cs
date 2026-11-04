@@ -29,4 +29,6 @@ public class Message : AuditableEntity
     public bool IsDeleted => DeletedAt is not null;
 
     public List<MessageAttachment> Attachments { get; set; } = [];
+
+    public List<MessageMention> Mentions { get; set; } = [];
 }

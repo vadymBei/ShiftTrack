@@ -1,3 +1,5 @@
+using ShiftTrack.Application.Modules.Communication.Messenger.Events;
+using ShiftTrack.Application.Common.Outbox.Interfaces;
 using System.Net;
 using ShiftTrack.Application.Modules.Communication.Messenger.Constants;
 using ShiftTrack.Application.Modules.Communication.Messenger.Exceptions;
@@ -18,7 +20,8 @@ public class MessageService(
     IMessageRateLimiter messageRateLimiter,
     IMessengerPublisher messengerPublisher,
     IMessageAttachmentRepository attachmentRepository,
-    IAttachmentStorage attachmentStorage) : IMessageService
+    IAttachmentStorage attachmentStorage,
+    IDomainEventOutbox domainEventOutbox) : IMessageService
 {
     private long MyId => currentUserService.Employee.Id;
 
@@ -74,7 +77,13 @@ public class MessageService(
             Attachments = attachments.ToList()
         };
 
+        var mentioned = MentionedMembers(conversation, message.Text);
+        message.Mentions = mentioned.Select(x => new MessageMention { EmployeeId = x }).ToList();
+
         await messageRepository.Add(message, cancellationToken);
+
+        if (mentioned.Count > 0)
+            await domainEventOutbox.Enqueue(new MessageMentionsAddedEvent(message.Id, mentioned), cancellationToken);
         await conversationRepository.SetLastMessage(conversationId, message.Id, message.CreatedAt, cancellationToken);
         await conversationRepository.MarkRead(conversationId, MyId, message.Id, cancellationToken);
 
@@ -94,16 +103,29 @@ public class MessageService(
 
         text = text.Trim();
 
-        if (message.Text != text)
-        {
-            message.Text = text;
-            message.EditedAt = DateTime.UtcNow;
+        if (message.Text == text)
+            return message;
 
-            await messageRepository.Save(cancellationToken);
-            await PublishUpdated(message, cancellationToken);
-        }
+        message.Text = text;
+        message.EditedAt = DateTime.UtcNow;
 
-        return message;
+        // Removed mentions go, only the added ones are notified.
+        var conversation = await conversationRepository.GetForUpdate(message.ConversationId, cancellationToken);
+        var mentioned = MentionedMembers(conversation, text);
+        var added = mentioned.Where(id => message.Mentions.All(x => x.EmployeeId != id)).ToList();
+
+        message.Mentions.RemoveAll(x => !mentioned.Contains(x.EmployeeId));
+        message.Mentions.AddRange(added.Select(x => new MessageMention { MessageId = message.Id, EmployeeId = x }));
+
+        await messageRepository.Save(cancellationToken);
+
+        if (added.Count > 0)
+            await domainEventOutbox.Enqueue(new MessageMentionsAddedEvent(message.Id, added), cancellationToken);
+
+        var saved = await messageRepository.GetById(message.Id, cancellationToken);
+        await PublishUpdated(saved, cancellationToken);
+
+        return saved;
     }
 
     public async Task<Message> Delete(long messageId, CancellationToken cancellationToken)
@@ -131,6 +153,21 @@ public class MessageService(
         await PublishUpdated(message, cancellationToken);
 
         return message;
+    }
+
+    /// <summary>
+    /// Members of a group mentioned in the text, except the author. Mentions are a group thing:
+    /// in a direct chat the other member gets every message anyway.
+    /// </summary>
+    private IReadOnlyList<long> MentionedMembers(Conversation conversation, string text)
+    {
+        if (conversation?.Type != ConversationType.Group)
+            return [];
+
+        return MentionTokens.Parse(text)
+            .Where(id => id != MyId && conversation.FindMember(id) is not null)
+            .Take(MessengerConstants.MaxMentionsPerMessage)
+            .ToList();
     }
 
     private async Task<IReadOnlyList<MessageAttachment>> GetAttachmentsToSend(long conversationId,

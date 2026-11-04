@@ -361,6 +361,9 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
                     b.Property<long>("EmployeeId")
                         .HasColumnType("bigint");
 
+                    b.Property<bool>("IsMuted")
+                        .HasColumnType("boolean");
+
                     b.Property<DateTime>("JoinedAt")
                         .HasColumnType("timestamp without time zone");
 
@@ -498,6 +501,21 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("MessageAttachments", (string)null);
+                });
+
+            modelBuilder.Entity("ShiftTrack.Domain.Modules.Communication.Messenger.Entities.MessageMention", b =>
+                {
+                    b.Property<long>("MessageId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("EmployeeId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("MessageId", "EmployeeId");
+
+                    b.HasIndex("EmployeeId", "MessageId");
+
+                    b.ToTable("MessageMentions", (string)null);
                 });
 
             modelBuilder.Entity("ShiftTrack.Domain.Modules.Communication.Notifications.Entities.Notification", b =>
@@ -1390,6 +1408,25 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
                     b.Navigation("Modifier");
                 });
 
+            modelBuilder.Entity("ShiftTrack.Domain.Modules.Communication.Messenger.Entities.MessageMention", b =>
+                {
+                    b.HasOne("ShiftTrack.Domain.Modules.System.User.Employees.Entities.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ShiftTrack.Domain.Modules.Communication.Messenger.Entities.Message", "Message")
+                        .WithMany("Mentions")
+                        .HasForeignKey("MessageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("Message");
+                });
+
             modelBuilder.Entity("ShiftTrack.Domain.Modules.Communication.Notifications.Entities.Notification", b =>
                 {
                     b.HasOne("ShiftTrack.Domain.Modules.System.User.Employees.Entities.Employee", "Author")
@@ -1734,6 +1771,8 @@ namespace ShiftTrack.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("ShiftTrack.Domain.Modules.Communication.Messenger.Entities.Message", b =>
                 {
                     b.Navigation("Attachments");
+
+                    b.Navigation("Mentions");
                 });
 
             modelBuilder.Entity("ShiftTrack.Domain.Modules.Organization.Structure.Entities.Unit", b =>

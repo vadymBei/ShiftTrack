@@ -1,3 +1,4 @@
+using ShiftTrack.Application.Modules.Communication.Messenger.UseCases.Commands.SetConversationMuted;
 using Microsoft.Net.Http.Headers;
 using ShiftTrack.Application.Modules.Communication.Messenger.UseCases.Queries.GetAttachment;
 using ShiftTrack.Application.Modules.Communication.Messenger.UseCases.Commands.RemoveAttachment;
@@ -77,6 +78,11 @@ public class COM_MSG_MessengerController : ApiController
 
         return Ok();
     }
+
+    /// <summary>Muted: no pop-ups (still counted in the menu); mentions still notify.</summary>
+    [HttpPut("conversations/{id}/muted")]
+    public Task<ConversationVm> SetMuted(long id, [FromBody] SetConversationMutedDto dto)
+        => Mediator.Send(new SetConversationMutedCommand(id, dto.Muted));
 
     /// <summary>The user is typing: other members see it for a few seconds.</summary>
     [HttpPost("conversations/{id}/typing")]

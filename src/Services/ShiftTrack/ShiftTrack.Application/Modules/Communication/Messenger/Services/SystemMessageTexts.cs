@@ -24,6 +24,10 @@ public static class SystemMessageTexts
     public static string NewOwner(Employee owner) =>
         $"{owner?.FullName} тепер {Verb(owner, "власник", "власниця", "власник(-ця)")} групи";
 
+    /// <summary>The title of the notification about a mention.</summary>
+    public static string Mentioned(Employee actor, string title) =>
+        $"{actor?.FullName ?? "Колега"} {Verb(actor, "згадав", "згадала", "згадав(-ла)")} вас у «{title}»";
+
     private static string Names(IEnumerable<Employee> employees) =>
         string.Join(", ", employees.Select(x => x.FullName));
 

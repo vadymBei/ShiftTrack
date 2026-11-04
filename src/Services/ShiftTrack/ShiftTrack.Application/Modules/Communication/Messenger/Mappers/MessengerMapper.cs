@@ -37,6 +37,8 @@ public static class MessengerMapper
             UnreadCount = summary.UnreadCount,
             ReadByOthersUpToMessageId = others.Max(x => x.LastReadMessageId),
             MyRole = me?.Role ?? ConversationMemberRole.None,
+            IsMuted = me?.IsMuted ?? false,
+            HasUnreadMention = summary.HasUnreadMention,
             CanWrite = me is not null && (conversation.Type == ConversationType.Group || interlocutor is not null)
         };
     }
@@ -65,6 +67,12 @@ public static class MessengerMapper
         EditedAt = message.EditedAt,
         IsDeleted = message.IsDeleted,
         ClientMessageId = message.ClientMessageId,
+        Mentions = message.IsDeleted
+            ? []
+            : (message.Mentions ?? [])
+                .Where(x => x.Employee is not null)
+                .Select(x => new MentionVm { EmployeeId = x.EmployeeId, FullName = x.Employee.FullName })
+                .ToList(),
         Attachments = message.IsDeleted
             ? []
             : (message.Attachments ?? []).OrderBy(x => x.Id).Select(x => x.ToVm()).ToList(),
@@ -74,7 +82,7 @@ public static class MessengerMapper
                 Id = reply.Id,
                 AuthorId = reply.AuthorId,
                 AuthorFullName = reply.Author?.FullName,
-                Text = reply.IsDeleted ? null : Shorten(reply.Text),
+                Text = reply.IsDeleted ? null : Shorten(PlainText(reply)),
                 IsDeleted = reply.IsDeleted
             }
             : null
@@ -98,6 +106,11 @@ public static class MessengerMapper
         UnitName = employee.Department?.Unit?.Name,
         HasPhoto = !string.IsNullOrEmpty(employee.PhotoFullName)
     };
+
+    /// <summary>The text with "@Name" for the mention tokens.</summary>
+    public static string PlainText(Message message) =>
+        Services.MentionTokens.ToPlainText(message.Text, id =>
+            message.Mentions?.FirstOrDefault(x => x.EmployeeId == id)?.Employee?.FullName);
 
     private static string Shorten(string text) =>
         text is null || text.Length <= Constants.MessengerConstants.ReplyPreviewLength

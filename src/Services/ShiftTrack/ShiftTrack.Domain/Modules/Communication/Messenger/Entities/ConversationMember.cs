@@ -22,4 +22,10 @@ public class ConversationMember
     /// see their messages up to this one as read (✓✓).
     /// </summary>
     public long? LastReadMessageId { get; set; }
+
+    /// <summary>
+    /// No pop-ups and no unread counter in the menu for this conversation. Mentions of the member
+    /// still come as notifications.
+    /// </summary>
+    public bool IsMuted { get; set; }
 }

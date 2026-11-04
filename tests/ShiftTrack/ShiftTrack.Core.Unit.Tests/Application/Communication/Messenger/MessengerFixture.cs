@@ -1,3 +1,4 @@
+using ShiftTrack.Application.Common.Outbox.Interfaces;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using ShiftTrack.Core.Unit.Tests.Builders;
@@ -25,6 +26,7 @@ public abstract class MessengerFixture
     protected readonly Mock<IMessageRateLimiter> RateLimiter = new();
     protected readonly Mock<IMessageAttachmentRepository> Attachments = new();
     protected readonly Mock<IAttachmentStorage> Storage = new();
+    protected readonly Mock<IDomainEventOutbox> Outbox = new();
 
     protected readonly ConversationService ConversationService;
     protected readonly MessageService MessageService;
@@ -62,7 +64,7 @@ public abstract class MessengerFixture
         ConversationService = new ConversationService(currentUser.Object, UnitOfWork, Conversations.Object,
             Messages.Object, Employees.Object, Publisher.Object, Attachments.Object, Storage.Object);
         MessageService = new MessageService(currentUser.Object, UnitOfWork, Conversations.Object, Messages.Object,
-            RateLimiter.Object, Publisher.Object, Attachments.Object, Storage.Object);
+            RateLimiter.Object, Publisher.Object, Attachments.Object, Storage.Object, Outbox.Object);
         AttachmentService = new MessageAttachmentService(currentUser.Object, UnitOfWork, Conversations.Object,
             Attachments.Object, Storage.Object, NullLogger<MessageAttachmentService>.Instance);
 

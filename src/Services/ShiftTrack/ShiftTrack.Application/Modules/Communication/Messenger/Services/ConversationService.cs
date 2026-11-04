@@ -219,6 +219,20 @@ public class ConversationService(
         await PublishChanged(id, [..memberIds, Me.Id]);
     }
 
+    public async Task<ConversationSummary> SetMuted(long id, bool muted, CancellationToken cancellationToken)
+    {
+        await EnsureMember(id, cancellationToken);
+
+        if (await conversationRepository.SetMuted(id, Me.Id, muted, cancellationToken))
+        {
+            // The user's other tabs: the badge and the counter in the menu.
+            await unitOfWork.AfterCommit(() =>
+                messengerPublisher.ConversationChanged([Me.Id], id, CancellationToken.None));
+        }
+
+        return await Load(id, cancellationToken);
+    }
+
     public async Task MarkRead(long id, long messageId, CancellationToken cancellationToken)
     {
         await EnsureMember(id, cancellationToken);

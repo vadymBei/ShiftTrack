@@ -31,5 +31,9 @@ public interface IConversationRepository
     /// <summary>Moves the read position forward; false if it is already there or further.</summary>
     Task<bool> MarkRead(long conversationId, long employeeId, long messageId, CancellationToken cancellationToken);
 
+    /// <summary>Not muted conversations only.</summary>
     Task<MessengerUnreadCount> CountUnread(long employeeId, CancellationToken cancellationToken);
+
+    /// <summary>False if it already was so.</summary>
+    Task<bool> SetMuted(long conversationId, long employeeId, bool muted, CancellationToken cancellationToken);
 }

@@ -25,6 +25,12 @@ public class ConversationVm
 
     public ConversationMemberRole MyRole { get; set; }
 
+    /// <summary>Muted by the current user: no pop-ups, still counted in the menu.</summary>
+    public bool IsMuted { get; set; }
+
+    /// <summary>An unread message mentions the current user.</summary>
+    public bool HasUnreadMention { get; set; }
+
     /// <summary>False when the other member of a direct chat is no longer available.</summary>
     public bool CanWrite { get; set; }
 }

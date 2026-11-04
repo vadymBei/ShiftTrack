@@ -56,6 +56,7 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<ConversationMember> ConversationMembers { get; set; }
     public DbSet<Message> Messages { get; set; }
     public DbSet<MessageAttachment> MessageAttachments { get; set; }
+    public DbSet<MessageMention> MessageMentions { get; set; }
 
     //Organization
     //Structure

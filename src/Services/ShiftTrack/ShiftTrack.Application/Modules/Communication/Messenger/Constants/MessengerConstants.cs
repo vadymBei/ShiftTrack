@@ -20,6 +20,11 @@ public static class MessengerConstants
     public const long MaxAttachmentSize = 20 * 1024 * 1024;
     public const int MaxAttachmentsPerMessage = 10;
 
+    /// <summary>More mentions in one message are kept as text but nobody else is notified.</summary>
+    public const int MaxMentionsPerMessage = 50;
+
+    public const int MentionNotificationLength = 200;
+
     /// <summary>Uploads not sent in a message are removed after this time.</summary>
     public static readonly TimeSpan UnsentAttachmentLifetime = TimeSpan.FromDays(1);
 

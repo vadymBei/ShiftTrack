@@ -14,6 +14,7 @@ public interface IConversationService
     Task<ConversationSummary> RemoveMember(long id, long employeeId, CancellationToken cancellationToken);
     Task Leave(long id, CancellationToken cancellationToken);
     Task MarkRead(long id, long messageId, CancellationToken cancellationToken);
+    Task<ConversationSummary> SetMuted(long id, bool muted, CancellationToken cancellationToken);
     Task Typing(long id, CancellationToken cancellationToken);
     Task<MessengerUnreadCount> CountUnread(CancellationToken cancellationToken);
 

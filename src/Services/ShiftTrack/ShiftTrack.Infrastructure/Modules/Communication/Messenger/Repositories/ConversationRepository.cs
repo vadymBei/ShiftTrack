@@ -35,7 +35,12 @@ public class ConversationRepository(
                     m.ConversationId == x.ConversationId
                     && m.AuthorId != employeeId
                     && m.DeletedAt == null
-                    && (x.LastReadMessageId == null || m.Id > x.LastReadMessageId))
+                    && (x.LastReadMessageId == null || m.Id > x.LastReadMessageId)),
+                HasUnreadMention = applicationDbContext.MessageMentions.Any(m =>
+                    m.EmployeeId == employeeId
+                    && m.Message.ConversationId == x.ConversationId
+                    && m.Message.DeletedAt == null
+                    && (x.LastReadMessageId == null || m.MessageId > x.LastReadMessageId))
             })
             .ToListAsync(cancellationToken);
 
@@ -66,6 +71,8 @@ public class ConversationRepository(
             .AsNoTracking()
             .Include(x => x.Author)
             .Include(x => x.Attachments)
+            .Include(x => x.Mentions)
+            .ThenInclude(x => x.Employee)
             .Where(x => lastMessageIds.Contains(x.Id))
             .ToDictionaryAsync(x => x.Id, cancellationToken);
 
@@ -79,7 +86,8 @@ public class ConversationRepository(
                 {
                     Conversation = conversation,
                     LastMessage = conversation.LastMessageId is { } lastId ? lastMessages.GetValueOrDefault(lastId) : null,
-                    UnreadCount = x.UnreadCount
+                    UnreadCount = x.UnreadCount,
+                    HasUnreadMention = x.HasUnreadMention
                 };
             })
             .ToList();
@@ -203,6 +211,17 @@ public class ConversationRepository(
             .ToListAsync(cancellationToken);
 
         return new MessengerUnreadCount(counts.Count, counts.Sum());
+    }
+
+    public async Task<bool> SetMuted(long conversationId, long employeeId, bool muted,
+        CancellationToken cancellationToken)
+    {
+        var updated = await applicationDbContext.ConversationMembers
+            .IgnoreQueryFilters()
+            .Where(x => x.ConversationId == conversationId && x.EmployeeId == employeeId && x.IsMuted != muted)
+            .ExecuteUpdateAsync(setters => setters.SetProperty(x => x.IsMuted, muted), cancellationToken);
+
+        return updated > 0;
     }
 
     private Task<long?> FindDirect(string key, CancellationToken cancellationToken)
