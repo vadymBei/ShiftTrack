@@ -5,6 +5,7 @@ using ShiftTrack.Application.Modules.Communication.Messenger.Constants;
 using ShiftTrack.Application.Modules.Communication.Messenger.Exceptions;
 using ShiftTrack.Application.Modules.Communication.Messenger.Interfaces;
 using ShiftTrack.Application.Modules.Communication.Messenger.Mappers;
+using ShiftTrack.Application.Modules.Communication.Messenger.Models;
 using ShiftTrack.Application.Common.Interfaces;
 using ShiftTrack.Domain.Modules.Communication.Messenger.Entities;
 using ShiftTrack.Domain.Modules.Communication.Messenger.Enums;
@@ -34,6 +35,58 @@ public class MessageService(
         return await messageRepository.GetPage(conversationId, beforeId,
             Math.Clamp(take, 1, MessengerConstants.MaxMessagesPage), cancellationToken);
     }
+
+    public async Task<IReadOnlyList<Message>> GetPageUntil(long conversationId, long? beforeId, long untilId, int take,
+        CancellationToken cancellationToken)
+    {
+        if (!await conversationRepository.IsMember(conversationId, MyId, cancellationToken))
+            throw NotAMember();
+
+        return await messageRepository.GetPageUntil(conversationId, beforeId, untilId,
+            Math.Clamp(take, 1, MessengerConstants.MaxMessagesPage), MessengerConstants.MaxMessagesToReach,
+            cancellationToken);
+    }
+
+    public async Task<MessageSearchResult> Search(long conversationId, string query, CancellationToken cancellationToken)
+    {
+        query = (query ?? "").Trim();
+
+        if (query.Length < MessengerConstants.MinSearchLength)
+            throw Error(MessengerExceptionsLocalization.SEARCH_TOO_SHORT,
+                nameof(MessengerExceptionsLocalization.SEARCH_TOO_SHORT));
+
+        if (query.Length > MessengerConstants.MaxSearchLength)
+            throw Error(MessengerExceptionsLocalization.SEARCH_TOO_LONG,
+                nameof(MessengerExceptionsLocalization.SEARCH_TOO_LONG));
+
+        if (!await conversationRepository.IsMember(conversationId, MyId, cancellationToken))
+            throw NotAMember();
+
+        // The database finds candidates, also where only a mention token ("<@12>") matches; the check below is
+        // on the text as people see it, with "@Олена Коваль" for the tokens.
+        var take = MessengerConstants.MaxSearchResults * 2;
+        var candidates = await messageRepository.Search(conversationId, $"%{EscapeLike(query)}%", take, cancellationToken);
+
+        var matches = candidates
+            .Where(x => Matches(x, query))
+            .Select(x => x.Id)
+            .ToList();
+
+        return new MessageSearchResult(
+            matches.Take(MessengerConstants.MaxSearchResults).ToList(),
+            matches.Count > MessengerConstants.MaxSearchResults || candidates.Count >= take);
+    }
+
+    private static bool Matches(MessageSearchCandidate message, string query)
+    {
+        var text = MentionTokens.ToPlainText(message.Text, id => message.MentionLabels.GetValueOrDefault(id));
+
+        return (text?.Contains(query, StringComparison.OrdinalIgnoreCase) ?? false)
+               || message.FileNames.Any(x => x?.Contains(query, StringComparison.OrdinalIgnoreCase) ?? false);
+    }
+
+    private static string EscapeLike(string value) =>
+        value.Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_");
 
     public async Task<Message> Send(long conversationId, string text, Guid? clientMessageId, long? replyToMessageId,
         IReadOnlyCollection<long> attachmentIds, CancellationToken cancellationToken)

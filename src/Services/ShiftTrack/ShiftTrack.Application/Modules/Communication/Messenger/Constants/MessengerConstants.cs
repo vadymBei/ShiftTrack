@@ -8,6 +8,14 @@ public static class MessengerConstants
 
     public const int DefaultMessagesPage = 50;
     public const int MaxMessagesPage = 100;
+
+    /// <summary>At most this many messages are loaded at once to reach an old message (a search result, a reply).</summary>
+    public const int MaxMessagesToReach = 1000;
+
+    public const int MinSearchLength = 2;
+    public const int MaxSearchLength = 100;
+    /// <summary>The newest matches; older ones need a more exact query.</summary>
+    public const int MaxSearchResults = 100;
     public const int MaxConversations = 200;
     public const int MaxContacts = 20;
 

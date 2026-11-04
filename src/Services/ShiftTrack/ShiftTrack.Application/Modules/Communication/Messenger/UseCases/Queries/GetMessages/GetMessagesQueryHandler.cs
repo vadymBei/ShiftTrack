@@ -10,6 +10,10 @@ public class GetMessagesQueryHandler(
 {
     public async Task<List<MessageVm>> Handle(GetMessagesQuery request, CancellationToken cancellationToken = default)
     {
-        return (await messageService.GetPage(request.ConversationId, request.BeforeId, request.Take, cancellationToken)).Select(x => x.ToVm()).ToList();
+        var page = request.UntilId is { } untilId
+            ? await messageService.GetPageUntil(request.ConversationId, request.BeforeId, untilId, request.Take, cancellationToken)
+            : await messageService.GetPage(request.ConversationId, request.BeforeId, request.Take, cancellationToken);
+
+        return page.Select(x => x.ToVm()).ToList();
     }
 }

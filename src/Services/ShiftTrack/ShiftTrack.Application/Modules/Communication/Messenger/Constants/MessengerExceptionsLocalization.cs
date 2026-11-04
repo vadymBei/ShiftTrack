@@ -3,6 +3,8 @@ namespace ShiftTrack.Application.Modules.Communication.Messenger.Constants;
 public static class MessengerExceptionsLocalization
 {
     public const string NOT_A_MEMBER = "You are not a member of this conversation.";
+    public const string SEARCH_TOO_SHORT = "Type at least 2 characters to search.";
+    public const string SEARCH_TOO_LONG = "The search text is too long.";
     public const string CANNOT_CHAT_WITH_YOURSELF = "You cannot start a conversation with yourself.";
     public const string NOT_A_GROUP = "This action is available only in group conversations.";
     public const string ONLY_OWNER = "Only the owner of the group can do this.";

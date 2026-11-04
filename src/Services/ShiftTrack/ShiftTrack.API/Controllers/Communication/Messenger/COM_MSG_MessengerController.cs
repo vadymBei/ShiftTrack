@@ -1,6 +1,7 @@
 using ShiftTrack.Application.Modules.Communication.Messenger.UseCases.Commands.SetConversationMuted;
 using Microsoft.Net.Http.Headers;
 using ShiftTrack.Application.Modules.Communication.Messenger.UseCases.Queries.GetAttachment;
+using ShiftTrack.Application.Modules.Communication.Messenger.UseCases.Queries.SearchMessages;
 using ShiftTrack.Application.Modules.Communication.Messenger.UseCases.Commands.RemoveAttachment;
 using ShiftTrack.Application.Modules.Communication.Messenger.UseCases.Commands.UploadAttachment;
 using ShiftTrack.Application.Modules.Communication.Messenger.Models;
@@ -93,11 +94,19 @@ public class COM_MSG_MessengerController : ApiController
         return Ok();
     }
 
-    /// <summary>Messages before <paramref name="beforeId"/> (or the newest), oldest first.</summary>
+    /// <summary>
+    /// Messages before <paramref name="beforeId"/> (or the newest), oldest first. With <paramref name="untilId"/>
+    /// the page reaches back to that message (to show a search result) and has <paramref name="take"/> more before it.
+    /// </summary>
     [HttpGet("conversations/{id}/messages")]
-    public Task<List<MessageVm>> GetMessages(long id, [FromQuery] long? beforeId,
+    public Task<List<MessageVm>> GetMessages(long id, [FromQuery] long? beforeId, [FromQuery] long? untilId,
         [FromQuery] int take = MessengerConstants.DefaultMessagesPage)
-        => Mediator.Send(new GetMessagesQuery(id, beforeId, take));
+        => Mediator.Send(new GetMessagesQuery(id, beforeId, take, untilId));
+
+    /// <summary>Ids of the messages containing <paramref name="q"/> (text, file names, mentioned names), the newest first.</summary>
+    [HttpGet("conversations/{id}/messages/search")]
+    public Task<MessageSearchVm> SearchMessages(long id, [FromQuery] string q)
+        => Mediator.Send(new SearchMessagesQuery(id, q));
 
     [HttpPost("conversations/{id}/messages")]
     public Task<MessageVm> SendMessage(long id, [FromBody] SendMessageDto dto)
