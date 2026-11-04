@@ -16,7 +16,9 @@ public class MessageService(
     IConversationRepository conversationRepository,
     IMessageRepository messageRepository,
     IMessageRateLimiter messageRateLimiter,
-    IMessengerPublisher messengerPublisher) : IMessageService
+    IMessengerPublisher messengerPublisher,
+    IMessageAttachmentRepository attachmentRepository,
+    IAttachmentStorage attachmentStorage) : IMessageService
 {
     private long MyId => currentUserService.Employee.Id;
 
@@ -31,7 +33,7 @@ public class MessageService(
     }
 
     public async Task<Message> Send(long conversationId, string text, Guid? clientMessageId, long? replyToMessageId,
-        CancellationToken cancellationToken)
+        IReadOnlyCollection<long> attachmentIds, CancellationToken cancellationToken)
     {
         var conversation = await conversationRepository.GetForUpdate(conversationId, cancellationToken);
 
@@ -56,6 +58,8 @@ public class MessageService(
             throw Error(MessengerExceptionsLocalization.MESSAGE_FROM_OTHER_CONVERSATION,
                 nameof(MessengerExceptionsLocalization.MESSAGE_FROM_OTHER_CONVERSATION));
 
+        var attachments = await GetAttachmentsToSend(conversationId, attachmentIds, cancellationToken);
+
         if (!messageRateLimiter.TryAcquire(MyId))
             throw Error(MessengerExceptionsLocalization.TOO_MANY_MESSAGES,
                 nameof(MessengerExceptionsLocalization.TOO_MANY_MESSAGES), HttpStatusCode.TooManyRequests);
@@ -64,9 +68,10 @@ public class MessageService(
         {
             ConversationId = conversationId,
             Type = MessageType.Text,
-            Text = text.Trim(),
+            Text = string.IsNullOrWhiteSpace(text) ? null : text.Trim(),
             ClientMessageId = clientMessageId,
-            ReplyToMessageId = replyToMessageId
+            ReplyToMessageId = replyToMessageId,
+            Attachments = attachments.ToList()
         };
 
         await messageRepository.Add(message, cancellationToken);
@@ -108,10 +113,45 @@ public class MessageService(
         message.DeletedAt = DateTime.UtcNow;
         message.Text = null;
 
+        // A deleted message keeps no files: they are removed from the storage after the commit.
+        var storedNames = message.Attachments.Select(x => x.StoredName).ToList();
+        if (message.Attachments.Count > 0)
+        {
+            await attachmentRepository.Remove(message.Attachments.ToList(), cancellationToken);
+            message.Attachments.Clear();
+        }
+
         await messageRepository.Save(cancellationToken);
+
+        await unitOfWork.AfterCommit(() =>
+        {
+            storedNames.ForEach(attachmentStorage.Delete);
+            return Task.CompletedTask;
+        });
         await PublishUpdated(message, cancellationToken);
 
         return message;
+    }
+
+    private async Task<IReadOnlyList<MessageAttachment>> GetAttachmentsToSend(long conversationId,
+        IReadOnlyCollection<long> attachmentIds, CancellationToken cancellationToken)
+    {
+        var ids = (attachmentIds ?? []).Distinct().ToList();
+
+        if (ids.Count == 0)
+            return [];
+
+        if (ids.Count > MessengerConstants.MaxAttachmentsPerMessage)
+            throw Error(MessengerExceptionsLocalization.TOO_MANY_ATTACHMENTS,
+                nameof(MessengerExceptionsLocalization.TOO_MANY_ATTACHMENTS));
+
+        var attachments = await attachmentRepository.GetUnsent(MyId, conversationId, ids, cancellationToken);
+
+        if (attachments.Count != ids.Count)
+            throw Error(MessengerExceptionsLocalization.ATTACHMENTS_NOT_FOUND,
+                nameof(MessengerExceptionsLocalization.ATTACHMENTS_NOT_FOUND));
+
+        return attachments;
     }
 
     private async Task<Message> GetOwn(long messageId, CancellationToken cancellationToken)

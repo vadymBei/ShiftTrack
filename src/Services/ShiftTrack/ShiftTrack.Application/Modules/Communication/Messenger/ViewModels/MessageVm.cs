@@ -22,4 +22,7 @@ public class MessageVm
     public Guid? ClientMessageId { get; set; }
 
     public MessagePreviewVm ReplyTo { get; set; }
+
+    /// <summary>Empty for a deleted message.</summary>
+    public List<AttachmentVm> Attachments { get; set; } = [];
 }

@@ -27,4 +27,6 @@ public class Message : AuditableEntity
     public DateTime? DeletedAt { get; set; }
 
     public bool IsDeleted => DeletedAt is not null;
+
+    public List<MessageAttachment> Attachments { get; set; } = [];
 }

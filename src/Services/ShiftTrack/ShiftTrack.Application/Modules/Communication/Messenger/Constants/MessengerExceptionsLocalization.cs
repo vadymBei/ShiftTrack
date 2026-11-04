@@ -16,4 +16,11 @@ public static class MessengerExceptionsLocalization
     public const string CANNOT_CHANGE_MESSAGE = "This message cannot be changed.";
     public const string MESSAGE_FROM_OTHER_CONVERSATION = "The message belongs to another conversation.";
     public const string TOO_MANY_MESSAGES = "You are sending messages too fast.";
+    public const string ATTACHMENT_EMPTY = "The file is empty.";
+    public const string ATTACHMENT_TOO_LARGE = "The file is larger than 20 MB.";
+    public const string ATTACHMENT_TYPE_NOT_ALLOWED = "Files of this type can't be sent.";
+    public const string TOO_MANY_ATTACHMENTS = "A message can have at most 10 files.";
+    public const string ATTACHMENTS_NOT_FOUND = "Some of the files are not found or are already sent.";
+    public const string ATTACHMENT_NOT_FOUND = "The file is not found.";
+    public const string ATTACHMENT_STORAGE_UNAVAILABLE = "The server can't save files right now.";
 }

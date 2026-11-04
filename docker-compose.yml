@@ -34,7 +34,6 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
-#      - ConnectionStrings__DefaultConnection=User ID=postgres;Password=123258;Server=postgres-db;Port=5432;Database=user-authentication-server;Pooling=true;
       - TZ=Europe/Khmelnytskyi
     ports:
       - "10101:8080"
@@ -52,8 +51,6 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
-#      - DOTNET_RUNNING_IN_CONTAINER=true
-#      - ConnectionStrings__DefaultConnection=User ID=postgres;Password=123258;Server=postgres-db;Port=5432;Database=user-authentication-server;Pooling=true;
       - TZ=Europe/Khmelnytskyi
     ports:
       - "10102:8080"
@@ -73,6 +70,8 @@ services:
       - TZ=Europe/Khmelnytskyi
     ports:
       - "20001:8080"
+    volumes:
+      - shifttrack-uploads:/app/wwwroot/uploads
     depends_on:
       - postgres-db
       - redis
@@ -130,3 +129,6 @@ services:
      - TZ=Europe/Khmelnytskyi
    ports:
      - "20003:8080"
+
+volumes:
+  shifttrack-uploads:

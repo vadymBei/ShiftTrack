@@ -1,3 +1,8 @@
+using Microsoft.Net.Http.Headers;
+using ShiftTrack.Application.Modules.Communication.Messenger.UseCases.Queries.GetAttachment;
+using ShiftTrack.Application.Modules.Communication.Messenger.UseCases.Commands.RemoveAttachment;
+using ShiftTrack.Application.Modules.Communication.Messenger.UseCases.Commands.UploadAttachment;
+using ShiftTrack.Application.Modules.Communication.Messenger.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShiftTrack.Application.Modules.Communication.Messenger.Constants;
@@ -90,7 +95,45 @@ public class COM_MSG_MessengerController : ApiController
 
     [HttpPost("conversations/{id}/messages")]
     public Task<MessageVm> SendMessage(long id, [FromBody] SendMessageDto dto)
-        => Mediator.Send(new SendMessageCommand(id, dto.Text, dto.ClientMessageId, dto.ReplyToMessageId));
+        => Mediator.Send(new SendMessageCommand(id, dto.Text, dto.ClientMessageId, dto.ReplyToMessageId,
+            dto.AttachmentIds ?? []));
+
+    /// <summary>Uploads a file to send in a message; files that are never sent are removed after a day.</summary>
+    [HttpPost("conversations/{id}/attachments")]
+    [RequestSizeLimit(MessengerConstants.MaxAttachmentSize + 1024 * 1024)]
+    [RequestFormLimits(MultipartBodyLengthLimit = MessengerConstants.MaxAttachmentSize + 1024 * 1024)]
+    public async Task<AttachmentVm> UploadAttachment(long id, IFormFile file)
+    {
+        await using var content = file?.OpenReadStream() ?? Stream.Null;
+
+        return await Mediator.Send(new UploadAttachmentCommand(id,
+            new AttachmentUpload(content, file?.FileName, file?.Length ?? 0)));
+    }
+
+    /// <summary>Removes an upload that isn't sent yet.</summary>
+    [HttpDelete("attachments/{id}")]
+    public async Task<IActionResult> RemoveAttachment(long id)
+    {
+        await Mediator.Send(new RemoveAttachmentCommand(id));
+
+        return Ok();
+    }
+
+    /// <summary>The file for the members of the conversation; images and PDF open in the browser unless download=true.</summary>
+    [HttpGet("attachments/{id}")]
+    public async Task<IActionResult> GetAttachment(long id, [FromQuery] bool download = false)
+    {
+        var file = await Mediator.Send(new GetAttachmentQuery(id, download));
+
+        Response.Headers["X-Content-Type-Options"] = "nosniff";
+        Response.Headers.CacheControl = "private, max-age=86400";
+
+        var disposition = new ContentDispositionHeaderValue(file.Inline ? "inline" : "attachment");
+        disposition.SetHttpFileName(file.FileName);
+        Response.Headers.ContentDisposition = disposition.ToString();
+
+        return File(file.Content, file.ContentType, enableRangeProcessing: true);
+    }
 
     [HttpPut("messages/{id}")]
     public Task<MessageVm> EditMessage(long id, [FromBody] EditMessageDto dto)

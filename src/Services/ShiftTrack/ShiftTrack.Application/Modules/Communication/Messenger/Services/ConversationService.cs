@@ -20,7 +20,9 @@ public class ConversationService(
     IConversationRepository conversationRepository,
     IMessageRepository messageRepository,
     IEmployeeRepository employeeRepository,
-    IMessengerPublisher messengerPublisher) : IConversationService
+    IMessengerPublisher messengerPublisher,
+    IMessageAttachmentRepository attachmentRepository,
+    IAttachmentStorage attachmentStorage) : IConversationService
 {
     private Employee Me => currentUserService.Employee;
 
@@ -181,7 +183,17 @@ public class ConversationService(
 
         if (conversation.Members.Count == 0)
         {
+            // The rows go with the conversation (cascade), the files are removed after the commit.
+            var storedNames = await attachmentRepository.GetStoredNames(id, cancellationToken);
+
             await conversationRepository.Remove(conversation, cancellationToken);
+
+            await unitOfWork.AfterCommit(() =>
+            {
+                foreach (var storedName in storedNames)
+                    attachmentStorage.Delete(storedName);
+                return Task.CompletedTask;
+            });
             await PublishChanged(id, [Me.Id]);
             return;
         }

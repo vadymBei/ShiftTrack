@@ -10,6 +10,7 @@ public class SendMessageCommandHandler(
 {
     public async Task<MessageVm> Handle(SendMessageCommand request, CancellationToken cancellationToken = default)
     {
-        return (await messageService.Send(request.ConversationId, request.Text, request.ClientMessageId, request.ReplyToMessageId, cancellationToken)).ToVm();
+        return (await messageService.Send(request.ConversationId, request.Text, request.ClientMessageId, request.ReplyToMessageId,
+            request.AttachmentIds ?? [], cancellationToken)).ToVm();
     }
 }

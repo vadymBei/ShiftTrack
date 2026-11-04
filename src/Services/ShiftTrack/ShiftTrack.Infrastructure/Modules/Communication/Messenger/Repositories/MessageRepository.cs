@@ -66,5 +66,6 @@ public class MessageRepository(
         query
             .Include(x => x.Author)
             .Include(x => x.ReplyToMessage)
-            .ThenInclude(x => x.Author);
+            .ThenInclude(x => x.Author)
+            .Include(x => x.Attachments);
 }

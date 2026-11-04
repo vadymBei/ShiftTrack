@@ -7,4 +7,5 @@ public record SendMessageCommand(
     long ConversationId,
     string Text,
     Guid? ClientMessageId,
-    long? ReplyToMessageId) : IRequest<MessageVm>;
+    long? ReplyToMessageId,
+    IReadOnlyCollection<long> AttachmentIds) : IRequest<MessageVm>;

@@ -38,6 +38,7 @@ public interface IApplicationDbContext
     DbSet<Conversation> Conversations { get; set; }
     DbSet<ConversationMember> ConversationMembers { get; set; }
     DbSet<Message> Messages { get; set; }
+    DbSet<MessageAttachment> MessageAttachments { get; set; }
     
     //Organization
     //Structure

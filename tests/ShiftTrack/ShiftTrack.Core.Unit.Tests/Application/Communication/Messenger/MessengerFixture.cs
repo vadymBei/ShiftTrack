@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using ShiftTrack.Core.Unit.Tests.Builders;
 using ShiftTrack.Core.Unit.Tests.Fakes;
@@ -22,9 +23,12 @@ public abstract class MessengerFixture
     protected readonly Mock<IEmployeeRepository> Employees = new();
     protected readonly Mock<IMessengerPublisher> Publisher = new();
     protected readonly Mock<IMessageRateLimiter> RateLimiter = new();
+    protected readonly Mock<IMessageAttachmentRepository> Attachments = new();
+    protected readonly Mock<IAttachmentStorage> Storage = new();
 
     protected readonly ConversationService ConversationService;
     protected readonly MessageService MessageService;
+    protected readonly MessageAttachmentService AttachmentService;
 
     protected MessengerFixture()
     {
@@ -56,9 +60,19 @@ public abstract class MessengerFixture
                 [new ConversationSummary { Conversation = new Conversation { Id = id ?? 0 } }]);
 
         ConversationService = new ConversationService(currentUser.Object, UnitOfWork, Conversations.Object,
-            Messages.Object, Employees.Object, Publisher.Object);
+            Messages.Object, Employees.Object, Publisher.Object, Attachments.Object, Storage.Object);
         MessageService = new MessageService(currentUser.Object, UnitOfWork, Conversations.Object, Messages.Object,
-            RateLimiter.Object, Publisher.Object);
+            RateLimiter.Object, Publisher.Object, Attachments.Object, Storage.Object);
+        AttachmentService = new MessageAttachmentService(currentUser.Object, UnitOfWork, Conversations.Object,
+            Attachments.Object, Storage.Object, NullLogger<MessageAttachmentService>.Instance);
+
+        Attachments
+            .Setup(x => x.GetUnsent(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<IReadOnlyCollection<long>>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync([]);
+        Attachments
+            .Setup(x => x.GetStoredNames(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync([]);
     }
 
     protected Conversation Existing(Conversation conversation)

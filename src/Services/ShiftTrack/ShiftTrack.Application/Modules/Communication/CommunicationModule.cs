@@ -18,6 +18,8 @@ public static class CommunicationModule
         services.AddTransient<IConversationService, ConversationService>();
         services.AddTransient<IMessageService, MessageService>();
         services.AddSingleton<IMessageRateLimiter, MessageRateLimiter>();
+        services.AddTransient<IMessageAttachmentService, MessageAttachmentService>();
+        services.AddTransient<IAttachmentCleanup, AttachmentCleanup>();
 
         return services;
     }

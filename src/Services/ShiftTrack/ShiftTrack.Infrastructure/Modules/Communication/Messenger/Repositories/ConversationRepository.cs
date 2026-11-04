@@ -65,6 +65,7 @@ public class ConversationRepository(
         var lastMessages = await applicationDbContext.Messages
             .AsNoTracking()
             .Include(x => x.Author)
+            .Include(x => x.Attachments)
             .Where(x => lastMessageIds.Contains(x.Id))
             .ToDictionaryAsync(x => x.Id, cancellationToken);
 

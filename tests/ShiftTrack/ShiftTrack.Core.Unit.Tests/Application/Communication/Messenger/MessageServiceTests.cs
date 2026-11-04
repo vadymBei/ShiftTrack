@@ -18,7 +18,7 @@ public class MessageServiceTests : MessengerFixture
 
         var message = await Command(async () =>
         {
-            var sent = await MessageService.Send(10, "  Привіт  ", Guid.NewGuid(), null, default);
+            var sent = await MessageService.Send(10, "  Привіт  ", Guid.NewGuid(), null, [], default);
             pushedBeforeCommit = Publisher.Invocations.Count > 0;
             return sent;
         });
@@ -40,7 +40,7 @@ public class MessageServiceTests : MessengerFixture
         var saved = new Message { Id = 7, ConversationId = 10, ClientMessageId = clientId, Text = "Привіт" };
         Messages.Setup(x => x.FindByClientId(Me, clientId, default)).ReturnsAsync(saved);
 
-        var message = await Command(() => MessageService.Send(10, "Привіт", clientId, null, default));
+        var message = await Command(() => MessageService.Send(10, "Привіт", clientId, null, [], default));
 
         Assert.Same(saved, message);
         Messages.Verify(x => x.Add(It.IsAny<Message>(), It.IsAny<CancellationToken>()), Times.Never);
@@ -52,7 +52,7 @@ public class MessageServiceTests : MessengerFixture
     {
         Existing(ConversationBuilder.Direct().WithMember(2).WithMember(3).Build());
 
-        var exception = await Assert.ThrowsAsync<MessengerException>(() => MessageService.Send(10, "x", null, null, default));
+        var exception = await Assert.ThrowsAsync<MessengerException>(() => MessageService.Send(10, "x", null, null, [], default));
 
         Assert.Equal("CMN_MSG_NOT_A_MEMBER", exception.ErrorType);
         Assert.Equal(HttpStatusCode.Forbidden, exception.Code);
@@ -63,7 +63,7 @@ public class MessageServiceTests : MessengerFixture
     {
         Existing(ConversationBuilder.Direct().WithMember(Me).Build());
 
-        var exception = await Assert.ThrowsAsync<MessengerException>(() => MessageService.Send(10, "x", null, null, default));
+        var exception = await Assert.ThrowsAsync<MessengerException>(() => MessageService.Send(10, "x", null, null, [], default));
 
         Assert.Equal("CMN_MSG_RECIPIENT_UNAVAILABLE", exception.ErrorType);
     }
@@ -74,7 +74,7 @@ public class MessageServiceTests : MessengerFixture
         Existing(ConversationBuilder.Direct().WithMember(Me).WithMember(2).Build());
         RateLimiter.Setup(x => x.TryAcquire(Me)).Returns(false);
 
-        var exception = await Assert.ThrowsAsync<MessengerException>(() => MessageService.Send(10, "x", null, null, default));
+        var exception = await Assert.ThrowsAsync<MessengerException>(() => MessageService.Send(10, "x", null, null, [], default));
 
         Assert.Equal("CMN_MSG_TOO_MANY_MESSAGES", exception.ErrorType);
         Assert.Equal(HttpStatusCode.TooManyRequests, exception.Code);
@@ -85,7 +85,7 @@ public class MessageServiceTests : MessengerFixture
     {
         Existing(ConversationBuilder.Direct().WithMember(Me).WithMember(2).Build());
 
-        var exception = await Assert.ThrowsAsync<MessengerException>(() => MessageService.Send(10, "x", null, 99, default));
+        var exception = await Assert.ThrowsAsync<MessengerException>(() => MessageService.Send(10, "x", null, 99, [], default));
 
         Assert.Equal("CMN_MSG_MESSAGE_FROM_OTHER_CONVERSATION", exception.ErrorType);
     }

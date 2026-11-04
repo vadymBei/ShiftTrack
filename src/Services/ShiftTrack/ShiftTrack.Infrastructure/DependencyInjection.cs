@@ -1,3 +1,4 @@
+using ShiftTrack.Infrastructure.Modules.Communication.Messenger.Services;
 using ShiftTrack.Infrastructure.Modules.Communication.Messenger.Repositories;
 using ShiftTrack.Application.Modules.Communication.Messenger.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -95,6 +96,8 @@ public static class DependencyInjection
         //Messenger
         services.AddTransient<IConversationRepository, ConversationRepository>();
         services.AddTransient<IMessageRepository, MessageRepository>();
+        services.AddTransient<IMessageAttachmentRepository, MessageAttachmentRepository>();
+        services.AddTransient<IAttachmentStorage, LocalAttachmentStorage>();
         
         //User
         services.AddTransient<IRoleRepository, RoleRepository>();

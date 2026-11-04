@@ -8,9 +8,16 @@ public class SendMessageCommandValidator : AbstractValidator<SendMessageCommand>
     public SendMessageCommandValidator()
     {
         RuleFor(x => x.Text)
-            .NotEmpty()
-            .Must(x => !string.IsNullOrWhiteSpace(x))
-            .WithMessage("The message is empty.")
             .MaximumLength(MessengerConstants.MaxMessageLength);
+
+        // Text, files or both.
+        RuleFor(x => x)
+            .Must(x => !string.IsNullOrWhiteSpace(x.Text) || x.AttachmentIds is { Count: > 0 })
+            .WithName(nameof(SendMessageCommand.Text))
+            .WithMessage("The message is empty.");
+
+        RuleFor(x => x.AttachmentIds)
+            .Must(x => x is null || x.Count <= MessengerConstants.MaxAttachmentsPerMessage)
+            .WithMessage("A message can have at most 10 files.");
     }
 }

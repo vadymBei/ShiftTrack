@@ -65,6 +65,9 @@ public static class MessengerMapper
         EditedAt = message.EditedAt,
         IsDeleted = message.IsDeleted,
         ClientMessageId = message.ClientMessageId,
+        Attachments = message.IsDeleted
+            ? []
+            : (message.Attachments ?? []).OrderBy(x => x.Id).Select(x => x.ToVm()).ToList(),
         ReplyTo = message.ReplyToMessage is { } reply
             ? new MessagePreviewVm
             {
@@ -75,6 +78,15 @@ public static class MessengerMapper
                 IsDeleted = reply.IsDeleted
             }
             : null
+    };
+
+    public static AttachmentVm ToVm(this MessageAttachment attachment) => new()
+    {
+        Id = attachment.Id,
+        FileName = attachment.FileName,
+        ContentType = attachment.ContentType,
+        Size = attachment.Size,
+        IsImage = attachment.IsImage
     };
 
     public static ChatContactVm ToContactVm(this Employee employee) => new()
