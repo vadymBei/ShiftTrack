@@ -15,6 +15,9 @@ public interface IEmployeeRepository
     Task<IEnumerable<Employee>> GetFiltered(EmployeesFilterDto filter, CancellationToken cancellationToken);
     Task<Employee> Update(EmployeeToUpdateDto employeeToUpdateDto, CancellationToken cancellationToken);
     Task UpdatePhoto(UploadEmployeePhotoDto uploadEmployeePhotoDto, CancellationToken cancellationToken);
+    /// <summary>Stored photo names of those of the employees who have a photo.</summary>
+    Task<IReadOnlyDictionary<long, string>> GetPhotoNames(IReadOnlyCollection<long> employeeIds,
+        CancellationToken cancellationToken);
     /// <summary>Start of the length of service of the employee, or of everyone when <paramref name="employeeId"/> is null.</summary>
     Task<IReadOnlyList<EmployeeServiceStart>> GetServiceStarts(long? employeeId, CancellationToken cancellationToken);
     Task UpdateVacationDaysBalances(IReadOnlyDictionary<long, int> balances, CancellationToken cancellationToken);

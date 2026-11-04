@@ -166,6 +166,17 @@ public class EmployeeRepository(
         await applicationDbContext.SaveChangesAsync(cancellationToken);
     }
 
+    public async Task<IReadOnlyDictionary<long, string>> GetPhotoNames(IReadOnlyCollection<long> employeeIds,
+        CancellationToken cancellationToken)
+    {
+        // Deleted employees too: their photos stay next to their old messages.
+        return await applicationDbContext.Employees
+            .AsNoTracking()
+            .IgnoreQueryFilters()
+            .Where(x => employeeIds.Contains(x.Id) && x.PhotoFullName != null && x.PhotoFullName != "")
+            .ToDictionaryAsync(x => x.Id, x => x.PhotoFullName, cancellationToken);
+    }
+
     public async Task<IReadOnlyList<EmployeeServiceStart>> GetServiceStarts(long? employeeId,
         CancellationToken cancellationToken)
     {

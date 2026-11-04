@@ -1,4 +1,5 @@
 using ShiftTrack.Infrastructure.Modules.Communication.Messenger.Services;
+using ShiftTrack.Infrastructure.Modules.Organization.Employees.Services;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
@@ -78,10 +79,11 @@ app.MapControllers();
 
 app.MapHub<NotificationsHub>(NotificationsHub.Path);
 
-// Chat files lie in wwwroot but are only for the members of the conversation:
-// they are served by the attachment endpoint, never as static files.
+// Chat files and employee photos lie in wwwroot but are only for signed-in users (chat files only for the members
+// of the conversation): they are served by their endpoints, never as static files.
 app.UseWhen(
-    context => context.Request.Path.StartsWithSegments(LocalAttachmentStorage.RequestPath, StringComparison.OrdinalIgnoreCase),
+    context => context.Request.Path.StartsWithSegments(LocalAttachmentStorage.RequestPath, StringComparison.OrdinalIgnoreCase)
+               || context.Request.Path.StartsWithSegments(LocalEmployeePhotoStorage.RequestPath, StringComparison.OrdinalIgnoreCase),
     branch => branch.Run(context =>
     {
         context.Response.StatusCode = StatusCodes.Status404NotFound;

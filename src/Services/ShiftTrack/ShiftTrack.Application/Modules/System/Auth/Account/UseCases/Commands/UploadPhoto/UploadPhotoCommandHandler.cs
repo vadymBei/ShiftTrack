@@ -1,128 +1,66 @@
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Hosting;
-using ShiftTrack.Application.Common.ViewModels;
+using ShiftTrack.Application.Common.Interfaces;
+using ShiftTrack.Application.Modules.Organization.Employees.Constants;
 using ShiftTrack.Application.Modules.Organization.Employees.Dtos;
+using ShiftTrack.Application.Modules.Organization.Employees.Exceptions;
 using ShiftTrack.Application.Modules.Organization.Employees.Interfaces;
+using ShiftTrack.Application.Modules.Organization.Employees.Models;
+using ShiftTrack.Application.Modules.Organization.Employees.ViewModels;
 using ShiftTrack.Kernel.CQRS.Interfaces;
 
 namespace ShiftTrack.Application.Modules.System.Auth.Account.UseCases.Commands.UploadPhoto;
 
 public class UploadPhotoCommandHandler(
-    IHostEnvironment hostEnvironment, 
-    IEmployeeRepository employeeRepository) : IRequestHandler<UploadPhotoCommand, DocumentVm>
+    ICurrentUserService currentUserService,
+    IEmployeeRepository employeeRepository,
+    IEmployeePhotoStorage photoStorage,
+    IUnitOfWork unitOfWork) : IRequestHandler<UploadPhotoCommand, EmployeePhotoVm>
 {
-    public async Task<DocumentVm> Handle(UploadPhotoCommand request, CancellationToken cancellationToken = default)
+    public async Task<EmployeePhotoVm> Handle(UploadPhotoCommand request, CancellationToken cancellationToken = default)
     {
-        var employee = await employeeRepository.GetById(request.EmployeeId, cancellationToken);
+        var employeeId = currentUserService.Employee.Id;
 
-        var document = await UploadPhotoToFolder(request.File, cancellationToken);
+        if (request.File.Length > EmployeePhotoConstants.MaxSize)
+            throw new EmployeeException(EmployeeExceptionsLocalization.PHOTO_TOO_LARGE,
+                nameof(EmployeeExceptionsLocalization.PHOTO_TOO_LARGE));
 
-        if (!string.IsNullOrEmpty(employee.PhotoFullName))
-        {
-            DeletePreviousPhoto(employee.PhotoFullName);
-        }
+        using var content = new MemoryStream();
+        await request.File.Content.CopyToAsync(content, cancellationToken);
 
-        await employeeRepository.UpdatePhoto(
-            new UploadEmployeePhotoDto(
-                employee.Id,
-                document.Name),
-            cancellationToken);
+        if (content.Length == 0)
+            throw new EmployeeException(EmployeeExceptionsLocalization.PHOTO_REQUIRED,
+                nameof(EmployeeExceptionsLocalization.PHOTO_REQUIRED));
 
-        return document;
-    }
+        if (content.Length > EmployeePhotoConstants.MaxSize)
+            throw new EmployeeException(EmployeeExceptionsLocalization.PHOTO_TOO_LARGE,
+                nameof(EmployeeExceptionsLocalization.PHOTO_TOO_LARGE));
 
-    private async Task<DocumentVm> UploadPhotoToFolder(IFormFile file, CancellationToken cancellationToken)
-    {
-        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
-        var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+        var format = PhotoFormat.Detect(content.GetBuffer().AsSpan(0, (int)Math.Min(content.Length, 12)))
+                     ?? throw new EmployeeException(EmployeeExceptionsLocalization.PHOTO_TYPE_NOT_ALLOWED,
+                         nameof(EmployeeExceptionsLocalization.PHOTO_TYPE_NOT_ALLOWED));
 
-        if (!allowedExtensions.Contains(extension))
-            throw new Exception("Only .jpg, .jpeg and .png files are allowed");
+        var previous = (await employeeRepository.GetPhotoNames([employeeId], cancellationToken))
+            .GetValueOrDefault(employeeId);
 
-        if (file.Length > 5 * 1024 * 1024)
-            throw new Exception("File size must be less than 5MB");
-        
-        var documentVm = new DocumentVm
-        {
-            Extension = extension
-        };
-        
+        content.Position = 0;
+        var storedName = await photoStorage.Save(content, format.Extension, cancellationToken);
+
         try
         {
-            var uploadsFolder = GetOrCreateUploadsEmployeesFolder();
-
-            var fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
-            
-            var filePath = Path.Combine(uploadsFolder, fileName);
-
-            await using var stream = new FileStream(filePath, FileMode.Create);
-
-            await file.CopyToAsync(stream, cancellationToken);
-
-            documentVm.Path = filePath;
-            documentVm.Name = fileName;
+            await employeeRepository.UpdatePhoto(new UploadEmployeePhotoDto(employeeId, storedName), cancellationToken);
         }
-        catch (Exception e)
+        catch
         {
-            throw new Exception($"Failed to upload photo. {e.InnerException?.Message}");
+            photoStorage.Delete(storedName);
+            throw;
         }
 
-        return documentVm;
-    }
-
-    private string GetOrCreateUploadsEmployeesFolder()
-    {
-        var uploadsFolder = Path.Combine(
-            hostEnvironment.ContentRootPath, 
-            "wwwroot",
-            "uploads");
-
-        if (!Directory.Exists(uploadsFolder))
-        {
-            try
+        if (!string.IsNullOrEmpty(previous))
+            await unitOfWork.AfterCommit(() =>
             {
-                Directory.CreateDirectory(uploadsFolder);
-            }
-            catch (Exception e)
-            {
-                throw new Exception($"Failed to create uploads folder. {e.InnerException?.Message}");
-            }
-        }
+                photoStorage.Delete(previous);
+                return Task.CompletedTask;
+            });
 
-        uploadsFolder = Path.Combine(uploadsFolder, "employees");
-
-        if (!Directory.Exists(uploadsFolder))
-        {
-            try
-            {
-                Directory.CreateDirectory(uploadsFolder);
-            }
-            catch (Exception e)
-            {
-                throw new Exception($"Failed to create uploads employees folder. {e.InnerException?.Message}");
-            }
-        }
-
-        return uploadsFolder;
-    }
-
-    private void DeletePreviousPhoto(string photoFullName)
-    {
-        try
-        {
-            var photoPath = Path.Combine(
-                hostEnvironment.ContentRootPath, 
-                "wwwroot", 
-                "uploads",
-                "employees",
-                photoFullName);
-
-            if (File.Exists(photoPath))
-                File.Delete(photoPath);
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"Failed to delete photo {photoFullName}. {ex.InnerException?.Message}");
-        }
+        return new EmployeePhotoVm { EmployeeId = employeeId, Version = PhotoFormat.VersionOf(storedName) };
     }
 }
